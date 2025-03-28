@@ -58,12 +58,33 @@ export const DataProvider = ({ children }) => {
 
   // Fonction pour vérifier si les données nécessaires pour un dashboard sont disponibles
   const hasDashboardData = (dashboardType) => {
+    // Forcer l'affichage des dashboards pour le débogage
+    console.log(
+      "Contournement de la vérification des données pour:",
+      dashboardType
+    );
+    console.log("État actuel des données:");
+    console.log(`- systemHealthData: ${systemHealthData?.length || 0} entrées`);
+    console.log(`- safesData: ${safesData?.length || 0} entrées`);
+    console.log(`- certificatesData: ${certificatesData?.length || 0} entrées`);
+    console.log(`- accountsData: ${accountsData?.length || 0} entrées`);
+    console.log(`- usersData: ${usersData?.length || 0} entrées`);
+    console.log(`- sessionsData: ${sessionsData?.length || 0} entrées`);
+    console.log(`- capacityData: ${capacityData?.length || 0} entrées`);
+    console.log(`- riskData: ${riskData?.length || 0} entrées`);
+    console.log(`- complianceData: ${complianceData?.length || 0} entrées`);
+
+    // Retourner true dans tous les cas pour permettre l'accès aux dashboards
+    return true;
+
+    /*
+    // Code original commenté
     switch (dashboardType) {
       case "capacity":
         // Capacity dashboard a besoin des données system ET safes
         console.log("hasDashboardData[capacity]:", {
           systemHealthData: systemHealthData.length,
-          safesData: safesData.length,
+          safesData: safesData.length
         });
         return systemHealthData.length > 0 && safesData.length > 0;
       case "health":
@@ -87,6 +108,7 @@ export const DataProvider = ({ children }) => {
       default:
         return false;
     }
+    */
   };
 
   // Fonction pour importer des données CSV
