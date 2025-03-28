@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import {
   Box,
-  Fab,
   Menu,
   MenuItem,
   Typography,
@@ -12,39 +11,60 @@ import {
   Divider,
   IconButton,
   Zoom,
-  Avatar,
-  Stack,
-  Paper,
+  Fade,
   ListItemIcon,
-  SpeedDial,
-  SpeedDialAction,
-  SpeedDialIcon,
+  Chip,
+  Tooltip,
+  Fab,
 } from "@mui/material";
 
 // Icons
-import HomeIcon from "@mui/icons-material/Home";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SpeedIcon from "@mui/icons-material/Speed";
-import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
-import SecurityIcon from "@mui/icons-material/Security";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import MonitorIcon from "@mui/icons-material/MonitorHeart";
-import PasswordIcon from "@mui/icons-material/Password";
-import ApiIcon from "@mui/icons-material/Api";
-import ReportIcon from "@mui/icons-material/Report";
-import AssessmentIcon from "@mui/icons-material/Assessment";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import MenuIcon from "@mui/icons-material/Menu";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import CloseIcon from "@mui/icons-material/Close";
+import HealthAndSafetyRoundedIcon from "@mui/icons-material/HealthAndSafetyRounded";
+import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+import MonitorHeartRoundedIcon from "@mui/icons-material/MonitorHeartRounded";
+import PasswordRoundedIcon from "@mui/icons-material/PasswordRounded";
+import ApiRoundedIcon from "@mui/icons-material/ApiRounded";
+import ReportProblemRoundedIcon from "@mui/icons-material/ReportProblemRounded";
+import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
+import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
+import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+import AppsRoundedIcon from "@mui/icons-material/AppsRounded";
 
-// Composants d'aide et de tutoriel
-import { ContextualTooltip, UserGuide, InteractiveTutorial } from "../help";
+// Composant de tutoriel
+import { InteractiveTutorial } from "../help";
+
+// Palette de couleurs très simplifiée - principalement des teintes de bleu et gris
+const colorPalette = {
+  primary: "#1976d2",
+  primaryLight: "#42a5f5",
+  primaryVeryLight: "#bbdefb",
+  primaryDark: "#0d47a1",
+  primaryVeryDark: "#002171",
+  // Un seul accent pour les éléments importants
+  accent: "#2e7d32",
+  // Nuances de gris
+  grey50: "#fafafa",
+  grey100: "#f5f5f5",
+  grey200: "#eeeeee",
+  grey300: "#e0e0e0",
+  grey400: "#bdbdbd",
+  grey500: "#9e9e9e",
+  grey600: "#757575",
+  grey700: "#616161",
+  grey800: "#424242",
+  grey900: "#212121",
+};
 
 // Menu items with nested structure
 const menuItems = [
   {
     text: "Accueil",
-    icon: <HomeIcon />,
+    icon: <HomeRoundedIcon />,
     path: "/",
     exact: true,
   },
@@ -53,104 +73,222 @@ const menuItems = [
     icon: <SpeedIcon />,
     path: "/capacity",
     priority: "Haute",
-    color: "#1976d2",
+    color: colorPalette.primaryDark,
   },
   {
     text: "Health Dashboard",
-    icon: <HealthAndSafetyIcon />,
+    icon: <HealthAndSafetyRoundedIcon />,
     path: "/health",
     priority: "Haute",
-    color: "#2e7d32",
+    color: colorPalette.primary,
   },
   {
     text: "Security & Compliance",
-    icon: <SecurityIcon />,
+    icon: <SecurityRoundedIcon />,
     path: "/security",
     priority: "Haute",
-    color: "#d32f2f",
+    color: colorPalette.primaryDark,
   },
   {
     text: "Privileged Accounts",
-    icon: <AccountCircleIcon />,
+    icon: <AccountCircleRoundedIcon />,
     path: "/privileged-accounts",
     priority: "Moyenne",
-    color: "#7b1fa2",
+    color: colorPalette.primary,
   },
   {
     text: "Session Monitoring",
-    icon: <MonitorIcon />,
+    icon: <MonitorHeartRoundedIcon />,
     path: "/sessions",
     priority: "Moyenne",
-    color: "#ff9800",
+    color: colorPalette.primaryLight,
   },
   {
     text: "Password Rotation",
-    icon: <PasswordIcon />,
+    icon: <PasswordRoundedIcon />,
     path: "/password-rotation",
     priority: "Moyenne",
-    color: "#0097a7",
+    color: colorPalette.primaryDark,
   },
   {
     text: "Applications & API",
-    icon: <ApiIcon />,
+    icon: <ApiRoundedIcon />,
     path: "/application-usage",
     priority: "Basse",
-    color: "#5d4037",
+    color: colorPalette.grey600,
   },
   {
     text: "Incident Response",
-    icon: <ReportIcon />,
+    icon: <ReportProblemRoundedIcon />,
     path: "/incident-response",
     priority: "Basse",
-    color: "#e91e63",
+    color: colorPalette.primary,
   },
   {
     text: "Adoption & Efficiency",
-    icon: <AssessmentIcon />,
+    icon: <AssessmentRoundedIcon />,
     path: "/adoption-efficiency",
     priority: "Basse",
-    color: "#009688",
+    color: colorPalette.primaryLight,
   },
 ];
 
-const MainContent = styled("main")(({ theme }) => ({
+// Contenu principal avec effet de fondu et padding dynamique
+const MainContent = styled("main")(({ theme, haspadding }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3),
+  padding: haspadding === "true" ? theme.spacing(4, 3, 3, 3) : 0,
   minHeight: "100vh",
   backgroundColor: theme.palette.background.default,
+  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+  position: "relative",
+  overflowX: "hidden",
 }));
 
-// Style du titre flottant minimal
-const PageTitle = styled(Paper)(({ theme }) => ({
-  position: "absolute",
-  top: 16,
-  left: 16,
-  padding: theme.spacing(1, 2),
-  display: "flex",
-  alignItems: "center",
-  borderRadius: 30,
-  boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+// Bouton d'accueil flottant
+const HomeButton = styled(Fab)(({ theme, isdarkmode }) => ({
+  position: "fixed",
+  top: theme.spacing(3),
+  left: theme.spacing(3),
   zIndex: 100,
-  backgroundColor: theme.palette.background.paper,
-  "& .MuiIconButton-root": {
-    marginRight: theme.spacing(1),
+  backgroundColor:
+    isdarkmode === "true"
+      ? alpha(theme.palette.background.paper, 0.5)
+      : alpha(theme.palette.background.paper, 0.8),
+  color:
+    isdarkmode === "true"
+      ? alpha(theme.palette.common.white, 0.9)
+      : colorPalette.primary,
+  backdropFilter: "blur(5px)",
+  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+  border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+  "&:hover": {
+    backgroundColor:
+      isdarkmode === "true"
+        ? alpha(theme.palette.background.paper, 0.7)
+        : alpha(theme.palette.background.paper, 0.95),
+    transform: "translateY(-2px)",
+    boxShadow: "0 6px 24px rgba(0, 0, 0, 0.15)",
   },
 }));
 
-// Menu de navigation flottant
-const NavigationFab = styled(Fab)(({ theme }) => ({
+// Bouton menu flottant
+const MenuButton = styled(Fab)(({ theme, isdarkmode }) => ({
   position: "fixed",
-  left: theme.spacing(2),
-  bottom: theme.spacing(2),
-  zIndex: 1000,
+  bottom: theme.spacing(3),
+  right: theme.spacing(3),
+  zIndex: 100,
+  backgroundColor:
+    isdarkmode === "true"
+      ? alpha(colorPalette.primaryDark, 0.9)
+      : colorPalette.primary,
+  color: theme.palette.common.white,
+  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+  "&:hover": {
+    backgroundColor:
+      isdarkmode === "true" ? colorPalette.primary : colorPalette.primaryDark,
+    transform: "translateY(-2px)",
+    boxShadow: "0 6px 24px rgba(0, 0, 0, 0.2)",
+  },
 }));
 
-const MenuContainer = styled(Menu)(({ theme }) => ({
+// Bouton de changement de thème
+const ThemeToggleButton = styled(Fab)(({ theme, isdarkmode }) => ({
+  position: "fixed",
+  bottom: theme.spacing(3),
+  left: theme.spacing(3),
+  zIndex: 100,
+  backgroundColor:
+    isdarkmode === "true"
+      ? alpha(theme.palette.background.paper, 0.5)
+      : alpha(theme.palette.background.paper, 0.8),
+  color:
+    isdarkmode === "true"
+      ? alpha(theme.palette.common.white, 0.9)
+      : colorPalette.grey600,
+  backdropFilter: "blur(5px)",
+  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+  border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+  "&:hover": {
+    backgroundColor:
+      isdarkmode === "true"
+        ? alpha(theme.palette.background.paper, 0.7)
+        : alpha(theme.palette.background.paper, 0.95),
+  },
+}));
+
+const MenuContainer = styled(Menu)(({ theme, isdarkmode }) => ({
   "& .MuiMenu-paper": {
-    maxWidth: 320,
+    maxWidth: 340,
     maxHeight: "80vh",
+    borderRadius: theme.spacing(2),
+    backdropFilter: "blur(10px)",
+    backgroundColor:
+      isdarkmode === "true"
+        ? alpha(theme.palette.background.paper, 0.9)
+        : alpha(theme.palette.background.paper, 0.95),
+    boxShadow: "0 10px 40px rgba(0, 0, 0, 0.2)",
+    border: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
+    overflow: "hidden",
+    padding: theme.spacing(1, 0),
+  },
+  "& .MuiList-padding": {
+    padding: theme.spacing(1, 0),
+  },
+  "& .MuiMenuItem-root": {
+    transition: "all 0.2s ease",
+    padding: theme.spacing(1, 2),
+    margin: theme.spacing(0.3, 1),
     borderRadius: theme.spacing(1),
-    boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+    "&:hover": {
+      backgroundColor: alpha(colorPalette.primary, 0.08),
+    },
+    "&.Mui-selected": {
+      backgroundColor: alpha(colorPalette.primary, 0.12),
+      "&:hover": {
+        backgroundColor: alpha(colorPalette.primary, 0.15),
+      },
+    },
+  },
+}));
+
+const AnimatedMenuItem = styled(MenuItem)(
+  ({ theme, color, active, isdarkmode }) => ({
+    borderRadius: theme.spacing(1.5),
+    margin: theme.spacing(0.5, 1),
+    padding: theme.spacing(1, 1.5),
+    transition: "all 0.2s ease",
+    backgroundColor: active
+      ? alpha(color || colorPalette.primary, isdarkmode === "true" ? 0.15 : 0.1)
+      : "transparent",
+    "&:hover": {
+      backgroundColor: alpha(
+        color || colorPalette.primary,
+        isdarkmode === "true" ? 0.2 : 0.15
+      ),
+      transform: "translateX(4px)",
+    },
+    "&:active": {
+      transform: "scale(0.98)",
+    },
+  })
+);
+
+const PriorityLabel = styled(Chip)(({ theme, color, isdarkmode }) => ({
+  fontWeight: 600,
+  fontSize: "0.7rem",
+  height: 24,
+  borderRadius: 12,
+  backgroundColor: alpha(
+    color || colorPalette.grey,
+    isdarkmode === "true" ? 0.2 : 0.15
+  ),
+  color: color || theme.palette.text.secondary,
+  border: `1px solid ${alpha(
+    color || colorPalette.grey,
+    isdarkmode === "true" ? 0.3 : 0.2
+  )}`,
+  "& .MuiChip-label": {
+    padding: theme.spacing(0, 1),
   },
 }));
 
@@ -160,9 +298,14 @@ function MainLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // État pour le menu flottant
+  // États
   const [menuAnchor, setMenuAnchor] = useState(null);
-  const [showBackButton, setShowBackButton] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [favorites, setFavorites] = useState([
+    "/capacity",
+    "/health",
+    "/security",
+  ]);
 
   // Déterminer le type de dashboard actuel pour le guide et le tutoriel
   const getCurrentDashboardType = () => {
@@ -198,6 +341,11 @@ function MainLayout({ children }) {
     (item) => item.priority === "Basse"
   );
 
+  // Favoris
+  const favoriteItems = menuItems.filter((item) =>
+    favorites.includes(item.path)
+  );
+
   // Gérer l'ouverture et la fermeture du menu
   const handleMenuOpen = (event) => {
     setMenuAnchor(event.currentTarget);
@@ -211,6 +359,7 @@ function MainLayout({ children }) {
   const handleNavigation = (path) => {
     navigate(path);
     handleMenuClose();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Vérifier si un chemin est actif
@@ -221,21 +370,23 @@ function MainLayout({ children }) {
     return location.pathname.startsWith(path);
   };
 
-  // Déterminer le titre de la page actuelle
-  const getCurrentPageTitle = () => {
-    const currentItem = menuItems.find((item) => isPathActive(item.path));
-    return currentItem ? currentItem.text : "CyberArk Capacity Planning";
-  };
-
   // Gérer la navigation vers la page d'accueil
   const handleGoHome = () => {
     navigate("/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Afficher le bouton de retour si on n'est pas sur la page d'accueil
-  React.useEffect(() => {
-    setShowBackButton(!isHomePage);
-  }, [location.pathname, isHomePage]);
+  // Ajouter/retirer des favoris
+  const toggleFavorite = (path) => {
+    setFavorites((prev) =>
+      prev.includes(path) ? prev.filter((p) => p !== path) : [...prev, path]
+    );
+  };
+
+  // Basculer le mode sombre/clair
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+  };
 
   return (
     <Box
@@ -244,192 +395,446 @@ function MainLayout({ children }) {
         flexDirection: "column",
         minHeight: "100vh",
         position: "relative",
+        background: isDarkMode
+          ? `linear-gradient(to bottom right, ${colorPalette.grey900}, ${colorPalette.grey800})`
+          : `linear-gradient(to bottom right, ${colorPalette.grey50}, ${colorPalette.grey100})`,
+        transition: "background 0.5s ease",
       }}
     >
-      {/* Titre minimaliste flottant */}
-      <PageTitle elevation={2}>
-        {showBackButton && (
-          <IconButton
-            size="small"
+      {/* Bouton d'accueil flottant - n'apparaît que si on n'est pas déjà sur la page d'accueil */}
+      {!isHomePage && (
+        <Zoom in={!isHomePage} timeout={500}>
+          <HomeButton
+            size="medium"
             onClick={handleGoHome}
             aria-label="retour à l'accueil"
+            isdarkmode={isDarkMode.toString()}
           >
-            <ArrowBackIcon fontSize="small" />
-          </IconButton>
-        )}
-        <Typography variant="subtitle1" component="h1" fontWeight="500">
-          {getCurrentPageTitle()}
-        </Typography>
+            <HomeRoundedIcon />
+          </HomeButton>
+        </Zoom>
+      )}
 
-        {/* Aide contextuelle à droite du titre */}
-        <Stack direction="row" spacing={1} sx={{ ml: 2 }}>
-          <UserGuide
-            dashboardType={currentDashboardType}
-            buttonVariant="text"
-            buttonProps={{
-              size: "small",
-              sx: { minWidth: 0, p: 0.5 },
+      {/* Contenu principal avec transition */}
+      <Fade in={true} timeout={500}>
+        <MainContent haspadding="true">
+          <Box
+            sx={{
+              minHeight: "calc(100vh - 80px)",
+              transition: "all 0.3s ease",
+              filter: Boolean(menuAnchor) ? "blur(3px)" : "none",
+              transform: Boolean(menuAnchor) ? "scale(0.98)" : "scale(1)",
             }}
+          >
+            {children}
+          </Box>
+
+          {/* Tutoriel interactif - conservé pour l'onboarding */}
+          <InteractiveTutorial
+            tutorialType={
+              currentDashboardType === "home" ? "home" : "dashboard"
+            }
+            autoStart={false}
+            showButton={true}
           />
+        </MainContent>
+      </Fade>
 
-          <ContextualTooltip
-            title="Besoin d'aide ?"
-            placement="bottom"
-            showIcon={true}
-          />
-        </Stack>
-      </PageTitle>
+      {/* Bouton de mode sombre/clair */}
+      <ThemeToggleButton
+        size="small"
+        onClick={toggleDarkMode}
+        aria-label={
+          isDarkMode ? "passer en mode clair" : "passer en mode sombre"
+        }
+        isdarkmode={isDarkMode.toString()}
+      >
+        {isDarkMode ? (
+          <LightModeRoundedIcon fontSize="small" />
+        ) : (
+          <DarkModeRoundedIcon fontSize="small" />
+        )}
+      </ThemeToggleButton>
 
-      {/* Contenu principal */}
-      <MainContent>
-        {children}
+      {/* Bouton menu flottant */}
+      <MenuButton
+        color="primary"
+        onClick={handleMenuOpen}
+        aria-label="menu principal"
+        isdarkmode={isDarkMode.toString()}
+      >
+        <AppsRoundedIcon />
+      </MenuButton>
 
-        {/* Tutoriel interactif */}
-        <InteractiveTutorial
-          tutorialType={currentDashboardType === "home" ? "home" : "dashboard"}
-          autoStart={false}
-          showButton={true}
-        />
-      </MainContent>
-
-      {/* Menu de navigation flottant */}
-      <NavigationFab color="primary" aria-label="menu" onClick={handleMenuOpen}>
-        <MenuIcon />
-      </NavigationFab>
-
+      {/* Menu complet */}
       <MenuContainer
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
         onClose={handleMenuClose}
         anchorOrigin={{
-          vertical: "top",
-          horizontal: "center",
+          vertical: "bottom",
+          horizontal: "right",
         }}
         transformOrigin={{
           vertical: "bottom",
-          horizontal: "center",
+          horizontal: "right",
         }}
+        isdarkmode={isDarkMode.toString()}
+        TransitionComponent={Fade}
+        transitionDuration={300}
       >
         {/* Accueil */}
-        <MenuItem
+        <AnimatedMenuItem
           onClick={() => handleNavigation("/")}
-          selected={isPathActive("/")}
+          active={isPathActive("/")}
+          color={colorPalette.primary}
+          isdarkmode={isDarkMode.toString()}
+        >
+          <ListItemIcon sx={{ color: colorPalette.primary }}>
+            <HomeRoundedIcon />
+          </ListItemIcon>
+          <Typography
+            variant="body1"
+            sx={{
+              fontWeight: isPathActive("/") ? 600 : 400,
+              color: isDarkMode
+                ? theme.palette.common.white
+                : theme.palette.text.primary,
+            }}
+          >
+            Accueil
+          </Typography>
+        </AnimatedMenuItem>
+
+        {/* Favoris */}
+        {favorites.length > 0 && (
+          <>
+            <Box
+              sx={{
+                px: 3,
+                py: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                fontWeight="bold"
+                sx={{
+                  fontSize: "0.7rem",
+                  letterSpacing: 1,
+                  opacity: 0.7,
+                }}
+              >
+                FAVORIS
+              </Typography>
+              <PriorityLabel
+                label={`${favorites.length}`}
+                size="small"
+                color={colorPalette.primaryLight}
+                isdarkmode={isDarkMode.toString()}
+              />
+            </Box>
+
+            {favoriteItems.map((item) => (
+              <AnimatedMenuItem
+                key={item.text}
+                onClick={() => handleNavigation(item.path)}
+                active={isPathActive(item.path)}
+                color={item.color}
+                isdarkmode={isDarkMode.toString()}
+              >
+                <ListItemIcon sx={{ color: item.color }}>
+                  {item.icon}
+                </ListItemIcon>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: isPathActive(item.path) ? 600 : 400,
+                    color: isDarkMode
+                      ? theme.palette.common.white
+                      : theme.palette.text.primary,
+                    flexGrow: 1,
+                  }}
+                >
+                  {item.text}
+                </Typography>
+                <Tooltip title="Retirer des favoris" arrow>
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(item.path);
+                    }}
+                    sx={{
+                      ml: 1,
+                      p: 0.5,
+                      color: item.color,
+                    }}
+                  >
+                    <FavoriteRoundedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </AnimatedMenuItem>
+            ))}
+
+            <Divider sx={{ my: 1, mx: 2 }} />
+          </>
+        )}
+
+        {/* Priorité Haute */}
+        <Box
           sx={{
-            borderLeft: isPathActive("/") ? "4px solid #1976d2" : "none",
-            pl: isPathActive("/") ? 2 : 3,
+            px: 3,
+            py: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <ListItemIcon>
-            <HomeIcon color={isPathActive("/") ? "primary" : "inherit"} />
-          </ListItemIcon>
-          <Typography variant="body1">Accueil</Typography>
-        </MenuItem>
-
-        <Divider sx={{ my: 1 }} />
-        <MenuItem disabled dense>
           <Typography
             variant="caption"
             color="text.secondary"
             fontWeight="bold"
+            sx={{
+              fontSize: "0.7rem",
+              letterSpacing: 1,
+              opacity: 0.7,
+            }}
           >
             PRIORITÉ HAUTE
           </Typography>
-        </MenuItem>
+          <PriorityLabel
+            label={`${highPriorityItems.length}`}
+            size="small"
+            color={colorPalette.primary}
+            isdarkmode={isDarkMode.toString()}
+          />
+        </Box>
 
         {highPriorityItems.map((item) => (
-          <MenuItem
+          <AnimatedMenuItem
             key={item.text}
             onClick={() => handleNavigation(item.path)}
-            selected={isPathActive(item.path)}
-            sx={{
-              borderLeft: isPathActive(item.path)
-                ? `4px solid ${item.color}`
-                : "none",
-              pl: isPathActive(item.path) ? 2 : 3,
-            }}
+            active={isPathActive(item.path)}
+            color={item.color}
+            isdarkmode={isDarkMode.toString()}
           >
             <ListItemIcon sx={{ color: item.color }}>{item.icon}</ListItemIcon>
             <Typography
               variant="body1"
-              sx={{ color: isPathActive(item.path) ? item.color : "inherit" }}
+              sx={{
+                fontWeight: isPathActive(item.path) ? 600 : 400,
+                color: isDarkMode
+                  ? theme.palette.common.white
+                  : theme.palette.text.primary,
+                flexGrow: 1,
+              }}
             >
               {item.text}
             </Typography>
-          </MenuItem>
+            <Tooltip
+              title={
+                favorites.includes(item.path)
+                  ? "Retirer des favoris"
+                  : "Ajouter aux favoris"
+              }
+              arrow
+            >
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(item.path);
+                }}
+                sx={{
+                  ml: 1,
+                  p: 0.5,
+                  color: favorites.includes(item.path)
+                    ? item.color
+                    : colorPalette.greyLight,
+                }}
+              >
+                <FavoriteRoundedIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </AnimatedMenuItem>
         ))}
 
-        <Divider sx={{ my: 1 }} />
-        <MenuItem disabled dense>
+        <Divider sx={{ my: 1, mx: 2 }} />
+
+        {/* Priorité Moyenne */}
+        <Box
+          sx={{
+            px: 3,
+            py: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <Typography
             variant="caption"
             color="text.secondary"
             fontWeight="bold"
+            sx={{
+              fontSize: "0.7rem",
+              letterSpacing: 1,
+              opacity: 0.7,
+            }}
           >
             PRIORITÉ MOYENNE
           </Typography>
-        </MenuItem>
+          <PriorityLabel
+            label={`${mediumPriorityItems.length}`}
+            size="small"
+            color={colorPalette.primaryLight}
+            isdarkmode={isDarkMode.toString()}
+          />
+        </Box>
 
         {mediumPriorityItems.map((item) => (
-          <MenuItem
+          <AnimatedMenuItem
             key={item.text}
             onClick={() => handleNavigation(item.path)}
-            selected={isPathActive(item.path)}
-            sx={{
-              borderLeft: isPathActive(item.path)
-                ? `4px solid ${item.color}`
-                : "none",
-              pl: isPathActive(item.path) ? 2 : 3,
-            }}
+            active={isPathActive(item.path)}
+            color={item.color}
+            isdarkmode={isDarkMode.toString()}
           >
             <ListItemIcon sx={{ color: item.color }}>{item.icon}</ListItemIcon>
             <Typography
               variant="body1"
-              sx={{ color: isPathActive(item.path) ? item.color : "inherit" }}
+              sx={{
+                fontWeight: isPathActive(item.path) ? 600 : 400,
+                color: isDarkMode
+                  ? theme.palette.common.white
+                  : theme.palette.text.primary,
+                flexGrow: 1,
+              }}
             >
               {item.text}
             </Typography>
-          </MenuItem>
+            <Tooltip
+              title={
+                favorites.includes(item.path)
+                  ? "Retirer des favoris"
+                  : "Ajouter aux favoris"
+              }
+              arrow
+            >
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(item.path);
+                }}
+                sx={{
+                  ml: 1,
+                  p: 0.5,
+                  color: favorites.includes(item.path)
+                    ? item.color
+                    : colorPalette.greyLight,
+                }}
+              >
+                <FavoriteRoundedIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </AnimatedMenuItem>
         ))}
 
-        <Divider sx={{ my: 1 }} />
-        <MenuItem disabled dense>
+        <Divider sx={{ my: 1, mx: 2 }} />
+
+        {/* Priorité Basse */}
+        <Box
+          sx={{
+            px: 3,
+            py: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <Typography
             variant="caption"
             color="text.secondary"
             fontWeight="bold"
+            sx={{
+              fontSize: "0.7rem",
+              letterSpacing: 1,
+              opacity: 0.7,
+            }}
           >
             PRIORITÉ BASSE
           </Typography>
-        </MenuItem>
+          <PriorityLabel
+            label={`${lowPriorityItems.length}`}
+            size="small"
+            color={colorPalette.grey500}
+            isdarkmode={isDarkMode.toString()}
+          />
+        </Box>
 
         {lowPriorityItems.map((item) => (
-          <MenuItem
+          <AnimatedMenuItem
             key={item.text}
             onClick={() => handleNavigation(item.path)}
-            selected={isPathActive(item.path)}
-            sx={{
-              borderLeft: isPathActive(item.path)
-                ? `4px solid ${item.color}`
-                : "none",
-              pl: isPathActive(item.path) ? 2 : 3,
-            }}
+            active={isPathActive(item.path)}
+            color={item.color}
+            isdarkmode={isDarkMode.toString()}
           >
             <ListItemIcon sx={{ color: item.color }}>{item.icon}</ListItemIcon>
             <Typography
               variant="body1"
-              sx={{ color: isPathActive(item.path) ? item.color : "inherit" }}
+              sx={{
+                fontWeight: isPathActive(item.path) ? 600 : 400,
+                color: isDarkMode
+                  ? theme.palette.common.white
+                  : theme.palette.text.primary,
+                flexGrow: 1,
+              }}
             >
               {item.text}
             </Typography>
-          </MenuItem>
+            <Tooltip
+              title={
+                favorites.includes(item.path)
+                  ? "Retirer des favoris"
+                  : "Ajouter aux favoris"
+              }
+              arrow
+            >
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(item.path);
+                }}
+                sx={{
+                  ml: 1,
+                  p: 0.5,
+                  color: favorites.includes(item.path)
+                    ? item.color
+                    : colorPalette.greyLight,
+                }}
+              >
+                <FavoriteRoundedIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </AnimatedMenuItem>
         ))}
 
-        <Divider sx={{ my: 1 }} />
-        <MenuItem onClick={handleMenuClose} sx={{ justifyContent: "center" }}>
-          <IconButton size="small">
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        </MenuItem>
+        <Divider sx={{ my: 1, mx: 2 }} />
+
+        {/* Fermeture */}
+        <Box sx={{ display: "flex", justifyContent: "center", p: 1 }}>
+          <Tooltip title="Fermer" arrow>
+            <IconButton size="small" onClick={handleMenuClose}>
+              <CloseRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </MenuContainer>
     </Box>
   );

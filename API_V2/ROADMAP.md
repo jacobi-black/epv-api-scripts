@@ -260,16 +260,6 @@
   - [ ] Étapes d'installation
   - [ ] Configuration et personnalisation
 
-### 6.2 Documentation Utilisateur
-
-- [ ] Manuels utilisateurs
-  - [ ] Guide par dashboard
-  - [ ] Instructions d'utilisation des scripts PowerShell
-  - [ ] FAQ et résolution de problèmes
-- [ ] Vidéos et tutoriels
-  - [ ] Démos des fonctionnalités principales
-  - [ ] Guides pas-à-pas pour les tâches courantes
-
 ## Remarques Importantes pour le Développement
 
 1. **Traitement des données**:
