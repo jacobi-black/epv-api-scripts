@@ -18,6 +18,9 @@ import {
   Avatar,
   Badge,
   Tooltip,
+  Button,
+  ButtonGroup,
+  Divider,
 } from "@mui/material";
 import { useData } from "../../utils/DataContext";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -25,32 +28,13 @@ import WarningIcon from "@mui/icons-material/Warning";
 import ComputerIcon from "@mui/icons-material/Computer";
 import SecurityIcon from "@mui/icons-material/Security";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Pie, Bar, Line, Doughnut } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip as ChartTooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title,
-} from "chart.js";
-
-// Enregistrer les éléments requis pour Chart.js
-ChartJS.register(
-  ArcElement,
-  ChartTooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
-  Title
-);
+import VideocamIcon from "@mui/icons-material/Videocam";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import TimerIcon from "@mui/icons-material/Timer";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import RecordVoiceOverIcon from "@mui/icons-material/RecordVoiceOver";
+import GroupIcon from "@mui/icons-material/Group";
+import { ChartjsLine, ChartjsBar, ChartjsPie } from "../../components/charts";
 
 const SessionMonitoring = ({ subview }) => {
   const dataContext = useData();
@@ -384,7 +368,7 @@ const SessionMonitoring = ({ subview }) => {
                           alignItems: "center",
                         }}
                       >
-                        {sessionStats && <Doughnut data={sessionTypeData} />}
+                        {sessionStats && <ChartjsPie data={sessionTypeData} />}
                       </Box>
                     </Paper>
                   </Grid>
@@ -526,7 +510,7 @@ const SessionMonitoring = ({ subview }) => {
                     Distribution des anomalies par type
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Bar
+                    <ChartjsBar
                       data={{
                         labels: [
                           "Unusual timing",
@@ -569,7 +553,7 @@ const SessionMonitoring = ({ subview }) => {
                     Tendances des anomalies
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Line
+                    <ChartjsLine
                       data={{
                         labels: [
                           "Jan",
@@ -659,7 +643,7 @@ const SessionMonitoring = ({ subview }) => {
                       alignItems: "center",
                     }}
                   >
-                    {geoData && <Pie data={geoLocationData} />}
+                    {geoData && <ChartjsPie data={geoLocationData} />}
                   </Box>
                 </Paper>
               </Grid>
@@ -832,7 +816,7 @@ const SessionMonitoring = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
                     {sessionStats && (
-                      <Line
+                      <ChartjsLine
                         data={{
                           labels: Array.from({ length: 24 }, (_, i) => `${i}h`),
                           datasets: [
@@ -867,7 +851,7 @@ const SessionMonitoring = ({ subview }) => {
                         Sessions par type
                       </Typography>
                       <Box sx={{ height: 140, mt: 2 }}>
-                        {sessionStats && <Doughnut data={sessionTypeData} />}
+                        {sessionStats && <ChartjsPie data={sessionTypeData} />}
                       </Box>
                     </Paper>
                   </Grid>
@@ -877,7 +861,9 @@ const SessionMonitoring = ({ subview }) => {
                         Sessions par statut
                       </Typography>
                       <Box sx={{ height: 140, mt: 2 }}>
-                        {sessionStats && <Doughnut data={sessionStatusData} />}
+                        {sessionStats && (
+                          <ChartjsPie data={sessionStatusData} />
+                        )}
                       </Box>
                     </Paper>
                   </Grid>

@@ -23,6 +23,9 @@ import {
   Api as ApiIcon,
   Report as ReportIcon,
   Assessment as AssessmentIcon,
+  GppGood as ComplianceIcon,
+  DashboardOutlined,
+  RocketOutlined,
 } from "@mui/icons-material";
 
 // Nouvelle palette avec couleurs uniques pour chaque dashboard
@@ -63,6 +66,10 @@ const dashboardColors = [
     primary: "#6d8a9c", // bleu gris
     bg: "#eef3f6",
   },
+  {
+    primary: "#8c6d9c", // violet lavande
+    bg: "#f3eef6",
+  },
 ];
 
 // Groupes de dashboards
@@ -92,6 +99,18 @@ const dashboardCategories = {
         "/Test HTML5 Certificate/Test-HTML5Gateway.ps1",
       ],
     },
+    {
+      id: "performance",
+      title: "Performance Dashboard",
+      description:
+        "Analyze detailed component performance metrics, response times, and optimization opportunities.",
+      icon: <RocketOutlined sx={{ fontSize: 40 }} />,
+      colorIndex: 2,
+      scripts: [
+        "/System Health/System-Health.ps1",
+        "/PSM Sessions Management/PSM-SessionsManagement.ps1",
+      ],
+    },
   ],
   security: [
     {
@@ -101,6 +120,18 @@ const dashboardCategories = {
         "Track security compliance, policy violations and risk metrics for privileged accounts.",
       icon: <SecurityIcon sx={{ fontSize: 40 }} />,
       colorIndex: 2,
+      scripts: [
+        "/Security Events/Get-AccoutnsRiskReport.ps1",
+        "/Reports/Accounts/Accounts_Inventory.ps1",
+      ],
+    },
+    {
+      id: "compliance",
+      title: "Compliance Dashboard",
+      description:
+        "Monitor regulatory compliance, audit results and security controls to meet industry standards.",
+      icon: <ComplianceIcon sx={{ fontSize: 40 }} />,
+      colorIndex: 9,
       scripts: [
         "/Security Events/Get-AccoutnsRiskReport.ps1",
         "/Reports/Accounts/Accounts_Inventory.ps1",
@@ -180,6 +211,18 @@ const dashboardCategories = {
       scripts: [
         "/User Management/Get-UsersActivityReport.ps1",
         "/Reports/Accounts/Accounts_Usage.ps1",
+      ],
+    },
+    {
+      id: "executive",
+      title: "Executive Dashboard",
+      description:
+        "Strategic overview of security posture, compliance status, and resource allocation for management.",
+      icon: <DashboardOutlined sx={{ fontSize: 40 }} />,
+      colorIndex: 3,
+      scripts: [
+        "/System Health/System-Health.ps1",
+        "/Security Events/Get-AccoutnsRiskReport.ps1",
       ],
     },
   ],

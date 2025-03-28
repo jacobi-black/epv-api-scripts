@@ -29,7 +29,8 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import KeyIcon from "@mui/icons-material/Key";
-import { Pie, Bar, Line, Doughnut } from "react-chartjs-2";
+import { ChartjsLine, ChartjsBar, ChartjsPie } from "../../components/charts";
+import { Helmet } from "react-helmet";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -550,7 +551,7 @@ const IncidentResponse = ({ subview }) => {
                       alignItems: "center",
                     }}
                   >
-                    {incidentStats && <Pie data={incidentTypeData} />}
+                    {incidentStats && <ChartjsPie data={incidentTypeData} />}
                   </Box>
                 </Paper>
               </Grid>
@@ -568,7 +569,7 @@ const IncidentResponse = ({ subview }) => {
                       alignItems: "center",
                     }}
                   >
-                    {incidentStats && <Pie data={incidentSourceData} />}
+                    {incidentStats && <ChartjsPie data={incidentSourceData} />}
                   </Box>
                 </Paper>
               </Grid>
@@ -588,7 +589,7 @@ const IncidentResponse = ({ subview }) => {
                     Temps moyen de résolution par type d'incident
                   </Typography>
                   <Box sx={{ height: 350, mt: 2 }}>
-                    <Bar
+                    <ChartjsBar
                       data={resolutionTimeData}
                       options={{
                         responsive: true,
@@ -613,7 +614,7 @@ const IncidentResponse = ({ subview }) => {
                     Historique des temps de résolution
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Line
+                    <ChartjsLine
                       data={{
                         labels: incidentHistory
                           .slice(0, 14)
@@ -726,7 +727,7 @@ const IncidentResponse = ({ subview }) => {
                     Tendance des incidents sur 14 jours
                   </Typography>
                   <Box sx={{ height: 400, mt: 2 }}>
-                    <Line
+                    <ChartjsLine
                       data={incidentTrendData}
                       options={{
                         responsive: true,
@@ -758,7 +759,7 @@ const IncidentResponse = ({ subview }) => {
                     Incidents par mois
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Bar
+                    <ChartjsBar
                       data={{
                         labels: [
                           "Jan",
@@ -801,7 +802,7 @@ const IncidentResponse = ({ subview }) => {
                     Accès d'urgence par mois
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Bar
+                    <ChartjsBar
                       data={{
                         labels: Array.from({ length: 6 }, (_, i) => {
                           const date = new Date();
@@ -929,7 +930,7 @@ const IncidentResponse = ({ subview }) => {
                     Tendance des incidents
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Line
+                    <ChartjsLine
                       data={incidentTrendData}
                       options={{
                         responsive: true,
@@ -962,7 +963,7 @@ const IncidentResponse = ({ subview }) => {
                       alignItems: "center",
                     }}
                   >
-                    {incidentStats && <Doughnut data={incidentTypeData} />}
+                    {incidentStats && <ChartjsPie data={incidentTypeData} />}
                   </Box>
                 </Paper>
               </Grid>
@@ -1083,7 +1084,17 @@ const IncidentResponse = ({ subview }) => {
     }
   };
 
-  return <Box>{renderSubview()}</Box>;
+  // Rendu en fonction de la sous-vue sélectionnée
+  const content = renderSubview();
+
+  return (
+    <Box>
+      <Helmet>
+        <title>Incident Response | CyberArk Capacity Planning</title>
+      </Helmet>
+      {content}
+    </Box>
+  );
 };
 
 export default IncidentResponse;

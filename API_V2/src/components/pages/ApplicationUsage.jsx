@@ -28,7 +28,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 import TimerIcon from "@mui/icons-material/Timer";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import InfoIcon from "@mui/icons-material/Info";
-import { Pie, Bar, Line, Doughnut } from "react-chartjs-2";
+import { ChartjsLine, ChartjsBar, ChartjsPie } from "../../components/charts";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -41,6 +41,7 @@ import {
   BarElement,
   Title,
 } from "chart.js";
+import { Helmet } from "react-helmet";
 
 // Enregistrer les éléments requis pour Chart.js
 ChartJS.register(
@@ -471,7 +472,7 @@ const ApplicationUsage = ({ subview }) => {
                       alignItems: "center",
                     }}
                   >
-                    {appStats && <Pie data={appTypeData} />}
+                    {appStats && <ChartjsPie data={appTypeData} />}
                   </Box>
                 </Paper>
               </Grid>
@@ -489,7 +490,7 @@ const ApplicationUsage = ({ subview }) => {
                       alignItems: "center",
                     }}
                   >
-                    {appStats && <Pie data={appStatusData} />}
+                    {appStats && <ChartjsPie data={appStatusData} />}
                   </Box>
                 </Paper>
               </Grid>
@@ -587,7 +588,7 @@ const ApplicationUsage = ({ subview }) => {
                     Distribution des appels API par endpoint
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    {apiStats && <Doughnut data={apiCallsData} />}
+                    {apiStats && <ChartjsPie data={apiCallsData} />}
                   </Box>
                 </Paper>
               </Grid>
@@ -597,7 +598,7 @@ const ApplicationUsage = ({ subview }) => {
                     Types d'erreurs API
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    {apiStats && <Doughnut data={apiErrorsData} />}
+                    {apiStats && <ChartjsPie data={apiErrorsData} />}
                   </Box>
                 </Paper>
               </Grid>
@@ -608,7 +609,7 @@ const ApplicationUsage = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
                     {apiStats && (
-                      <Line
+                      <ChartjsLine
                         data={{
                           labels: Array.from({ length: 24 }, (_, i) => `${i}h`),
                           datasets: [
@@ -679,7 +680,7 @@ const ApplicationUsage = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 400, mt: 2 }}>
                     {apiStats && (
-                      <Line
+                      <ChartjsLine
                         data={apiTrendData}
                         options={{
                           responsive: true,
@@ -722,7 +723,7 @@ const ApplicationUsage = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
                     {apiStats && (
-                      <Bar
+                      <ChartjsBar
                         data={{
                           labels: apiStats.historicalTrends.map((t) => t.month),
                           datasets: [
@@ -760,7 +761,7 @@ const ApplicationUsage = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
                     {apiStats && (
-                      <Bar
+                      <ChartjsBar
                         data={{
                           labels: apiStats.historicalTrends.map((t) => t.month),
                           datasets: [
@@ -892,7 +893,7 @@ const ApplicationUsage = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
                     {apiStats && (
-                      <Line
+                      <ChartjsLine
                         data={{
                           labels: Array.from({ length: 24 }, (_, i) => `${i}h`),
                           datasets: [
@@ -960,7 +961,7 @@ const ApplicationUsage = ({ subview }) => {
                       alignItems: "center",
                     }}
                   >
-                    {apiStats && <Pie data={apiCallsData} />}
+                    {apiStats && <ChartjsPie data={apiCallsData} />}
                   </Box>
                 </Paper>
               </Grid>

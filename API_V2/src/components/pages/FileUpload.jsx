@@ -125,6 +125,32 @@ const dashboardConfig = {
       { name: "Accounts_Usage.ps1", type: "usage", required: true },
     ],
   },
+  performance: {
+    title: "Performance Dashboard",
+    color: "#3f51b5",
+    scripts: [
+      { name: "System-Health.ps1", type: "system", required: true },
+      { name: "Test-HTML5Gateway.ps1", type: "certificates", required: false },
+    ],
+  },
+  compliance: {
+    title: "Compliance Dashboard",
+    color: "#673ab7",
+    scripts: [
+      { name: "Get-AccoutnsRiskReport.ps1", type: "risk", required: true },
+      { name: "Accounts_Inventory.ps1", type: "accounts", required: false },
+      { name: "Safe_Inventory.ps1", type: "safes", required: false },
+    ],
+  },
+  executive: {
+    title: "Executive Dashboard",
+    color: "#607d8b",
+    scripts: [
+      { name: "Get-AccoutnsRiskReport.ps1", type: "risk", required: true },
+      { name: "Accounts_Inventory.ps1", type: "accounts", required: true },
+      { name: "System-Health.ps1", type: "system", required: true },
+    ],
+  },
 };
 
 // Configuration des commandes PowerShell pour chaque script

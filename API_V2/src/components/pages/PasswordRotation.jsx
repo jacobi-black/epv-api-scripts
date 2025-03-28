@@ -28,7 +28,7 @@ import SecurityIcon from "@mui/icons-material/Security";
 import ErrorIcon from "@mui/icons-material/Error";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
-import { Pie, Bar, Line, Doughnut } from "react-chartjs-2";
+import { ChartjsLine, ChartjsBar, ChartjsPie } from "../../components/charts";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -41,6 +41,7 @@ import {
   BarElement,
   Title,
 } from "chart.js";
+import { Helmet } from "react-helmet";
 
 // Enregistrer les éléments requis pour Chart.js
 ChartJS.register(
@@ -426,9 +427,7 @@ const PasswordRotation = ({ subview }) => {
                           alignItems: "center",
                         }}
                       >
-                        {rotationStats && (
-                          <Doughnut data={rotationStatusData} />
-                        )}
+                        <ChartjsPie data={rotationStatusData} />
                       </Box>
                     </Paper>
                   </Grid>
@@ -620,7 +619,7 @@ const PasswordRotation = ({ subview }) => {
                     Complexité des mots de passe par politique
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Bar
+                    <ChartjsBar
                       data={{
                         labels: passwordPolicies.map((p) => p.name),
                         datasets: [
@@ -665,7 +664,7 @@ const PasswordRotation = ({ subview }) => {
                     Période de rotation par politique
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Bar
+                    <ChartjsBar
                       data={{
                         labels: passwordPolicies.map((p) => p.name),
                         datasets: [
@@ -720,7 +719,7 @@ const PasswordRotation = ({ subview }) => {
                     Tendance des rotations
                   </Typography>
                   <Box sx={{ height: 350, mt: 2 }}>
-                    <Line
+                    <ChartjsLine
                       data={{
                         labels: rotationHistory
                           .slice(0, 14)
@@ -827,7 +826,7 @@ const PasswordRotation = ({ subview }) => {
                     Rotations par type de compte
                   </Typography>
                   <Box sx={{ height: 270, mt: 2 }}>
-                    <Bar
+                    <ChartjsBar
                       data={{
                         labels: Object.keys(
                           rotationHistory[0]?.byAccountType || {}
@@ -970,7 +969,7 @@ const PasswordRotation = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
                     {rotationStats && (
-                      <Line
+                      <ChartjsLine
                         data={rotationTrendsData}
                         options={{
                           responsive: true,
@@ -1004,7 +1003,7 @@ const PasswordRotation = ({ subview }) => {
                       alignItems: "center",
                     }}
                   >
-                    {rotationStats && <Pie data={rotationStatusData} />}
+                    <ChartjsPie data={rotationStatusData} />
                   </Box>
                 </Paper>
               </Grid>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Paper,
@@ -8,6 +8,10 @@ import {
   CircularProgress,
   LinearProgress,
   useTheme,
+  IconButton,
+  Collapse,
+  Divider,
+  Badge,
 } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
@@ -15,9 +19,15 @@ import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import WarningIcon from "@mui/icons-material/Warning";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
+import InfoIcon from "@mui/icons-material/Info";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import SecurityIcon from "@mui/icons-material/Security";
+import ShieldIcon from "@mui/icons-material/Shield";
+import LockIcon from "@mui/icons-material/Lock";
 
 /**
- * Composant KPI amélioré avec indicateurs de tendance et seuils d'alerte
+ * Composant KPI amélioré avec indicateurs de tendance, seuils d'alerte
+ * et visualisation des niveaux de sécurité
  * @param {Object} props - Les propriétés du composant
  * @param {string} props.title - Titre du KPI
  * @param {any} props.value - Valeur actuelle du KPI
@@ -30,6 +40,11 @@ import ErrorIcon from "@mui/icons-material/Error";
  * @param {('strategic'|'tactical'|'operational')} props.level - Niveau hiérarchique cible du KPI
  * @param {('strategic'|'tactical'|'operational')} props.currentLevel - Niveau actuellement sélectionné
  * @param {string} props.description - Description détaillée du KPI
+ * @param {Array} props.dataSources - Sources de données utilisées pour ce KPI
+ * @param {number} props.width - Largeur du composant
+ * @param {Object} props.securityLevel - Niveau de sécurité {level: 'high'|'medium'|'low', description: '...'}
+ * @param {Object} props.historyData - Données historiques pour mini-graphique
+ * @param {Object} props.complianceStatus - Statut de conformité {status: 'compliant'|'warning'|'violation', details: '...'}
  */
 const EnhancedKPI = ({
   title,
@@ -45,8 +60,12 @@ const EnhancedKPI = ({
   description = "",
   dataSources = [],
   width = 300,
+  securityLevel = null,
+  historyData = null,
+  complianceStatus = null,
 }) => {
   const theme = useTheme();
+  const [expanded, setExpanded] = useState(false);
 
   // Si le niveau actuel ne correspond pas au niveau cible du KPI, on réduit l'opacité
   const matchesLevel =
@@ -128,20 +147,106 @@ const EnhancedKPI = ({
     return Math.min(100, Math.max(0, numValue));
   };
 
+  // Récupérer l'icône de niveau de sécurité
+  const getSecurityLevelIcon = () => {
+    if (!securityLevel) return null;
+
+    switch (securityLevel.level) {
+      case "high":
+        return <SecurityIcon color="success" fontSize="small" />;
+      case "medium":
+        return <ShieldIcon color="warning" fontSize="small" />;
+      case "low":
+        return <LockIcon color="error" fontSize="small" />;
+      default:
+        return null;
+    }
+  };
+
+  // Récupérer l'icône de statut de conformité
+  const getComplianceStatusIcon = () => {
+    if (!complianceStatus) return null;
+
+    switch (complianceStatus.status) {
+      case "compliant":
+        return <CheckCircleIcon color="success" fontSize="small" />;
+      case "warning":
+        return <WarningIcon color="warning" fontSize="small" />;
+      case "violation":
+        return <ErrorIcon color="error" fontSize="small" />;
+      default:
+        return null;
+    }
+  };
+
+  // Dessiner un mini-graphique avec les données historiques
+  const renderMiniChart = () => {
+    if (!historyData || !historyData.values || historyData.values.length === 0)
+      return null;
+
+    const values = historyData.values;
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const range = max - min;
+
+    return (
+      <Box
+        sx={{ mt: 1, height: "20px", display: "flex", alignItems: "flex-end" }}
+      >
+        {values.map((val, index) => {
+          const height = range === 0 ? 10 : 5 + ((val - min) / range) * 15;
+          return (
+            <Box
+              key={index}
+              sx={{
+                height: `${height}px`,
+                width: "3px",
+                backgroundColor: getBarColor(val),
+                mx: "1px",
+                borderRadius: "1px",
+                transition: "height 0.3s ease",
+              }}
+            />
+          );
+        })}
+      </Box>
+    );
+  };
+
+  // Couleur des barres du mini-graphique
+  const getBarColor = (value) => {
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return theme.palette.primary.main;
+
+    if (inverseThreshold) {
+      if (numValue <= thresholds.danger) return theme.palette.error.main;
+      if (numValue <= thresholds.warning) return theme.palette.warning.main;
+      return theme.palette.success.main;
+    } else {
+      if (numValue >= thresholds.danger) return theme.palette.error.main;
+      if (numValue >= thresholds.warning) return theme.palette.warning.main;
+      return theme.palette.success.main;
+    }
+  };
+
   return (
     <Paper
       elevation={3}
       sx={{
         p: 2,
         width: width,
-        height: 150,
+        minHeight: 150,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
         opacity,
-        transition: "opacity 0.3s ease",
+        transition: "all 0.3s ease",
         position: "relative",
         overflow: "hidden",
+        "&:hover": {
+          boxShadow: 6,
+          transform: "translateY(-2px)",
+        },
       }}
     >
       {/* Badge de niveau */}
@@ -169,13 +274,41 @@ const EnhancedKPI = ({
         }}
       />
 
-      {/* Titre */}
+      {/* Titre avec niveau de sécurité et conformité si disponibles */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
         <Tooltip title={description || title}>
           <Typography variant="subtitle1" fontWeight={500}>
             {title}
           </Typography>
         </Tooltip>
+        {(securityLevel || complianceStatus) && (
+          <Box
+            sx={{ ml: "auto", display: "flex", alignItems: "center", mr: 3 }}
+          >
+            {securityLevel && (
+              <Tooltip
+                title={`Niveau de sécurité: ${
+                  securityLevel.description || securityLevel.level
+                }`}
+              >
+                <IconButton size="small" sx={{ mr: 0.5 }}>
+                  {getSecurityLevelIcon()}
+                </IconButton>
+              </Tooltip>
+            )}
+            {complianceStatus && (
+              <Tooltip
+                title={`Conformité: ${
+                  complianceStatus.details || complianceStatus.status
+                }`}
+              >
+                <IconButton size="small">
+                  {getComplianceStatusIcon()}
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
+        )}
       </Box>
 
       {/* Valeur */}
@@ -202,70 +335,169 @@ const EnhancedKPI = ({
         )}
       </Box>
 
-      {/* Indicateur de tendance */}
-      {change !== undefined && (
-        <Box
+      {/* Mini-graphique historique si disponible */}
+      {renderMiniChart()}
+
+      {/* Tendance et barre de progression */}
+      <Box sx={{ mt: 1 }}>
+        {change !== undefined && change !== null && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 0.5,
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              {getTrendIcon()}
+              <Typography
+                variant="caption"
+                color={
+                  change > 0
+                    ? inverseThreshold
+                      ? "error.main"
+                      : "success.main"
+                    : change < 0
+                    ? inverseThreshold
+                      ? "success.main"
+                      : "error.main"
+                    : "text.secondary"
+                }
+                sx={{ ml: 0.5 }}
+              >
+                {change > 0 ? "+" : ""}
+                {change}%
+              </Typography>
+            </Box>
+            <Typography variant="caption" color="text.secondary">
+              {timeframe}
+            </Typography>
+          </Box>
+        )}
+
+        <LinearProgress
+          variant="determinate"
+          value={getProgressValue()}
+          color={
+            getProgressValue() >= thresholds.danger
+              ? "error"
+              : getProgressValue() >= thresholds.warning
+              ? "warning"
+              : "success"
+          }
+          sx={{ height: 5, borderRadius: 5 }}
+        />
+      </Box>
+
+      {/* Bouton d'expansion pour plus de détails */}
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 1.5 }}>
+        <IconButton
+          size="small"
+          onClick={() => setExpanded(!expanded)}
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            mb: 1,
+            transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.3s ease",
           }}
         >
-          {getTrendIcon()}
-          <Typography
-            variant="body2"
-            color={
-              change > 3
-                ? inverseThreshold
-                  ? "error"
-                  : "success"
-                : change < -3
-                ? inverseThreshold
-                  ? "success"
-                  : "error"
-                : "text.secondary"
-            }
-            sx={{ ml: 0.5 }}
-          >
-            {change > 0 ? "+" : ""}
-            {change}% {timeframe}
-          </Typography>
+          <ExpandMoreIcon />
+        </IconButton>
+      </Box>
+
+      {/* Section de détails supplémentaires */}
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Divider sx={{ my: 1 }} />
+        <Box sx={{ py: 1 }}>
+          {/* Sources de données */}
+          {dataSources && dataSources.length > 0 && (
+            <Box sx={{ mb: 1 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: "block" }}
+              >
+                Sources de données:
+              </Typography>
+              <Box
+                sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}
+              >
+                {dataSources.map((source, index) => (
+                  <Chip
+                    key={index}
+                    label={source}
+                    size="small"
+                    variant="outlined"
+                    sx={{ fontSize: "0.625rem" }}
+                  />
+                ))}
+              </Box>
+            </Box>
+          )}
+
+          {/* Description détaillée */}
+          {description && (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: "block", mt: 1 }}
+            >
+              {description}
+            </Typography>
+          )}
+
+          {/* Détails de sécurité */}
+          {securityLevel && (
+            <Box sx={{ mt: 1 }}>
+              <Typography
+                variant="caption"
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                {getSecurityLevelIcon()}
+                <span style={{ marginLeft: "4px" }}>
+                  Niveau de sécurité:{" "}
+                  {securityLevel.level.charAt(0).toUpperCase() +
+                    securityLevel.level.slice(1)}
+                </span>
+              </Typography>
+              {securityLevel.description && (
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ display: "block", ml: 2 }}
+                >
+                  {securityLevel.description}
+                </Typography>
+              )}
+            </Box>
+          )}
+
+          {/* Détails de conformité */}
+          {complianceStatus && (
+            <Box sx={{ mt: 1 }}>
+              <Typography
+                variant="caption"
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                {getComplianceStatusIcon()}
+                <span style={{ marginLeft: "4px" }}>
+                  Conformité:{" "}
+                  {complianceStatus.status.charAt(0).toUpperCase() +
+                    complianceStatus.status.slice(1)}
+                </span>
+              </Typography>
+              {complianceStatus.details && (
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ display: "block", ml: 2 }}
+                >
+                  {complianceStatus.details}
+                </Typography>
+              )}
+            </Box>
+          )}
         </Box>
-      )}
-
-      {/* Barre de progression */}
-      {value !== undefined && !isNaN(parseFloat(value)) && (
-        <Tooltip title={`${getProgressValue()}% ${description || ""}`}>
-          <LinearProgress
-            variant="determinate"
-            value={getProgressValue()}
-            sx={{
-              mt: 1,
-              height: 6,
-              borderRadius: 3,
-              backgroundColor: theme.palette.grey[200],
-              "& .MuiLinearProgress-bar": {
-                backgroundColor: getStatusColor(),
-              },
-            }}
-          />
-        </Tooltip>
-      )}
-
-      {/* Source des données */}
-      {dataSources && dataSources.length > 0 && (
-        <Tooltip title={`Sources: ${dataSources.join(", ")}`}>
-          <Typography
-            variant="caption"
-            sx={{ mt: 1, textAlign: "right", opacity: 0.6 }}
-          >
-            {dataSources.length > 1
-              ? `${dataSources.length} sources`
-              : dataSources[0]}
-          </Typography>
-        </Tooltip>
-      )}
+      </Collapse>
     </Paper>
   );
 };

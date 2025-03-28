@@ -28,7 +28,8 @@ import AutomationIcon from "@mui/icons-material/AutoFixHigh";
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
 import BusinessIcon from "@mui/icons-material/Business";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Pie, Bar, Line, Doughnut } from "react-chartjs-2";
+import { ChartjsLine, ChartjsBar, ChartjsPie } from "../../components/charts";
+import { Helmet } from "react-helmet";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -544,7 +545,7 @@ const AdoptionEfficiency = ({ subview }) => {
                       alignItems: "center",
                     }}
                   >
-                    <Pie data={usersByDeptData} />
+                    <ChartjsPie data={usersByDeptData} />
                   </Box>
                 </Paper>
               </Grid>
@@ -635,7 +636,7 @@ const AdoptionEfficiency = ({ subview }) => {
                     Évolution du temps d'accès
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Line
+                    <ChartjsLine
                       data={accessTimeTrendData}
                       options={{
                         responsive: true,
@@ -660,7 +661,7 @@ const AdoptionEfficiency = ({ subview }) => {
                     Gains en temps par type de workflow
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Bar
+                    <ChartjsBar
                       data={{
                         labels: [
                           "Approbation",
@@ -759,7 +760,7 @@ const AdoptionEfficiency = ({ subview }) => {
                     Satisfaction par fonctionnalité
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Bar
+                    <ChartjsBar
                       data={satisfactionChartData}
                       options={{
                         responsive: true,
@@ -785,7 +786,7 @@ const AdoptionEfficiency = ({ subview }) => {
                     Évolution de la satisfaction
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Line
+                    <ChartjsLine
                       data={{
                         labels: [
                           "Jan",
@@ -929,7 +930,7 @@ const AdoptionEfficiency = ({ subview }) => {
                     Tendance d'activité mensuelle
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
-                    <Line
+                    <ChartjsLine
                       data={activityTrendData}
                       options={{
                         responsive: true,
@@ -962,20 +963,7 @@ const AdoptionEfficiency = ({ subview }) => {
                       alignItems: "center",
                     }}
                   >
-                    <Doughnut
-                      data={adoptionByDeptData}
-                      options={{
-                        plugins: {
-                          tooltip: {
-                            callbacks: {
-                              label: function (context) {
-                                return `${context.label}: ${context.raw}%`;
-                              },
-                            },
-                          },
-                        },
-                      }}
-                    />
+                    <ChartjsPie data={adoptionByDeptData} />
                   </Box>
                 </Paper>
               </Grid>
@@ -1093,7 +1081,16 @@ const AdoptionEfficiency = ({ subview }) => {
     }
   };
 
-  return <Box>{renderSubview()}</Box>;
+  return (
+    <Box>
+      <Helmet>
+        <title>
+          Adoption & Efficiency Dashboard | CyberArk Capacity Planning
+        </title>
+      </Helmet>
+      {renderSubview()}
+    </Box>
+  );
 };
 
 export default AdoptionEfficiency;

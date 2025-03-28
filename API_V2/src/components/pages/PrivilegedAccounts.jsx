@@ -23,7 +23,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import GroupIcon from "@mui/icons-material/Group";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
 import LockIcon from "@mui/icons-material/Lock";
-import { Pie, Bar, Line } from "react-chartjs-2";
+import { ChartjsLine, ChartjsBar, ChartjsPie } from "../../components/charts";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -205,7 +205,7 @@ const PrivilegedAccounts = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
                     {accountUsageStats && (
-                      <Line
+                      <ChartjsLine
                         data={{
                           labels: Array.from({ length: 30 }, (_, i) => i + 1),
                           datasets: [
@@ -239,7 +239,7 @@ const PrivilegedAccounts = ({ subview }) => {
                   </Typography>
                   <Box sx={{ mt: 3, textAlign: "center" }}>
                     {accountUsageStats && (
-                      <Pie
+                      <ChartjsPie
                         data={{
                           labels: ["Accès normaux", "Accès d'urgence"],
                           datasets: [
@@ -351,7 +351,7 @@ const PrivilegedAccounts = ({ subview }) => {
                       justifyContent: "center",
                     }}
                   >
-                    {departmentStats && <Pie data={departmentPieData} />}
+                    {departmentStats && <ChartjsPie data={departmentPieData} />}
                   </Box>
                 </Paper>
               </Grid>
@@ -459,7 +459,7 @@ const PrivilegedAccounts = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 350, mt: 2 }}>
                     {accountTrends && (
-                      <Line
+                      <ChartjsLine
                         data={trendsLineData}
                         options={{
                           responsive: true,
@@ -492,7 +492,7 @@ const PrivilegedAccounts = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
                     {topAccounts.length > 0 && (
-                      <Bar
+                      <ChartjsBar
                         data={topAccountsBarData}
                         options={{
                           responsive: true,
@@ -674,7 +674,7 @@ const PrivilegedAccounts = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
                     {topAccounts.length > 0 && (
-                      <Bar
+                      <ChartjsBar
                         data={topAccountsBarData}
                         options={{
                           responsive: true,
@@ -712,7 +712,7 @@ const PrivilegedAccounts = ({ subview }) => {
                       justifyContent: "center",
                     }}
                   >
-                    {departmentStats && <Pie data={departmentPieData} />}
+                    {departmentStats && <ChartjsPie data={departmentPieData} />}
                   </Box>
                 </Paper>
               </Grid>
@@ -723,7 +723,7 @@ const PrivilegedAccounts = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
                     {accountTrends && (
-                      <Line
+                      <ChartjsLine
                         data={trendsLineData}
                         options={{
                           responsive: true,

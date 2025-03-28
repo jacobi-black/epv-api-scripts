@@ -24,6 +24,9 @@ import PasswordRotation from "./components/pages/PasswordRotation";
 import ApplicationUsage from "./components/pages/ApplicationUsage";
 import IncidentResponse from "./components/pages/IncidentResponse";
 import AdoptionEfficiency from "./components/pages/AdoptionEfficiency";
+import ComplianceDashboard from "./components/pages/ComplianceDashboard";
+import ExecutiveDashboard from "./components/pages/ExecutiveDashboard";
+import PerformanceDashboard from "./components/pages/PerformanceDashboard";
 
 // Create a theme
 const theme = createTheme({
@@ -141,6 +144,22 @@ function App() {
               />
             </Route>
 
+            {/* Dashboard Compliance */}
+            <Route
+              path="/compliance"
+              element={<Dashboard title="Regulatory Compliance Dashboard" />}
+            >
+              <Route index element={<ComplianceDashboard />} />
+              <Route
+                path="audit"
+                element={<ComplianceDashboard subview="audit" />}
+              />
+              <Route
+                path="reports"
+                element={<ComplianceDashboard subview="reports" />}
+              />
+            </Route>
+
             {/* Dashboard Utilisation des Comptes Privilégiés */}
             <Route
               path="/privileged-accounts"
@@ -254,6 +273,46 @@ function App() {
               <Route
                 path="satisfaction"
                 element={<AdoptionEfficiency subview="satisfaction" />}
+              />
+            </Route>
+
+            {/* Dashboard Executive */}
+            <Route
+              path="/executive"
+              element={<Dashboard title="Executive Dashboard" />}
+            >
+              <Route index element={<ExecutiveDashboard />} />
+              <Route
+                path="strategic"
+                element={<ExecutiveDashboard subview="1" />}
+              />
+              <Route
+                path="resources"
+                element={<ExecutiveDashboard subview="2" />}
+              />
+              <Route
+                path="planning"
+                element={<ExecutiveDashboard subview="3" />}
+              />
+            </Route>
+
+            {/* Dashboard Performance */}
+            <Route
+              path="/performance"
+              element={<Dashboard title="Performance Dashboard" />}
+            >
+              <Route index element={<PerformanceDashboard />} />
+              <Route
+                path="components"
+                element={<PerformanceDashboard subview="1" />}
+              />
+              <Route
+                path="analysis"
+                element={<PerformanceDashboard subview="2" />}
+              />
+              <Route
+                path="api"
+                element={<PerformanceDashboard subview="3" />}
               />
             </Route>
 
