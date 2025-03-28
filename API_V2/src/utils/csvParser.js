@@ -2,18 +2,19 @@ import { getCache, setCache } from "./cache";
 
 /**
  * Parse a CSV file and return the data
- * @param {File} file - The CSV file to parse
- * @returns {Promise} - A promise that resolves to the parsed data
+ * @param {String|File} csvData - The CSV data or file to parse
+ * @returns {Array} - The parsed data
  */
-export const parseCSV = async (file) => {
+export const parseCSV = (csvData) => {
   try {
-    // Vérifier le cache d'abord
-    const cachedData = getCache(file.name, CACHE_DURATION);
-    if (cachedData) {
-      return cachedData;
+    // Si csvData est déjà une chaîne, on l'utilise directement
+    // Sinon, on suppose que c'est le résultat de FileReader.readAsText
+    const text = typeof csvData === "string" ? csvData : null;
+
+    if (!text) {
+      throw new Error("Format de données invalide");
     }
 
-    const text = await file.text();
     const lines = text.split("\n");
 
     if (lines.length < 2) {
@@ -34,9 +35,6 @@ export const parseCSV = async (file) => {
           return obj;
         }, {});
       });
-
-    // Mettre en cache les données parsées
-    setCache(file.name, data);
 
     return data;
   } catch (error) {

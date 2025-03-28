@@ -1,0 +1,21 @@
+RiskID,RiskType,Severity,Status,DetectionDate,AccountName,Platform,Safe,Description,RemediationPlan,RemediationStatus,LastUpdated,AssignedTo
+RISK-001,PasswordPolicy,High,Open,2024-03-15,admin,Windows Server,Infrastructure,Password does not meet complexity requirements,Update password policy and force password change,In Progress,2024-03-28,john.doe
+RISK-002,PrivilegedAccess,Medium,Open,2024-03-16,root,Unix,Infrastructure,Excessive privileged access detected,Review and restrict permissions,In Progress,2024-03-28,jane.smith
+RISK-003,InactiveAccount,Low,Closed,2024-03-17,test_account,Windows Server,Development,Account inactive for over 90 days,Disable or remove account,Completed,2024-03-25,bob.johnson
+RISK-004,SharedAccount,High,Open,2024-03-18,service_account1,Windows Server,Applications,Multiple users accessing same account,Implement individual accounts and discontinue sharing,In Progress,2024-03-28,sarah.williams
+RISK-005,UnapprovedAccess,Medium,Open,2024-03-19,oracle_admin,Oracle,Databases,Unapproved access outside business hours,Implement time-based access restrictions,Pending,2024-03-28,mike.brown
+RISK-006,MissingRotation,High,Open,2024-03-20,network_admin,Cisco IOS,Network,Password not rotated in past 90 days,Enable automatic rotation,In Progress,2024-03-28,lisa.taylor
+RISK-007,UnmanagedAccount,Medium,Open,2024-03-21,guest,Linux,Applications,Privileged account not managed by CyberArk,Onboard account to CyberArk management,Pending,2024-03-28,david.miller
+RISK-008,AbnormalBehavior,Critical,Open,2024-03-22,ad_admin,Windows Server,Active Directory,Unusual access pattern detected,Investigate potential compromise,In Progress,2024-03-28,emma.wilson
+RISK-009,ComplianceViolation,High,Open,2024-03-23,sftp_user,Linux,Infrastructure,Account not compliant with regulatory requirements,Apply compliant settings,Pending,2024-03-28,peter.clark
+RISK-010,DirectAccess,Medium,Closed,2024-03-24,jenkins_service,Linux,Development,Direct access bypassing PAM solution,Restrict direct access and enforce PAM usage,Completed,2024-03-27,alex.moore
+RISK-011,WeakPassword,High,Open,2024-03-25,temp_admin,Windows Server,Development,Weak password detected,Change password and enforce strong policy,In Progress,2024-03-28,olivia.martin
+RISK-012,PrivilegeEscalation,Critical,Open,2024-03-26,local_admin,Windows 10,Endpoints,Potential privilege escalation detected,Investigate and apply security patches,In Progress,2024-03-28,james.white
+RISK-013,UnathorizedChange,Medium,Open,2024-03-27,gitlab_admin,Linux,Development,Unauthorized configuration change detected,Revert changes and investigate,Pending,2024-03-28,sophie.adams
+RISK-014,EmergencyAccess,Low,Open,2024-03-28,emergency_account,Windows Server,Break Glass,Emergency access account used without ticket,Verify legitimate usage and document,Pending,2024-03-28,ryan.lewis
+RISK-015,OverprivilegedAccount,Medium,Open,2024-03-15,firewall_admin,Palo Alto,Network,Account has more privileges than required,Review and apply least privilege,Pending,2024-03-28,natalie.baker
+RISK-016,HardcodedCredentials,High,Open,2024-03-16,azure_admin,Azure,Cloud,Hardcoded credentials found in scripts,Remove hardcoded credentials and use secure storage,In Progress,2024-03-28,tom.harris
+RISK-017,ExcessivePermissions,Medium,Open,2024-03-17,aws_admin,AWS,Cloud,User has excessive cloud permissions,Apply role-based access with minimal permissions,Pending,2024-03-28,grace.king
+RISK-018,PasswordSharing,High,Open,2024-03-18,splunk_admin,Linux,Monitoring,Password sharing between team members,Implement individual accounts with appropriate access,In Progress,2024-03-28,daniel.wright
+RISK-019,RecurringPattern,Low,Closed,2024-03-19,vmware_admin,VMware,Infrastructure,Recurring unusual access pattern detected,Implement scheduled access for maintenance,Completed,2024-03-26,hannah.cooper
+RISK-020,AuditFailure,Medium,Open,2024-03-20,sa,SQL Server,Databases,Failed to audit critical database access,Enable comprehensive auditing,Pending,2024-03-28,john.doe 

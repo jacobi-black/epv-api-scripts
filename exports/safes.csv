@@ -1,0 +1,9 @@
+SafeName,Category,Description,MemberCount,AccountCount
+Infrastructure,Security,Infrastructure accounts and services,15,5
+Applications,Security,Application accounts and services,20,15
+Development,Security,Development and CI/CD accounts,10,8
+Production,Security,Production environment accounts,12,10
+Monitoring,Security,Monitoring and logging accounts,8,7
+Database,Security,Database service accounts,10,8
+Web,Security,Web server accounts,8,4
+Middleware,Security,Middleware service accounts,12,8 

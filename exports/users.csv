@@ -1,0 +1,21 @@
+Username,FullName,Email,Role,Department,LastLogin,Status,CreationDate,AccessLevel
+admin.user,Admin User,admin.user@company.com,Administrator,IT,2024-03-25T08:12:30,Active,2023-01-15,Full
+john.doe,John Doe,john.doe@company.com,Operator,IT Security,2024-03-24T09:45:12,Active,2023-02-10,Standard
+jane.smith,Jane Smith,jane.smith@company.com,Auditor,Compliance,2024-03-26T14:22:45,Active,2023-03-05,ReadOnly
+bob.johnson,Bob Johnson,bob.johnson@company.com,Approver,Management,2024-03-20T11:34:56,Active,2023-01-20,Standard
+sarah.williams,Sarah Williams,sarah.williams@company.com,Analyst,Security Operations,2024-03-25T16:08:23,Active,2023-02-15,Standard
+mike.brown,Mike Brown,mike.brown@company.com,Developer,Development,2024-03-22T10:15:47,Active,2023-03-10,Limited
+lisa.taylor,Lisa Taylor,lisa.taylor@company.com,Architect,Infrastructure,2024-03-23T13:42:18,Active,2023-01-25,Standard
+david.miller,David Miller,david.miller@company.com,Manager,IT Operations,2024-03-26T09:21:34,Active,2023-02-20,Full
+emma.wilson,Emma Wilson,emma.wilson@company.com,Operator,Support,2024-03-24T15:37:52,Active,2023-03-15,Standard
+peter.clark,Peter Clark,peter.clark@company.com,Auditor,Compliance,2024-03-25T11:09:26,Active,2023-01-30,ReadOnly
+alex.moore,Alex Moore,alex.moore@company.com,Approver,Management,2024-03-21T14:53:41,Inactive,2023-02-25,Standard
+olivia.martin,Olivia Martin,olivia.martin@company.com,Analyst,Risk Management,2024-03-26T08:16:39,Active,2023-03-20,Standard
+james.white,James White,james.white@company.com,Developer,Development,2024-03-20T09:28:17,Active,2023-01-05,Limited
+sophie.adams,Sophie Adams,sophie.adams@company.com,Architect,Infrastructure,2024-03-25T13:47:29,Active,2023-02-28,Standard
+ryan.lewis,Ryan Lewis,ryan.lewis@company.com,Manager,Security Operations,2024-03-24T16:32:54,Active,2023-03-25,Full
+natalie.baker,Natalie Baker,natalie.baker@company.com,Operator,IT,2024-03-23T10:05:38,Active,2023-01-10,Standard
+tom.harris,Tom Harris,tom.harris@company.com,Auditor,Compliance,2024-03-26T15:18:43,Active,2023-02-05,ReadOnly
+grace.king,Grace King,grace.king@company.com,Approver,Management,2024-03-22T11:52:19,Active,2023-03-02,Standard
+daniel.wright,Daniel Wright,daniel.wright@company.com,Analyst,Security Operations,2024-03-25T09:36:47,Active,2023-01-17,Standard
+hannah.cooper,Hannah Cooper,hannah.cooper@company.com,Developer,Development,2024-03-24T14:41:33,Active,2023-02-12,Limited 

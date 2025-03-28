@@ -1,0 +1,21 @@
+PolicyID,PolicyName,PolicyType,Compliance,AccountsTotal,AccountsCompliant,AccountsNonCompliant,LastScan,NextScan,RequirementSource,Severity,Description
+POL-001,Password Complexity,Security,85,350,298,52,2024-03-27,2024-04-03,Internal,High,Ensure all passwords meet complexity requirements
+POL-002,Account Rotation,Security,92,350,322,28,2024-03-27,2024-04-03,PCI-DSS,Critical,All privileged accounts must be rotated every 90 days
+POL-003,Least Privilege,Security,78,350,273,77,2024-03-27,2024-04-03,Internal,Medium,Users must have minimum necessary privileges
+POL-004,Separation of Duties,Access Control,83,350,290,60,2024-03-27,2024-04-03,SOX,High,Critical functions must be divided among different individuals
+POL-005,Privileged Access Review,Access Control,95,350,332,18,2024-03-27,2024-04-03,Internal,Medium,Privileged access must be reviewed quarterly
+POL-006,Dormant Accounts,Security,89,350,311,39,2024-03-27,2024-04-03,Internal,Low,Inactive accounts must be disabled after 60 days
+POL-007,Shared Account Policy,Security,76,350,266,84,2024-03-27,2024-04-03,ISO27001,High,Shared accounts must be limited and documented
+POL-008,Emergency Access,Access Control,97,350,340,10,2024-03-27,2024-04-03,Internal,Critical,Emergency access must follow break-glass procedure
+POL-009,Access Recertification,Access Control,91,350,318,32,2024-03-27,2024-04-03,SOX,Medium,All access must be recertified every 90 days
+POL-010,Administrator Accounts,Privileged Access,82,350,287,63,2024-03-27,2024-04-03,Internal,High,Administrator accounts must follow security guidelines
+POL-011,Remote Access,Security,86,350,301,49,2024-03-27,2024-04-03,NIST,Medium,Remote access must use multi-factor authentication
+POL-012,Audit Logging,Auditing,94,350,329,21,2024-03-27,2024-04-03,PCI-DSS,High,All privileged actions must be logged and monitored
+POL-013,Password History,Security,88,350,308,42,2024-03-27,2024-04-03,Internal,Low,Must prevent reuse of previous 10 passwords
+POL-014,Account Lockout,Security,96,350,336,14,2024-03-27,2024-04-03,NIST,Medium,Accounts must lock after 5 failed attempts
+POL-015,Service Accounts,Privileged Access,81,350,283,67,2024-03-27,2024-04-03,Internal,Medium,Service accounts must be managed and restricted
+POL-016,Cloud Credentials,Security,79,350,276,74,2024-03-27,2024-04-03,Internal,High,Cloud credentials must be secured and rotated
+POL-017,Third-Party Access,Access Control,84,350,294,56,2024-03-27,2024-04-03,Internal,Medium,Third-party access must be limited and monitored
+POL-018,Database Access,Privileged Access,80,350,280,70,2024-03-27,2024-04-03,PCI-DSS,High,Database administrative access must be restricted
+POL-019,Network Device Access,Privileged Access,87,350,304,46,2024-03-27,2024-04-03,Internal,High,Network device access must be authenticated and encrypted
+POL-020,Temporary Access,Access Control,93,350,325,25,2024-03-27,2024-04-03,Internal,Low,Temporary access must expire automatically 

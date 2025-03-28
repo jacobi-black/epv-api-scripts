@@ -1,0 +1,31 @@
+PlatformID,PlatformName,PlatformType,Enabled,AccountsCount,ConnectionComponents,PasswordPolicy,CredentialType,Manufacturer,Version,EOL,Risk
+Windows_Domain,Windows Domain Account,Regular,True,125,PSM-RDP,Medium,Password,Microsoft,2024,False,Low
+Unix_Server,Unix SSH Account,Regular,True,98,PSM-SSH,Strong,Password,Various,2024,False,Low
+Oracle_Database,Oracle Database User,Regular,True,45,PSM-Oracle,Strong,Password,Oracle,19c,False,Medium
+SQL_Server,SQL Server Account,Regular,True,62,PSM-MSSQL,Medium,Password,Microsoft,2019,False,Medium
+AWS_Console,AWS Console User,Regular,True,28,PSM-WebSSO,Strong,Password+MFA,Amazon,2024,False,Medium
+Azure_AD,Azure AD Account,Regular,True,35,PSM-WebSSO,Strong,Password+MFA,Microsoft,2024,False,Medium
+GCP_Console,GCP Console User,Regular,True,18,PSM-WebSSO,Strong,Password+MFA,Google,2024,False,Medium
+Cisco_Network,Cisco Network Device,Regular,True,42,PSM-SSH,Medium,Password,Cisco,IOS XE,False,High
+Palo_Alto,Palo Alto Firewall,Regular,True,15,PSM-SSH,Strong,Password,Palo Alto,10.0,False,High
+VMware_vCenter,VMware vCenter Account,Regular,True,22,PSM-RDP,Medium,Password,VMware,7.0,False,Medium
+Active_Directory,Active Directory Service Account,Service,True,55,PSM-RDP,Strong,Password,Microsoft,2019,False,High
+Exchange_Server,Exchange Server Account,Service,True,18,PSM-RDP,Medium,Password,Microsoft,2019,False,Medium
+SharePoint_Admin,SharePoint Admin Account,Regular,True,12,PSM-RDP,Medium,Password,Microsoft,2019,False,Low
+Linux_Root,Linux Root Account,Privileged,True,75,PSM-SSH,Strong,Password,Various,2024,False,High
+Windows_Local_Admin,Windows Local Admin,Privileged,True,110,PSM-RDP,Medium,Password,Microsoft,2024,False,High
+Emergency_Account,Emergency Account,Emergency,True,5,PSM-SSH|PSM-RDP,Very Strong,Password,Various,2024,False,Critical
+Salesforce_Admin,Salesforce Admin Account,Regular,True,8,PSM-WebSSO,Strong,Password+MFA,Salesforce,2024,False,Medium
+SAP_Admin,SAP Admin Account,Regular,True,15,PSM-SAP,Strong,Password,SAP,S/4HANA,False,High
+F5_Device,F5 Network Device,Regular,True,10,PSM-SSH,Medium,Password,F5 Networks,15.1,False,High
+CheckPoint_Firewall,CheckPoint Firewall,Regular,True,14,PSM-SSH,Strong,Password,CheckPoint,R81,False,High
+Docker_Host,Docker Host Account,Regular,True,22,PSM-SSH,Medium,Password,Docker,2024,False,Medium
+Kubernetes_Admin,Kubernetes Admin Account,Privileged,True,18,PSM-SSH,Strong,Certificate,Kubernetes,1.24,False,High
+MongoDB_Admin,MongoDB Admin Account,Regular,True,8,PSM-SSH,Medium,Password,MongoDB,6.0,False,Medium
+PostgreSQL_Admin,PostgreSQL Admin Account,Regular,True,12,PSM-SSH,Medium,Password,PostgreSQL,15,False,Medium
+Jenkins_Admin,Jenkins Admin Account,Regular,True,6,PSM-RDP,Medium,Password,Jenkins,2.350,False,Medium
+GitLab_Admin,GitLab Admin Account,Regular,True,8,PSM-SSH,Strong,Password+MFA,GitLab,15.8,False,Medium
+Jira_Admin,Jira Admin Account,Regular,True,9,PSM-WebSSO,Medium,Password,Atlassian,9.4,False,Low
+Splunk_Admin,Splunk Admin Account,Regular,True,7,PSM-SSH,Strong,Password,Splunk,9.0,False,Medium
+ELK_Admin,ELK Admin Account,Regular,True,6,PSM-SSH,Medium,Password,Elastic,8.5,False,Medium
+Legacy_System,Legacy System Account,Regular,False,15,PSM-RDP,Weak,Password,Various,2010,True,High 

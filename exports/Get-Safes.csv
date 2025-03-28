@@ -1,0 +1,16 @@
+SafeName,Category,Description,MemberCount,AccountCount,Location,NumberOfDaysRetention,ManagingCPM,LastAccessed
+Infrastructure,Security,Infrastructure accounts and services,15,35,Primary,7,PasswordManager,2024-03-27T15:30:00
+Applications,Security,Application accounts and services,20,48,Primary,7,PasswordManager,2024-03-28T09:15:00
+Development,Security,Development and CI/CD accounts,10,29,Primary,7,PasswordManager,2024-03-27T11:45:00
+Production,Security,Production environment accounts,12,56,Primary,7,PasswordManager,2024-03-28T08:20:00
+Monitoring,Security,Monitoring and logging accounts,8,22,Primary,7,PasswordManager,2024-03-26T14:10:00
+Database,Security,Database service accounts,10,42,Primary,7,PasswordManager,2024-03-28T10:05:00
+Web,Security,Web server accounts,8,31,Primary,7,PasswordManager,2024-03-25T16:30:00
+Middleware,Security,Middleware service accounts,12,37,Primary,7,PasswordManager,2024-03-27T13:45:00
+Networking,Security,Network device accounts,9,28,Primary,7,PasswordManager,2024-03-28T08:50:00
+Cloud,Security,Cloud service provider accounts,14,45,Primary,7,PasswordManager,2024-03-28T09:30:00
+Disaster-Recovery,Security,DR accounts and services,7,24,DR,7,DR_PasswordManager,2024-03-25T10:15:00
+Testing,Security,Testing environment accounts,6,18,Primary,7,PasswordManager,2024-03-24T11:20:00
+Legacy,Security,Legacy system accounts,11,32,Primary,7,PasswordManager,2024-03-22T09:45:00
+Privileged,Security,Privileged user accounts,25,60,Primary,7,PasswordManager,2024-03-28T08:15:00
+API-Users,Security,API integration accounts,15,33,Primary,7,PasswordManager,2024-03-27T14:20:00 

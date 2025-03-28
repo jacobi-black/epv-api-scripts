@@ -27,3 +27,4 @@ Migration/Migration via EVD/Projects/*
 Migration/Migration via VEM/Convert-VEMFiles/Ignore
 *.bad.csv
 *.good.csv
+node_modules

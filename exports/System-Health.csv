@@ -1,0 +1,30 @@
+Component,Status,CPU,Memory,Disk,LastCheck,ResponseTime,Version,Connectivity,ReplicationStatus,UpTime,Location
+Vault,Healthy,45,60,55,2024-03-28T10:00:00,120,12.2.1,All Connected,Synchronized,35d 12h 45m,Primary
+Vault DR,Healthy,35,50,48,2024-03-28T10:00:00,135,12.2.1,All Connected,Synchronized,20d 8h 15m,DR
+CPM,Healthy,50,65,58,2024-03-28T10:00:00,85,12.2.0,All Connected,NA,15d 6h 30m,Primary
+CPM DR,Healthy,40,55,50,2024-03-28T10:00:00,90,12.2.0,All Connected,NA,10d 9h 45m,DR
+PVWA,Healthy,55,70,62,2024-03-28T10:00:00,95,12.2.2,All Connected,NA,25d 3h 20m,Primary
+PVWA DR,Healthy,45,60,54,2024-03-28T10:00:00,110,12.2.2,All Connected,NA,18d 5h 10m,DR
+PSM,Healthy,65,75,70,2024-03-28T10:00:00,150,12.2.0,All Connected,NA,22d 14h 35m,Primary
+PSM DR,Healthy,50,65,60,2024-03-28T10:00:00,160,12.2.0,All Connected,NA,12d 8h 55m,DR
+PSMP,Healthy,58,68,64,2024-03-28T10:00:00,75,12.2.1,All Connected,NA,30d 7h 15m,Primary
+PSMP DR,Healthy,48,58,56,2024-03-28T10:00:00,85,12.2.1,All Connected,NA,15d 12h 40m,DR
+PTA,Healthy,62,72,66,2024-03-28T10:00:00,130,12.2.0,All Connected,NA,28d 9h 25m,Primary
+PTA DR,Healthy,52,62,60,2024-03-28T10:00:00,140,12.2.0,All Connected,NA,14d 6h 50m,DR
+PVWA Load Balancer,Healthy,35,45,40,2024-03-28T10:00:00,65,NA,All Connected,NA,45d 10h 15m,Primary
+PSM Load Balancer,Healthy,38,48,42,2024-03-28T10:00:00,70,NA,All Connected,NA,45d 10h 15m,Primary
+Database,Healthy,70,80,75,2024-03-28T10:00:00,25,19c,All Connected,Synchronized,60d 8h 30m,Primary
+Database DR,Healthy,55,65,60,2024-03-28T10:00:00,35,19c,All Connected,Synchronized,45d 5h 25m,DR
+LDAP,Healthy,40,55,50,2024-03-28T10:00:00,45,2019,All Connected,Synchronized,75d 12h 10m,Primary
+LDAP DR,Healthy,35,50,45,2024-03-28T10:00:00,50,2019,All Connected,Synchronized,50d 9h 45m,DR
+RADIUS,Healthy,25,35,30,2024-03-28T10:00:00,30,NA,All Connected,NA,90d 6h 20m,Primary
+SAML,Healthy,30,40,35,2024-03-28T10:00:00,35,NA,All Connected,NA,85d 9h 30m,Primary
+DNS,Healthy,20,30,25,2024-03-28T10:00:00,15,NA,All Connected,NA,120d 8h 45m,Primary
+Network,Healthy,45,NA,NA,2024-03-28T10:00:00,10,NA,All Connected,NA,150d 0h 0m,Primary
+PSM-SSH,Healthy,60,70,65,2024-03-28T10:00:00,120,12.2.0,All Connected,NA,22d 14h 35m,Primary
+PSM-RDP,Healthy,62,72,68,2024-03-28T10:00:00,125,12.2.0,All Connected,NA,22d 14h 35m,Primary
+PSM-Oracle,Healthy,58,68,62,2024-03-28T10:00:00,135,12.2.0,All Connected,NA,22d 14h 35m,Primary
+PSM-MSSQL,Healthy,56,66,60,2024-03-28T10:00:00,130,12.2.0,All Connected,NA,22d 14h 35m,Primary
+PSM-WebSSO,Healthy,55,65,60,2024-03-28T10:00:00,95,12.2.0,All Connected,NA,22d 14h 35m,Primary
+PSMP-SSH,Healthy,58,68,64,2024-03-28T10:00:00,75,12.2.1,All Connected,NA,30d 7h 15m,Primary
+PSMP-RDP,Healthy,56,66,62,2024-03-28T10:00:00,80,12.2.1,All Connected,NA,30d 7h 15m,Primary 

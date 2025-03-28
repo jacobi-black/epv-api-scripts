@@ -1,0 +1,21 @@
+CertificateName,Subject,Issuer,NotBefore,NotAfter,SerialNumber,Status,Component,Type,KeySize,SignatureAlgorithm,DaysToExpiry
+pvwa_certificate,CN=pvwa.company.com,CN=Company Root CA,2023-05-15,2025-05-15,1A2B3C4D5E6F7G8H,Valid,PVWA,SSL,2048,SHA256withRSA,413
+cpm_certificate,CN=cpm.company.com,CN=Company Root CA,2023-06-10,2025-06-10,2B3C4D5E6F7G8H9I,Valid,CPM,SSL,2048,SHA256withRSA,439
+psm_certificate,CN=psm.company.com,CN=Company Root CA,2023-04-20,2025-04-20,3C4D5E6F7G8H9I0J,Valid,PSM,SSL,2048,SHA256withRSA,388
+psmp_certificate,CN=psmp.company.com,CN=Company Root CA,2023-03-05,2025-03-05,4D5E6F7G8H9I0J1K,Valid,PSMP,SSL,2048,SHA256withRSA,342
+dr_certificate,CN=dr.company.com,CN=Company Root CA,2023-07-15,2025-07-15,5E6F7G8H9I0J1K2L,Valid,DR,SSL,2048,SHA256withRSA,474
+pvwa_internal,CN=pvwa-internal.company.com,CN=Company Internal CA,2023-08-10,2024-08-10,6F7G8H9I0J1K2L3M,Valid,PVWA,SSL,2048,SHA256withRSA,135
+cpm_internal,CN=cpm-internal.company.com,CN=Company Internal CA,2023-09-05,2024-09-05,7G8H9I0J1K2L3M4N,Valid,CPM,SSL,2048,SHA256withRSA,161
+psm_internal,CN=psm-internal.company.com,CN=Company Internal CA,2023-08-22,2024-08-22,8H9I0J1K2L3M4N5O,Valid,PSM,SSL,2048,SHA256withRSA,147
+vault_certificate,CN=vault.company.com,CN=Company Root CA,2023-02-15,2025-02-15,9I0J1K2L3M4N5O6P,Valid,Vault,SSL,4096,SHA256withRSA,324
+ldap_certificate,CN=ldap.company.com,CN=Company Root CA,2023-03-20,2025-03-20,0J1K2L3M4N5O6P7Q,Valid,LDAP,SSL,2048,SHA256withRSA,357
+saml_certificate,CN=saml.company.com,CN=Company Root CA,2023-06-25,2025-06-25,1K2L3M4N5O6P7Q8R,Valid,SAML,SSL,2048,SHA256withRSA,454
+radius_certificate,CN=radius.company.com,CN=Company Root CA,2023-07-10,2025-07-10,2L3M4N5O6P7Q8R9S,Valid,RADIUS,SSL,2048,SHA256withRSA,469
+dr_internal,CN=dr-internal.company.com,CN=Company Internal CA,2023-09-15,2024-09-15,3M4N5O6P7Q8R9S0T,Valid,DR,SSL,2048,SHA256withRSA,171
+vault_internal,CN=vault-internal.company.com,CN=Company Internal CA,2023-10-01,2024-10-01,4N5O6P7Q8R9S0T1U,Valid,Vault,SSL,2048,SHA256withRSA,187
+legacy_certificate,CN=legacy.company.com,CN=Company Legacy CA,2022-01-10,2024-04-10,5O6P7Q8R9S0T1U2V,Warning,Legacy,SSL,1024,SHA1withRSA,13
+expired_certificate,CN=expired.company.com,CN=Company Root CA,2022-02-15,2024-02-15,6P7Q8R9S0T1U2V3W,Expired,Archive,SSL,2048,SHA256withRSA,-42
+new_certificate,CN=new.company.com,CN=Company Root CA,2024-02-10,2026-02-10,7Q8R9S0T1U2V3W4X,Valid,New Component,SSL,4096,SHA256withRSA,684
+wildcard_certificate,CN=*.company.com,CN=Company Root CA,2023-11-05,2025-11-05,8R9S0T1U2V3W4X5Y,Valid,Multiple,SSL,2048,SHA256withRSA,587
+client_certificate,CN=client.company.com,CN=Company Client CA,2023-12-15,2025-12-15,9S0T1U2V3W4X5Y6Z,Valid,Client,SSL,2048,SHA256withRSA,627
+signing_certificate,CN=signing.company.com,CN=Company Signing CA,2023-10-20,2026-10-20,0T1U2V3W4X5Y6Z7A,Valid,Signing,Code Signing,4096,SHA256withRSA,937 

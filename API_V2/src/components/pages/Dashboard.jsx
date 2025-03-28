@@ -108,7 +108,11 @@ const Dashboard = ({ title }) => {
   );
 
   // Vérifier si les données nécessaires sont disponibles
+  console.log(`Vérification des données pour ${dashboardType}`);
+  console.log(`systemHealthData:`, dataContext.systemHealthData.length > 0);
+  console.log(`safesData:`, dataContext.safesData.length > 0);
   const hasRequiredData = dataContext.hasDashboardData(dashboardType);
+  console.log(`hasRequiredData:`, hasRequiredData);
 
   const handleTabChange = (event, newValue) => {
     const targetPath = `/${dashboardType}${tabs[newValue].path}`;
