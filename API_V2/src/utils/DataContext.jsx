@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { retrieveData } from "./csvParser";
+import React, { createContext, useContext, useState } from "react";
 
 // Create the context
 const DataContext = createContext();
@@ -19,59 +18,20 @@ export const DataProvider = ({ children }) => {
   const [accountsData, setAccountsData] = useState([]);
   const [safesData, setSafesData] = useState([]);
   const [systemHealthData, setSystemHealthData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [lastUpdated, setLastUpdated] = useState(null);
 
-  // Load data from session storage on initial render
-  useEffect(() => {
-    try {
-      const accounts = retrieveData("accounts");
-      const safes = retrieveData("safes");
-      const systemHealth = retrieveData("systemHealth");
+  // State for statistics
+  const [accountsStats, setAccountsStats] = useState(null);
+  const [safesStats, setSafesStats] = useState(null);
+  const [systemHealthStats, setSystemHealthStats] = useState(null);
 
-      if (accounts) setAccountsData(accounts);
-      if (safes) setSafesData(safes);
-      if (systemHealth) setSystemHealthData(systemHealth);
-
-      // Check if we have any data
-      setLastUpdated(sessionStorage.getItem("lastUpdated") || null);
-      setLoading(false);
-    } catch (err) {
-      setError("Error loading data from storage");
-      setLoading(false);
-      console.error("Error loading data:", err);
-    }
-  }, []);
-
-  // Function to update a specific data type
-  const updateData = (type, data) => {
-    try {
-      if (type === "accounts") {
-        setAccountsData(data);
-      } else if (type === "safes") {
-        setSafesData(data);
-      } else if (type === "systemHealth") {
-        setSystemHealthData(data);
-      }
-
-      // Update last updated timestamp
-      const timestamp = new Date().toISOString();
-      setLastUpdated(timestamp);
-      sessionStorage.setItem("lastUpdated", timestamp);
-    } catch (err) {
-      setError(`Error updating ${type} data`);
-      console.error(`Error updating ${type} data:`, err);
-    }
-  };
-
-  // Function to clear all data
-  const clearData = () => {
+  // Function to reset all data
+  const resetAllData = () => {
     setAccountsData([]);
     setSafesData([]);
     setSystemHealthData([]);
-    setLastUpdated(null);
-    sessionStorage.clear();
+    setAccountsStats(null);
+    setSafesStats(null);
+    setSystemHealthStats(null);
   };
 
   // The context value
@@ -82,11 +42,13 @@ export const DataProvider = ({ children }) => {
     setSafesData,
     systemHealthData,
     setSystemHealthData,
-    loading,
-    error,
-    lastUpdated,
-    updateData,
-    clearData,
+    accountsStats,
+    setAccountsStats,
+    safesStats,
+    setSafesStats,
+    systemHealthStats,
+    setSystemHealthStats,
+    resetAllData,
   };
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

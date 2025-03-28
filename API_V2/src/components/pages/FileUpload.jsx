@@ -20,45 +20,32 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { parseCSV, getStats } from "../../utils/csvParser";
 import { useData } from "../../utils/DataContext";
+import { useNavigate } from "react-router-dom";
 
 const FileUpload = () => {
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [message, setMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [showErrors, setShowErrors] = useState(false);
-  const [processedFiles, setProcessedFiles] = useState([]);
-
-  // Vérifier que les fonctions de mise à jour sont disponibles
+  const navigate = useNavigate();
   const dataContext = useData();
-  if (!dataContext) {
-    console.error("DataContext is not available");
-    return (
-      <Box sx={{ p: 3 }}>
-        <Alert severity="error">
-          Erreur: Le contexte de données n'est pas disponible.
-        </Alert>
-      </Box>
-    );
-  }
 
-  const { setAccountsData, setSafesData, setSystemHealthData } = dataContext;
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showErrors, setShowErrors] = useState(false);
+  const [processedFiles, setProcessedFiles] = useState({
+    success: [],
+    errors: [],
+  });
 
   const handleFileSelect = (event) => {
     const files = Array.from(event.target.files);
-    const validFiles = files.filter((file) => file.name.endsWith(".csv"));
+    const validFiles = files.filter((file) => file.type === "text/csv");
 
-    if (validFiles.length > 0) {
-      setSelectedFiles((prev) => [...prev, ...validFiles]);
-      setMessage({
-        type: "success",
-        text: `${validFiles.length} fichier(s) CSV sélectionné(s) avec succès.`,
-      });
-    } else {
-      setMessage({
-        type: "error",
-        text: "Veuillez sélectionner des fichiers CSV valides.",
-      });
+    if (validFiles.length === 0) {
+      setError("Veuillez sélectionner uniquement des fichiers CSV valides.");
+      return;
     }
+
+    setSelectedFiles(validFiles);
+    setError(null);
   };
 
   const handleRemoveFile = (index) => {
@@ -66,156 +53,95 @@ const FileUpload = () => {
   };
 
   const handleUpload = async () => {
-    if (selectedFiles.length === 0) return;
+    if (selectedFiles.length === 0) {
+      setError("Veuillez sélectionner au moins un fichier.");
+      return;
+    }
 
     setLoading(true);
+    setError(null);
+    dataContext.resetAllData(); // Réinitialiser toutes les données avant l'import
+
     const results = {
-      accounts: 0,
-      safes: 0,
-      systemHealth: 0,
+      success: [],
       errors: [],
-      processedFiles: [],
     };
 
-    try {
-      for (const file of selectedFiles) {
-        try {
-          console.log(`Traitement du fichier: ${file.name}`);
-          const data = await parseCSV(file);
-          const stats = getStats(data);
-          console.log(`Données parsées:`, stats);
+    for (const file of selectedFiles) {
+      try {
+        const data = await parseCSV(file);
+        const stats = getStats(data);
 
-          if (file.name.includes("accounts")) {
-            console.log("Mise à jour des données de comptes");
-            setAccountsData(data);
-            results.accounts += stats.total;
-            results.processedFiles.push({
-              name: file.name,
-              type: "comptes",
-              count: stats.total,
-              status: "success",
-            });
-          } else if (file.name.includes("safes")) {
-            console.log("Mise à jour des données de coffres");
-            setSafesData(data);
-            results.safes += stats.total;
-            results.processedFiles.push({
-              name: file.name,
-              type: "coffres",
-              count: stats.total,
-              status: "success",
-            });
-          } else if (file.name.includes("system-health")) {
-            console.log("Mise à jour des données système");
-            setSystemHealthData(data);
-            results.systemHealth += stats.total;
-            results.processedFiles.push({
-              name: file.name,
-              type: "système",
-              count: stats.total,
-              status: "success",
-            });
-          } else {
-            const error = `Type de fichier non reconnu: ${file.name}`;
-            console.error(error);
-            results.errors.push(error);
-            results.processedFiles.push({
-              name: file.name,
-              type: "inconnu",
-              count: 0,
-              status: "error",
-              error,
-            });
-          }
-        } catch (error) {
-          console.error(`Erreur lors du traitement de ${file.name}:`, error);
-          const errorMessage = `Erreur lors du traitement de ${file.name}: ${error.message}`;
-          results.errors.push(errorMessage);
-          results.processedFiles.push({
-            name: file.name,
-            type: "erreur",
-            count: 0,
-            status: "error",
-            error: errorMessage,
-          });
+        if (file.name.toLowerCase().includes("accounts")) {
+          dataContext.setAccountsData(data);
+          dataContext.setAccountsStats(stats);
+          results.success.push(
+            `Comptes importés avec succès (${data.length} entrées)`
+          );
+        } else if (file.name.toLowerCase().includes("safes")) {
+          dataContext.setSafesData(data);
+          dataContext.setSafesStats(stats);
+          results.success.push(
+            `Safes importés avec succès (${data.length} entrées)`
+          );
+        } else if (file.name.toLowerCase().includes("system-health")) {
+          dataContext.setSystemHealthData(data);
+          dataContext.setSystemHealthStats(stats);
+          results.success.push(
+            `Données système importées avec succès (${data.length} entrées)`
+          );
+        } else {
+          results.errors.push(`Type de fichier non reconnu: ${file.name}`);
         }
+      } catch (err) {
+        console.error("Erreur lors du traitement du fichier:", err);
+        results.errors.push(
+          `Erreur lors du traitement de ${file.name}: ${err.message}`
+        );
       }
+    }
 
-      // Mettre à jour les fichiers traités dans l'état
-      setProcessedFiles(results.processedFiles);
+    setProcessedFiles(results);
+    setLoading(false);
 
-      // Afficher le résumé
-      const successMessage = [
-        results.accounts > 0 && `${results.accounts} comptes`,
-        results.safes > 0 && `${results.safes} coffres`,
-        results.systemHealth > 0 &&
-          `${results.systemHealth} composants système`,
-      ]
-        .filter(Boolean)
-        .join(", ");
-
-      if (successMessage) {
-        setMessage({
-          type: "success",
-          text: `Import réussi: ${successMessage}.`,
-        });
-      }
-
-      if (results.errors.length > 0) {
-        setMessage((prev) => ({
-          type: "warning",
-          text: `${prev.text} ${results.errors.length} erreur(s) rencontrée(s).`,
-        }));
-      }
-
-      // Vider la liste des fichiers après un import réussi
-      setSelectedFiles([]);
-    } catch (error) {
-      console.error("Erreur générale:", error);
-      setMessage({
-        type: "error",
-        text: `Erreur lors du traitement des fichiers: ${error.message}`,
-      });
-    } finally {
-      setLoading(false);
+    if (results.success.length > 0) {
+      navigate("/dashboard");
     }
   };
 
+  const getFileTypeCount = (type) => {
+    return selectedFiles.filter((file) => file.name.includes(type)).length;
+  };
+
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Upload Data
+    <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
+      <Typography variant="h4" gutterBottom>
+        Import de Données
       </Typography>
 
-      <Paper sx={{ p: 3, textAlign: "center" }}>
+      <Paper sx={{ p: 3, mb: 3 }}>
         <input
           accept=".csv"
           style={{ display: "none" }}
-          id="csv-file"
-          type="file"
+          id="file-upload"
           multiple
+          type="file"
           onChange={handleFileSelect}
         />
-        <label htmlFor="csv-file">
-          <Button
-            variant="contained"
-            component="span"
-            startIcon={<CloudUploadIcon />}
-            sx={{ mb: 2 }}
-            disabled={loading}
-          >
+        <label htmlFor="file-upload">
+          <Button variant="contained" component="span" disabled={loading}>
             Sélectionner des fichiers CSV
           </Button>
         </label>
 
         {selectedFiles.length > 0 && (
           <Box sx={{ mt: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Fichiers sélectionnés ({selectedFiles.length})
+            <Typography variant="subtitle1" gutterBottom>
+              Fichiers sélectionnés:
             </Typography>
             <List>
               {selectedFiles.map((file, index) => (
-                <ListItem key={index} divider>
+                <ListItem key={index}>
                   <ListItemText
                     primary={file.name}
                     secondary={`${(file.size / 1024).toFixed(2)} KB`}
@@ -223,7 +149,6 @@ const FileUpload = () => {
                   <ListItemSecondaryAction>
                     <IconButton
                       edge="end"
-                      aria-label="delete"
                       onClick={() => handleRemoveFile(index)}
                       disabled={loading}
                     >
@@ -234,30 +159,20 @@ const FileUpload = () => {
               ))}
             </List>
 
-            <Box
-              sx={{ mt: 2, display: "flex", gap: 1, justifyContent: "center" }}
-            >
+            <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
               <Chip
-                label={`${
-                  selectedFiles.filter((f) => f.name.includes("accounts"))
-                    .length
-                } comptes`}
+                label={`Comptes: ${getFileTypeCount("accounts")}`}
                 color="primary"
                 variant="outlined"
               />
               <Chip
-                label={`${
-                  selectedFiles.filter((f) => f.name.includes("safes")).length
-                } coffres`}
-                color="primary"
+                label={`Safes: ${getFileTypeCount("safes")}`}
+                color="secondary"
                 variant="outlined"
               />
               <Chip
-                label={`${
-                  selectedFiles.filter((f) => f.name.includes("system-health"))
-                    .length
-                } système`}
-                color="primary"
+                label={`Système: ${getFileTypeCount("system-health")}`}
+                color="info"
                 variant="outlined"
               />
             </Box>
@@ -266,52 +181,52 @@ const FileUpload = () => {
               variant="contained"
               color="primary"
               onClick={handleUpload}
+              disabled={loading || selectedFiles.length === 0}
               sx={{ mt: 2 }}
-              disabled={loading}
             >
               {loading ? (
-                <CircularProgress size={24} />
+                <>
+                  <CircularProgress size={24} sx={{ mr: 1 }} />
+                  Traitement en cours...
+                </>
               ) : (
-                "Traiter les fichiers"
+                "Importer les données"
               )}
             </Button>
           </Box>
         )}
-
-        {message && (
-          <Box sx={{ mt: 2 }}>
-            <Alert severity={message.type}>{message.text}</Alert>
-            {message.type === "warning" && (
-              <>
-                <Button
-                  startIcon={
-                    showErrors ? <ExpandLessIcon /> : <ExpandMoreIcon />
-                  }
-                  onClick={() => setShowErrors(!showErrors)}
-                  sx={{ mt: 1 }}
-                >
-                  {showErrors ? "Masquer les détails" : "Voir les détails"}
-                </Button>
-                <Collapse in={showErrors}>
-                  <List sx={{ mt: 1 }}>
-                    {processedFiles
-                      .filter((file) => file.status === "error")
-                      .map((file, index) => (
-                        <ListItem key={index}>
-                          <ListItemText
-                            primary={file.name}
-                            secondary={file.error}
-                            sx={{ color: "error.main" }}
-                          />
-                        </ListItem>
-                      ))}
-                  </List>
-                </Collapse>
-              </>
-            )}
-          </Box>
-        )}
       </Paper>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
+      {processedFiles.errors.length > 0 && (
+        <Paper sx={{ p: 2, mb: 2 }}>
+          <Button
+            startIcon={showErrors ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            onClick={() => setShowErrors(!showErrors)}
+            sx={{ mb: 1 }}
+          >
+            {showErrors ? "Masquer les erreurs" : "Afficher les erreurs"}
+          </Button>
+          <Collapse in={showErrors}>
+            <List>
+              {processedFiles.errors.map((error, index) => (
+                <ListItem key={index}>
+                  <ListItemText primary={error} />
+                </ListItem>
+              ))}
+            </List>
+          </Collapse>
+        </Paper>
+      )}
+
+      {processedFiles.success.length > 0 && (
+        <Alert severity="success">{processedFiles.success.join(", ")}</Alert>
+      )}
     </Box>
   );
 };

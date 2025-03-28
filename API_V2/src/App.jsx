@@ -1,7 +1,8 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { DataProvider } from "./utils/DataContext";
 
 // Layouts
 import MainLayout from "./components/layouts/MainLayout";
@@ -17,6 +18,7 @@ import FileUpload from "./components/pages/FileUpload";
 // Create a theme
 const theme = createTheme({
   palette: {
+    mode: "light",
     primary: {
       main: "#1976d2",
     },
@@ -68,16 +70,20 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="accounts" element={<AccountsAnalysis />} />
-          <Route path="safes" element={<SafesAnalysis />} />
-          <Route path="system-health" element={<SystemHealth />} />
-          <Route path="capacity-planning" element={<CapacityPlanning />} />
-          <Route path="upload" element={<FileUpload />} />
-        </Route>
-      </Routes>
+      <DataProvider>
+        <MainLayout>
+          <Routes>
+            <Route path="/" element={<Navigate to="/upload" replace />} />
+            <Route path="/upload" element={<FileUpload />} />
+            <Route path="/dashboard" element={<Dashboard />}>
+              <Route index element={<Navigate to="accounts" replace />} />
+              <Route path="accounts" element={<AccountsAnalysis />} />
+              <Route path="safes" element={<SafesAnalysis />} />
+              <Route path="system-health" element={<SystemHealth />} />
+            </Route>
+          </Routes>
+        </MainLayout>
+      </DataProvider>
     </ThemeProvider>
   );
 }

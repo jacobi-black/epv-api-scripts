@@ -76,23 +76,22 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const menuItems = [
-  { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
-  { text: "Accounts Analysis", icon: <AccountCircleIcon />, path: "/accounts" },
-  { text: "Safes Analysis", icon: <LockIcon />, path: "/safes" },
+  { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
+  {
+    text: "Accounts Analysis",
+    icon: <AccountCircleIcon />,
+    path: "/dashboard/accounts",
+  },
+  { text: "Safes Analysis", icon: <LockIcon />, path: "/dashboard/safes" },
   {
     text: "System Health",
     icon: <HealthAndSafetyIcon />,
-    path: "/system-health",
-  },
-  {
-    text: "Capacity Planning",
-    icon: <AssessmentIcon />,
-    path: "/capacity-planning",
+    path: "/dashboard/system-health",
   },
   { text: "Upload Data", icon: <UploadFileIcon />, path: "/upload" },
 ];
 
-function MainLayout() {
+function MainLayout({ children }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [open, setOpen] = useState(!isMobile);
@@ -182,7 +181,7 @@ function MainLayout() {
 
       <Main open={open}>
         <DrawerHeader />
-        <Outlet />
+        <Box sx={{ p: 3 }}>{children}</Box>
       </Main>
     </Box>
   );

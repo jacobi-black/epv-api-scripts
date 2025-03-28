@@ -9,8 +9,6 @@ import {
   Card,
   CardContent,
   Grid,
-  Alert,
-  CircularProgress,
   Button,
   Divider,
   TableContainer,
@@ -53,7 +51,7 @@ const COLORS = [
 
 // AccountsAnalysis Component
 const AccountsAnalysis = () => {
-  const { accountsData, loading, error } = useData();
+  const { accountsData, accountsStats } = useData();
   const [stats, setStats] = useState(null);
   const [filterPlatform, setFilterPlatform] = useState("All");
   const [filterSafe, setFilterSafe] = useState("All");
@@ -63,12 +61,36 @@ const AccountsAnalysis = () => {
 
   // Calculate stats when accountsData changes
   useEffect(() => {
-    if (accountsData) {
-      const calculatedStats = getAccountStats(accountsData);
-      setStats(calculatedStats);
+    if (accountsData && accountsData.length > 0) {
+      setStats(accountsStats || getAccountStats(accountsData));
       setFilteredAccounts(accountsData);
     }
-  }, [accountsData]);
+  }, [accountsData, accountsStats]);
+
+  // Si pas de données, afficher un message
+  if (!accountsData || accountsData.length === 0) {
+    return (
+      <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
+        <Paper sx={{ p: 3, textAlign: "center" }}>
+          <Typography variant="h5" gutterBottom>
+            Aucune donnée de comptes disponible
+          </Typography>
+          <Typography variant="body1" color="text.secondary" paragraph>
+            Pour visualiser les analyses des comptes, veuillez d'abord importer
+            vos données CSV.
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<UploadFileIcon />}
+            onClick={() => navigate("/upload")}
+          >
+            Importer des données
+          </Button>
+        </Paper>
+      </Box>
+    );
+  }
 
   // Apply filters when they change
   useEffect(() => {
@@ -109,56 +131,6 @@ const AccountsAnalysis = () => {
 
     setFilteredAccounts(filtered);
   }, [accountsData, filterPlatform, filterSafe, searchTerm]);
-
-  // If loading, show loading indicator
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "50vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  // If no account data, show message to upload
-  if (!accountsData) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Accounts Analysis
-        </Typography>
-        <Alert severity="info" sx={{ mb: 3 }}>
-          No account data available. Please upload account data first.
-        </Alert>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<UploadFileIcon />}
-          onClick={() => navigate("/upload")}
-        >
-          Upload Account Data
-        </Button>
-      </Box>
-    );
-  }
-
-  // If error, show error message
-  if (error) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Accounts Analysis
-        </Typography>
-        <Alert severity="error">{error}</Alert>
-      </Box>
-    );
-  }
 
   // Prepare data for platform distribution chart
   const platformData = stats?.byPlatform
@@ -205,9 +177,9 @@ const AccountsAnalysis = () => {
     : ["All"];
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Accounts Analysis
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        Analyse des Comptes
       </Typography>
 
       {/* Overview Cards */}
@@ -216,7 +188,7 @@ const AccountsAnalysis = () => {
           <Card sx={{ height: "100%" }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Total Accounts
+                Total des Comptes
               </Typography>
               <Typography variant="h3" color="primary">
                 {stats?.total || 0}
@@ -228,7 +200,7 @@ const AccountsAnalysis = () => {
           <Card sx={{ height: "100%" }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Managed Accounts
+                Comptes Gérés
               </Typography>
               <Typography variant="h3" color="success.main">
                 {stats?.managed || 0}
@@ -238,7 +210,7 @@ const AccountsAnalysis = () => {
                 {stats?.managed
                   ? Math.round((stats.managed / stats.total) * 100)
                   : 0}
-                % of total)
+                % du total)
               </Typography>
             </CardContent>
           </Card>
@@ -247,7 +219,7 @@ const AccountsAnalysis = () => {
           <Card sx={{ height: "100%" }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Unmanaged Accounts
+                Comptes Non Gérés
               </Typography>
               <Typography variant="h3" color="warning.main">
                 {stats?.unmanaged || 0}
@@ -257,7 +229,7 @@ const AccountsAnalysis = () => {
                 {stats?.unmanaged
                   ? Math.round((stats.unmanaged / stats.total) * 100)
                   : 0}
-                % of total)
+                % du total)
               </Typography>
             </CardContent>
           </Card>
@@ -266,7 +238,7 @@ const AccountsAnalysis = () => {
 
       {/* Charts Section */}
       <Typography variant="h5" gutterBottom>
-        Account Distribution
+        Distribution des Comptes
       </Typography>
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12}>
@@ -304,7 +276,7 @@ const AccountsAnalysis = () => {
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, height: 400 }}>
             <Typography variant="h6" align="center" gutterBottom>
-              Managed vs Unmanaged
+              Gérés vs Non Gérés
             </Typography>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -334,7 +306,7 @@ const AccountsAnalysis = () => {
         <Grid item xs={12}>
           <Paper sx={{ p: 3, height: 400 }}>
             <Typography variant="h6" gutterBottom>
-              Top 10 Safes by Account Count
+              Top 10 Safes par Nombre de Comptes
             </Typography>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={safeChartData}>
@@ -352,7 +324,7 @@ const AccountsAnalysis = () => {
 
       {/* Accounts Table Section */}
       <Typography variant="h5" gutterBottom>
-        Account List
+        Liste des Comptes
       </Typography>
 
       {/* Filters */}
@@ -360,11 +332,11 @@ const AccountsAnalysis = () => {
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} md={3}>
             <FormControl fullWidth>
-              <InputLabel id="platform-filter-label">Platform</InputLabel>
+              <InputLabel id="platform-filter-label">Plateforme</InputLabel>
               <Select
                 labelId="platform-filter-label"
                 value={filterPlatform}
-                label="Platform"
+                label="Plateforme"
                 onChange={(e) => setFilterPlatform(e.target.value)}
               >
                 {platforms.map((platform) => (
@@ -395,7 +367,7 @@ const AccountsAnalysis = () => {
           <Grid item xs={12} md={4}>
             <TextField
               fullWidth
-              label="Search by username or address"
+              label="Rechercher par nom d'utilisateur ou adresse"
               variant="outlined"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -411,7 +383,7 @@ const AccountsAnalysis = () => {
                 setSearchTerm("");
               }}
             >
-              Clear Filters
+              Effacer les Filtres
             </Button>
           </Grid>
         </Grid>
@@ -423,11 +395,11 @@ const AccountsAnalysis = () => {
           <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell>Username</TableCell>
-                <TableCell>Address</TableCell>
-                <TableCell>Platform</TableCell>
+                <TableCell>Nom d'utilisateur</TableCell>
+                <TableCell>Adresse</TableCell>
+                <TableCell>Plateforme</TableCell>
                 <TableCell>Safe</TableCell>
-                <TableCell>Management</TableCell>
+                <TableCell>Gestion</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -449,8 +421,8 @@ const AccountsAnalysis = () => {
                         account.AutomaticManagement === "True" ||
                         account.AutomaticManagement === "true" ||
                         account.AutomaticManagement === true
-                          ? "Managed"
-                          : "Unmanaged"
+                          ? "Géré"
+                          : "Non Géré"
                       }
                       color={
                         account.CPMStatus === "success" ||
@@ -473,8 +445,8 @@ const AccountsAnalysis = () => {
         {filteredAccounts.length > 100 && (
           <Box sx={{ p: 2, textAlign: "center" }}>
             <Typography variant="body2" color="text.secondary">
-              Showing 100 of {filteredAccounts.length} accounts. Apply filters
-              to narrow results.
+              Affichage de 100 comptes sur {filteredAccounts.length}. Utilisez
+              les filtres pour affiner les résultats.
             </Typography>
           </Box>
         )}
