@@ -1,32 +1,16 @@
-Username,Address,Platform,Safe,CPMStatus,AutomaticManagement
-admin,server1.example.com,Windows,Infrastructure,Success,True
-root,server2.example.com,Unix,Infrastructure,Success,True
-dbadmin,db1.example.com,Database,Applications,Success,True
-appuser,app1.example.com,Application,Applications,Success,True
-service,service1.example.com,Windows,Infrastructure,Success,True
-oracle,db2.example.com,Database,Applications,Success,True
-mysql,db3.example.com,Database,Applications,Success,True
-apache,web1.example.com,Unix,Applications,Success,True
-nginx,web2.example.com,Unix,Applications,Success,True
-jenkins,ci1.example.com,Windows,Development,Success,True
-gitlab,git1.example.com,Unix,Development,Success,True
-jira,jira1.example.com,Windows,Development,Success,True
-confluence,conf1.example.com,Windows,Development,Success,True
-tomcat,app2.example.com,Application,Applications,Success,True
-jboss,app3.example.com,Application,Applications,Success,True
-weblogic,app4.example.com,Application,Applications,Success,True
-websphere,app5.example.com,Application,Applications,Success,True
-postgres,db4.example.com,Database,Applications,Success,True
-mongodb,db5.example.com,Database,Applications,Success,True
-redis,db6.example.com,Database,Applications,Success,True
-rabbitmq,msg1.example.com,Application,Applications,Success,True
-kafka,msg2.example.com,Application,Applications,Success,True
-elasticsearch,search1.example.com,Application,Applications,Success,True
-logstash,log1.example.com,Application,Applications,Success,True
-kibana,monitor1.example.com,Application,Applications,Success,True
-grafana,monitor2.example.com,Application,Applications,Success,True
-prometheus,monitor3.example.com,Application,Applications,Success,True
-jenkins,ci2.example.com,Windows,Development,Success,True
-gitlab,git2.example.com,Unix,Development,Success,True
-jira,jira2.example.com,Windows,Development,Success,True
-confluence,conf2.example.com,Windows,Development,Success,True 
+Username,Address,SafeName,PlatformID,LastPasswordChange,CreationDate,Status,AccountType,PlatformName
+administrator,192.168.1.10,Windows Servers,WinServerLocal,2023-11-28,2023-01-15,Active,Privileged,Windows Server Local
+sa,db-server-1.internal,Database Admin,SQLServer,2023-11-25,2023-01-20,Active,Privileged,SQL Server
+root,10.10.10.15,Linux Privileged,UnixSSH,2023-11-20,2023-02-01,Active,Privileged,Unix SSH
+service_web,webapp-server-1,Service Accounts,WinDomain,2023-11-10,2023-02-15,Active,Service,Windows Domain
+system,ora-db-1.internal,Database Admin,OracleDB,2023-11-15,2023-03-01,Active,Privileged,Oracle Database
+awsadmin,aws.amazon.com,Cloud Admin,AWS,2023-11-12,2023-03-10,Active,Privileged,AWS Console
+admin,10.1.1.1,Network Devices,CiscoDevice,2023-11-08,2023-03-15,Active,Privileged,Cisco Device
+jenkins_svc,jenkins.internal,Service Accounts,WinDomain,2023-11-05,2023-04-01,Active,Service,Windows Domain
+azureadmin,azure.microsoft.com,Cloud Admin,Azure,2023-11-02,2023-04-15,Active,Privileged,Azure
+admin,mongodb.internal,Database Admin,MongoDB,2023-10-30,2023-05-01,Inactive,Privileged,MongoDB
+api_svc,api-gw.internal,API Keys,APIGateway,2023-10-28,2023-05-15,Active,Service,API Gateway
+testuser,test-db.internal,Test Accounts,PostgreSQL,2023-10-25,2023-06-01,Active,Shared,PostgreSQL
+vpnuser,vpn.internal,Shared Accounts,VPNDevice,2023-10-20,2023-06-15,Active,Shared,VPN Device
+legacy_svc,legacy-app.internal,Legacy Systems,WinDomain,2023-10-15,2023-07-01,Warning,Service,Windows Domain
+monitor_svc,monitor.internal,Monitoring,UnixSSH,2023-10-10,2023-07-15,Active,Service,Unix SSH 
