@@ -210,17 +210,71 @@ const FileUpload = () => {
                 );
                 dataStored = true;
                 break;
-              default:
-                // Pour les autres types, les stocker dans des données génériques
-                dataContext[
-                  `set${
-                    script.type.charAt(0).toUpperCase() + script.type.slice(1)
-                  }Data`
-                ] = data;
+              case "users":
+                dataContext.setUsersData(data);
                 results.success.push(
-                  `Données ${script.type} importées avec succès (${data.length} entrées)`
+                  `Données utilisateurs importées avec succès (${data.length} entrées)`
                 );
                 dataStored = true;
+                break;
+              case "sessions":
+                dataContext.setSessionsData(data);
+                results.success.push(
+                  `Données de sessions importées avec succès (${data.length} entrées)`
+                );
+                dataStored = true;
+                break;
+              case "certificates":
+                dataContext.setCertificatesData(data);
+                results.success.push(
+                  `Données de certificats importées avec succès (${data.length} entrées)`
+                );
+                dataStored = true;
+                break;
+              case "risk":
+                dataContext.setRiskData(data);
+                results.success.push(
+                  `Données de risque importées avec succès (${data.length} entrées)`
+                );
+                dataStored = true;
+                break;
+              case "pending":
+                dataContext.setPendingData(data);
+                results.success.push(
+                  `Données de comptes en attente importées avec succès (${data.length} entrées)`
+                );
+                dataStored = true;
+                break;
+              case "applications":
+                dataContext.setApplicationsData(data);
+                results.success.push(
+                  `Données d'applications importées avec succès (${data.length} entrées)`
+                );
+                dataStored = true;
+                break;
+              case "performance":
+                dataContext.setPerformanceData(data);
+                results.success.push(
+                  `Données de performance importées avec succès (${data.length} entrées)`
+                );
+                dataStored = true;
+                break;
+              case "access":
+                dataContext.setAccessData(data);
+                results.success.push(
+                  `Données d'accès importées avec succès (${data.length} entrées)`
+                );
+                dataStored = true;
+                break;
+              case "usage":
+                dataContext.setUsageData(data);
+                results.success.push(
+                  `Données d'utilisation importées avec succès (${data.length} entrées)`
+                );
+                dataStored = true;
+                break;
+              default:
+                results.errors.push(`Type de données inconnu: ${dataType}`);
             }
             break;
           }

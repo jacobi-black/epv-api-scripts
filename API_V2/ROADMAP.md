@@ -50,31 +50,43 @@
 
 ### 2.1 Dashboard Capacité
 
-- [ ] Vue d'ensemble avec KPIs principaux
-  - [ ] Utilisation CPU, mémoire et disque des serveurs CyberArk
-  - [ ] Nombre de sessions PSM simultanées et capacité maximale
-  - [ ] Taux d'utilisation du stockage des coffres
-  - [ ] Temps de réponse des composants
-- [ ] Sous-dashboards thématiques
-  - [ ] "Performance Système" - Métriques serveurs (basé sur System-Health.ps1)
-  - [ ] "Stockage & Coffres" - Utilisation des coffres (basé sur Get-Safes.ps1)
-  - [ ] "Capacité Sessions" - Analyse des sessions et capacité maximum
+- [x] Préparation des composants de base
+  - [x] Structure des composants avec placeholders
+  - [x] Vérification de la disponibilité des données requises
+  - [x] Feedback utilisateur pour données manquantes
+- [x] Vue d'ensemble avec KPIs principaux
+  - [x] Utilisation CPU, mémoire et disque des serveurs CyberArk
+  - [x] Nombre de sessions PSM simultanées et capacité maximale
+  - [x] Taux d'utilisation du stockage des coffres
+  - [x] Temps de réponse des composants
+- [x] Sous-dashboards thématiques
+  - [x] "Performance Système" - Métriques serveurs (basé sur System-Health.ps1)
+  - [x] "Stockage & Coffres" - Utilisation des coffres (basé sur Get-Safes.ps1)
+  - [x] "Capacité Sessions" - Analyse des sessions et capacité maximum
 
 ### 2.2 Dashboard Santé
 
-- [ ] Vue d'ensemble avec KPIs principaux
-  - [ ] Statut des services CyberArk (actifs/inactifs)
-  - [ ] État de la réplication des composants
-  - [ ] Connectivité entre composants
-  - [ ] Temps de réponse des services critiques
-  - [ ] État des certificats (validité)
-- [ ] Sous-dashboards thématiques
-  - [ ] "Statut Services" - États des services CyberArk
-  - [ ] "Connectivité" - Liens entre composants et état de la communication
-  - [ ] "Certificats" - Validité et expiration des certificats
+- [x] Préparation des composants de base
+  - [x] Structure des composants avec placeholders
+  - [x] Vérification de la disponibilité des données requises
+  - [x] Feedback utilisateur pour données manquantes
+- [x] Vue d'ensemble avec KPIs principaux
+  - [x] Statut des services CyberArk (actifs/inactifs)
+  - [x] État de la réplication des composants
+  - [x] Connectivité entre composants
+  - [x] Temps de réponse des services critiques
+  - [x] État des certificats (validité)
+- [x] Sous-dashboards thématiques
+  - [x] "Statut Services" - États des services CyberArk
+  - [x] "Connectivité" - Liens entre composants et état de la communication
+  - [x] "Certificats" - Validité et expiration des certificats
 
 ### 2.3 Dashboard Sécurité et Conformité
 
+- [x] Préparation des composants de base
+  - [x] Structure des composants avec placeholders
+  - [x] Vérification de la disponibilité des données requises
+  - [x] Feedback utilisateur pour données manquantes
 - [ ] Vue d'ensemble avec KPIs principaux
   - [ ] Taux de conformité des comptes privilégiés aux politiques
   - [ ] Nombre de violations de politiques détectées
@@ -86,10 +98,29 @@
   - [ ] "Violations" - Suivi des incidents de sécurité
   - [ ] "Risques" - Évaluation des risques et alertes
 
+### 2.4 Dashboard d'Inventaire et Analyse des Comptes
+
+- [x] Préparation des composants de base
+  - [x] Structure des composants avec placeholders
+  - [x] Vérification de la disponibilité des données requises
+  - [x] Feedback utilisateur pour données manquantes
+- [ ] Vue d'ensemble avec KPIs principaux
+  - [ ] Distribution des comptes par type
+  - [ ] Âge des comptes et conformité
+  - [ ] Comptes critiques et leur statut
+- [ ] Sous-dashboards thématiques
+  - [ ] "Inventaire des Comptes" - Vue détaillée du parc de comptes
+  - [ ] "Analyses & Tendances" - Distribution et évolution
+  - [ ] "Comptes à Risque" - Identification des comptes sensibles
+
 ## Phase 3 : Dashboards Secondaires (Priorité Moyenne)
 
 ### 3.1 Dashboard d'Utilisation des Comptes Privilégiés
 
+- [x] Préparation des composants de base
+  - [x] Structure des composants avec placeholders
+  - [x] Vérification de la disponibilité des données requises
+  - [x] Feedback utilisateur pour données manquantes
 - [ ] Vue d'ensemble avec KPIs principaux
   - [ ] Nombre d'accès aux comptes privilégiés par période
   - [ ] Top 10 des comptes les plus utilisés
@@ -103,6 +134,10 @@
 
 ### 3.2 Dashboard de Monitoring des Sessions
 
+- [x] Préparation des composants de base
+  - [x] Structure des composants avec placeholders
+  - [x] Vérification de la disponibilité des données requises
+  - [x] Feedback utilisateur pour données manquantes
 - [ ] Vue d'ensemble avec KPIs principaux
   - [ ] Nombre de sessions actives
   - [ ] Durée moyenne des sessions par type de compte
@@ -116,6 +151,10 @@
 
 ### 3.3 Dashboard de Rotation des Mots de Passe
 
+- [x] Préparation des composants de base
+  - [x] Structure des composants avec placeholders
+  - [x] Vérification de la disponibilité des données requises
+  - [x] Feedback utilisateur pour données manquantes
 - [ ] Vue d'ensemble avec KPIs principaux
   - [ ] Taux de réussite des rotations de mots de passe
   - [ ] Âge moyen des credentials par type de compte
@@ -131,6 +170,10 @@
 
 ### 4.1 Dashboard d'Utilisation des Applications et API
 
+- [x] Préparation des composants de base
+  - [x] Structure des composants avec placeholders
+  - [x] Vérification de la disponibilité des données requises
+  - [x] Feedback utilisateur pour données manquantes
 - [ ] Vue d'ensemble avec KPIs principaux
   - [ ] Nombre d'applications intégrées à CyberArk
   - [ ] Volume d'appels API par application
@@ -144,6 +187,10 @@
 
 ### 4.2 Dashboard de Réponse aux Incidents
 
+- [x] Préparation des composants de base
+  - [x] Structure des composants avec placeholders
+  - [x] Vérification de la disponibilité des données requises
+  - [x] Feedback utilisateur pour données manquantes
 - [ ] Vue d'ensemble avec KPIs principaux
   - [ ] Nombre d'incidents de sécurité par type
   - [ ] Temps moyen de résolution des incidents
@@ -157,6 +204,10 @@
 
 ### 4.3 Dashboard d'Efficacité et d'Adoption
 
+- [x] Préparation des composants de base
+  - [x] Structure des composants avec placeholders
+  - [x] Vérification de la disponibilité des données requises
+  - [x] Feedback utilisateur pour données manquantes
 - [ ] Vue d'ensemble avec KPIs principaux
   - [ ] Taux d'adoption par équipe/département
   - [ ] Évolution du nombre d'utilisateurs actifs
@@ -187,6 +238,10 @@
   - [x] Fil d'Ariane (breadcrumbs) pour la navigation
   - [x] Menu latéral rétractable
   - [x] Raccourcis clavier
+- [x] Messages de feedback utilisateur
+  - [x] Alertes pour données manquantes
+  - [x] Indicateurs de chargement
+  - [x] Notifications d'erreurs explicites
 - [ ] Aide et onboarding
   - [ ] Tooltips contextuels
   - [ ] Guides d'utilisation intégrés
