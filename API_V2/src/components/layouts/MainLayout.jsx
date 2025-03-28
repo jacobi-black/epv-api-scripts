@@ -160,26 +160,6 @@ const HomeButton = styled(Fab)(({ theme, isdarkmode }) => ({
   },
 }));
 
-// Bouton menu flottant
-const MenuButton = styled(Fab)(({ theme, isdarkmode }) => ({
-  position: "fixed",
-  bottom: theme.spacing(3),
-  right: theme.spacing(3),
-  zIndex: 100,
-  backgroundColor:
-    isdarkmode === "true"
-      ? alpha(colorPalette.primaryDark, 0.9)
-      : colorPalette.primary,
-  color: theme.palette.common.white,
-  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
-  "&:hover": {
-    backgroundColor:
-      isdarkmode === "true" ? colorPalette.primary : colorPalette.primaryDark,
-    transform: "translateY(-2px)",
-    boxShadow: "0 6px 24px rgba(0, 0, 0, 0.2)",
-  },
-}));
-
 // Bouton de changement de thème
 const ThemeToggleButton = styled(Fab)(({ theme, isdarkmode }) => ({
   position: "fixed",
@@ -410,18 +390,6 @@ function MainLayout({ children }) {
           <DarkModeRoundedIcon fontSize="small" />
         )}
       </ThemeToggleButton>
-
-      {/* Bouton menu flottant - caché sur la page d'accueil */}
-      {!isHomePage && (
-        <MenuButton
-          color="primary"
-          onClick={handleMenuOpen}
-          aria-label="menu principal"
-          isdarkmode={isDarkMode.toString()}
-        >
-          <AppsRoundedIcon />
-        </MenuButton>
-      )}
 
       {/* Menu complet */}
       <MenuContainer

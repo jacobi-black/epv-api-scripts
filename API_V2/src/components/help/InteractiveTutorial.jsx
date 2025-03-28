@@ -16,6 +16,10 @@ import {
   Fab,
   Slide,
   Backdrop,
+  MobileStepper,
+  useTheme,
+  Zoom,
+  useMediaQuery,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SchoolIcon from "@mui/icons-material/School";
@@ -23,6 +27,9 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import HelpIcon from "@mui/icons-material/Help";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 // Style pour l'élément surligné dans le tutoriel
 const HighlightOverlay = styled(Box)(({ theme }) => ({
@@ -134,6 +141,20 @@ const tutorialSteps = {
   ],
 };
 
+const TutorialDialog = styled(Dialog)(({ theme }) => ({
+  "& .MuiDialog-paper": {
+    borderRadius: theme.spacing(2),
+    maxWidth: 600,
+    width: "100%",
+    margin: theme.spacing(2),
+    backgroundColor: theme.palette.background.paper,
+    backgroundImage:
+      "linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0))",
+    boxShadow: theme.shadows[10],
+    overflow: "hidden",
+  },
+}));
+
 /**
  * Composant de tutoriel interactif qui guide l'utilisateur à travers l'application
  *
@@ -155,6 +176,8 @@ const InteractiveTutorial = ({
     width: 0,
     height: 0,
   });
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Récupère les étapes du tutoriel en fonction du type
   const steps = tutorialSteps[tutorialType] || tutorialSteps.home;
@@ -223,93 +246,96 @@ const InteractiveTutorial = ({
       )}
 
       {/* Boîte de dialogue du tutoriel */}
-      <Dialog
+      <TutorialDialog
         open={open}
-        maxWidth="sm"
-        fullWidth
         onClose={handleClose}
-        sx={{
-          "& .MuiDialog-paper": {
-            position: "fixed",
-            bottom: 32,
-            right: 32,
-            m: 0,
-            width: { xs: "calc(100% - 64px)", sm: 450 },
-            maxHeight: 500,
-            borderRadius: 2,
-            boxShadow: 8,
-          },
-          zIndex: 1301,
-        }}
+        TransitionComponent={Zoom}
+        TransitionProps={{ timeout: 400 }}
+        maxWidth="md"
+        fullWidth
       >
-        <DialogTitle sx={{ pb: 1 }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography variant="h6" component="div">
-              {steps[activeStep].title}
-            </Typography>
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="fermer"
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            p: 2,
+            bgcolor: "primary.main",
+            color: "primary.contrastText",
+          }}
+        >
+          <Typography variant="h6">{steps[activeStep].title}</Typography>
+          <IconButton color="inherit" onClick={handleClose} size="small">
+            <CloseIcon />
+          </IconButton>
+        </Box>
+
+        <DialogContent dividers>
+          {!isMobile && (
+            <Stepper
+              activeStep={activeStep}
+              alternativeLabel
+              sx={{ mb: 3, pt: 2 }}
             >
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-
-        <DialogContent sx={{ pt: 1 }}>
-          <Typography variant="body1" gutterBottom>
-            {steps[activeStep].content}
-          </Typography>
-
-          <Box sx={{ mt: 3, mb: 2 }}>
-            <Stepper activeStep={activeStep} alternativeLabel>
               {steps.map((step, index) => (
-                <Step key={index}>
-                  <StepLabel />
+                <Step key={step.title}>
+                  <StepLabel>{step.title}</StepLabel>
                 </Step>
               ))}
             </Stepper>
+          )}
+
+          <Box sx={{ minHeight: 200, p: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              {steps[activeStep].title}
+            </Typography>
+            <Typography variant="body1">{steps[activeStep].content}</Typography>
+          </Box>
+
+          <Box sx={{ mt: 4 }}>
+            <MobileStepper
+              variant="dots"
+              steps={steps.length}
+              position="static"
+              activeStep={activeStep}
+              nextButton={
+                activeStep === steps.length - 1 ? (
+                  <Button
+                    size="small"
+                    onClick={handleClose}
+                    endIcon={<CheckCircleOutlineIcon />}
+                    sx={{
+                      bgcolor: "success.main",
+                      color: "white",
+                      "&:hover": { bgcolor: "success.dark" },
+                    }}
+                  >
+                    Terminer
+                  </Button>
+                ) : (
+                  <Button
+                    size="small"
+                    onClick={handleNext}
+                    endIcon={<KeyboardArrowRight />}
+                  >
+                    Suivant
+                  </Button>
+                )
+              }
+              backButton={
+                <Button
+                  size="small"
+                  onClick={handleBack}
+                  disabled={activeStep === 0}
+                  startIcon={<KeyboardArrowLeft />}
+                >
+                  Précédent
+                </Button>
+              }
+            />
           </Box>
         </DialogContent>
-
-        <DialogActions sx={{ p: 2, pt: 1 }}>
-          <Button
-            onClick={handleBack}
-            disabled={activeStep === 0}
-            startIcon={<ArrowBackIcon />}
-          >
-            Précédent
-          </Button>
-          <Box sx={{ flex: 1 }} />
-          {activeStep === steps.length - 1 ? (
-            <Button
-              onClick={handleClose}
-              variant="contained"
-              color="success"
-              endIcon={<CheckCircleIcon />}
-            >
-              Terminer
-            </Button>
-          ) : (
-            <Button
-              onClick={handleNext}
-              variant="contained"
-              color="primary"
-              endIcon={<ArrowForwardIcon />}
-            >
-              Suivant
-            </Button>
-          )}
-        </DialogActions>
-      </Dialog>
+      </TutorialDialog>
     </>
   );
 };

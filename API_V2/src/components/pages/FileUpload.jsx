@@ -29,6 +29,9 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Grid,
+  TextField,
+  Divider,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -38,6 +41,9 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
+import CodeIcon from "@mui/icons-material/Code";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import CheckIcon from "@mui/icons-material/Check";
 import { parseCSV } from "../../utils/csvParser";
 import { useData } from "../../utils/DataContext";
 import Papa from "papaparse";
@@ -117,6 +123,309 @@ const dashboardConfig = {
     scripts: [
       { name: "Get-UsersActivityReport.ps1", type: "users", required: true },
       { name: "Accounts_Usage.ps1", type: "usage", required: true },
+    ],
+  },
+};
+
+// Configuration des commandes PowerShell pour chaque script
+const powershellCommands = {
+  "System-Health.ps1": {
+    command:
+      "./System-Health.ps1 -Server $Server -ExportPath $OutputFolder -OutputCSV System_Health.csv",
+    args: [
+      {
+        name: "Server",
+        defaultValue: "cyberark.local",
+        description: "Nom du serveur CyberArk",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Get-Safes.ps1": {
+    command:
+      "./Get-Safes.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Safes.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Test-HTML5Gateway.ps1": {
+    command:
+      "./Test-HTML5Gateway.ps1 -Gateway $Gateway -ExportPath $OutputFolder -OutputCSV Certificates.csv",
+    args: [
+      {
+        name: "Gateway",
+        defaultValue: "https://gateway.cyberark.local",
+        description: "URL du HTML5 Gateway",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Get-AccoutnsRiskReport.ps1": {
+    command:
+      "./Get-AccoutnsRiskReport.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Accounts_Risk.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Accounts_Inventory.ps1": {
+    command:
+      "./Accounts_Inventory.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Accounts_Inventory.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Safe_Inventory.ps1": {
+    command:
+      "./Safe_Inventory.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Safe_Inventory.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Get-Account.ps1": {
+    command:
+      "./Get-Account.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Accounts.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Get-UsersActivityReport.ps1": {
+    command:
+      "./Get-UsersActivityReport.ps1 -PVWA $PVWA -AuthType $AuthType -Days $Days -ExportPath $OutputFolder -OutputCSV Users_Activity.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "Days",
+        defaultValue: "30",
+        description: "Nombre de jours d'historique à extraire",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "PSM-SessionsManagement.ps1": {
+    command:
+      "./PSM-SessionsManagement.ps1 -PVWA $PVWA -AuthType $AuthType -Days $Days -ExportPath $OutputFolder -OutputCSV PSM_Sessions.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "Days",
+        defaultValue: "30",
+        description: "Nombre de jours d'historique à extraire",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Get-AdHocAccess.ps1": {
+    command:
+      "./Get-AdHocAccess.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV AdHoc_Access.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Get-PendingAccounts.ps1": {
+    command:
+      "./Get-PendingAccounts.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Pending_Accounts.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Get-Applications.ps1": {
+    command:
+      "./Get-Applications.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Applications.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Get-CCPPerformance.ps1": {
+    command:
+      "./Get-CCPPerformance.ps1 -CCP $CCP -Days $Days -ExportPath $OutputFolder -OutputCSV CCP_Performance.csv",
+    args: [
+      {
+        name: "CCP",
+        defaultValue: "https://ccp.cyberark.local",
+        description: "URL du CCP",
+      },
+      {
+        name: "Days",
+        defaultValue: "30",
+        description: "Nombre de jours d'historique à extraire",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Accounts_Usage.ps1": {
+    command:
+      "./Accounts_Usage.ps1 -PVWA $PVWA -AuthType $AuthType -Days $Days -ExportPath $OutputFolder -OutputCSV Accounts_Usage.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "Days",
+        defaultValue: "30",
+        description: "Nombre de jours d'historique à extraire",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
     ],
   },
 };
@@ -426,6 +735,312 @@ const ScriptUploadItem = ({
   );
 };
 
+// Modifier le composant PowerShellCommandHelper pour un meilleur design
+const PowerShellCommandHelper = ({
+  dashboardInfo,
+  processedFiles,
+  dataContext,
+}) => {
+  const [customArgs, setCustomArgs] = useState({});
+  const [copiedScript, setCopiedScript] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  // Fonction pour vérifier si un script a déjà été traité ou si les données sont présentes
+  const isScriptProcessed = (script) => {
+    // Vérifier si le script a été traité avec succès
+    const isUploaded = processedFiles.success.some(
+      (file) => file.type === script.type
+    );
+
+    // Vérifier directement dans le contexte si les données sont présentes
+    const hasData = (() => {
+      switch (script.type) {
+        case "system":
+          return (
+            dataContext.systemHealthData &&
+            dataContext.systemHealthData.length > 0
+          );
+        case "safes":
+          return dataContext.safesData && dataContext.safesData.length > 0;
+        case "accounts":
+          return (
+            dataContext.accountsData && dataContext.accountsData.length > 0
+          );
+        case "users":
+          return dataContext.usersData && dataContext.usersData.length > 0;
+        case "certificates":
+          return (
+            dataContext.certificatesData &&
+            dataContext.certificatesData.length > 0
+          );
+        case "risk":
+          return dataContext.riskData && dataContext.riskData.length > 0;
+        case "sessions":
+          return (
+            dataContext.sessionsData && dataContext.sessionsData.length > 0
+          );
+        case "pending":
+          return (
+            dataContext.pendingAccountsData &&
+            dataContext.pendingAccountsData.length > 0
+          );
+        case "applications":
+          return (
+            dataContext.applicationsData &&
+            dataContext.applicationsData.length > 0
+          );
+        case "performance":
+          return (
+            dataContext.performanceData &&
+            dataContext.performanceData.length > 0
+          );
+        case "usage":
+          return dataContext.usageData && dataContext.usageData.length > 0;
+        default:
+          return false;
+      }
+    })();
+
+    return isUploaded || hasData;
+  };
+
+  // Filtrer pour n'obtenir que les scripts qui n'ont pas encore été traités
+  const missingScripts = dashboardInfo.scripts.filter(
+    (script) => !isScriptProcessed(script)
+  );
+
+  // Mettre à jour la commande avec les arguments personnalisés
+  const getFullCommand = (scriptName) => {
+    const scriptConfig = powershellCommands[scriptName];
+    if (!scriptConfig) return "# Commande non disponible pour ce script";
+
+    let command = scriptConfig.command;
+
+    // Remplacer les arguments par les valeurs personnalisées
+    if (scriptConfig.args) {
+      scriptConfig.args.forEach((arg) => {
+        const argValue = customArgs[scriptName]?.[arg.name] || arg.defaultValue;
+        command = command.replace(`$${arg.name}`, argValue);
+      });
+    }
+
+    return command;
+  };
+
+  // Gérer les changements d'arguments personnalisés
+  const handleArgChange = (scriptName, argName, value) => {
+    setCustomArgs((prev) => ({
+      ...prev,
+      [scriptName]: {
+        ...(prev[scriptName] || {}),
+        [argName]: value,
+      },
+    }));
+  };
+
+  // Copier la commande dans le presse-papiers
+  const copyToClipboard = (scriptName) => {
+    const command = getFullCommand(scriptName);
+    navigator.clipboard.writeText(command).then(
+      () => {
+        // Indiquer visuellement que la commande a été copiée
+        setCopiedScript(scriptName);
+        setTimeout(() => setCopiedScript(null), 2000);
+      },
+      (err) => {
+        console.error("Erreur lors de la copie : ", err);
+      }
+    );
+  };
+
+  if (missingScripts.length === 0) return null;
+
+  return (
+    <Paper
+      elevation={3}
+      sx={{
+        p: 3,
+        mb: 4,
+        borderRadius: 2,
+        border: "1px solid rgba(0, 0, 0, 0.12)",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            color: "text.primary",
+            fontWeight: 500,
+          }}
+        >
+          <CodeIcon sx={{ mr: 2, fontSize: 28 }} />
+          Commandes PowerShell pour générer les fichiers manquants
+        </Typography>
+        <IconButton
+          onClick={() => setIsExpanded(!isExpanded)}
+          aria-expanded={isExpanded}
+          aria-label="toggle commands visibility"
+        >
+          {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </IconButton>
+      </Box>
+
+      <Collapse in={isExpanded}>
+        <Typography variant="body1" sx={{ mb: 3, color: "text.secondary" }}>
+          Exécutez ces commandes sur votre serveur CyberArk pour générer les
+          fichiers CSV nécessaires au dashboard.
+          {missingScripts.some((s) => s.required) && (
+            <Box
+              component="span"
+              sx={{ fontWeight: "bold", color: "warning.main" }}
+            >
+              {" "}
+              Attention : certains fichiers requis sont manquants.
+            </Box>
+          )}
+        </Typography>
+
+        <Box sx={{ mb: 3 }}>
+          {missingScripts.map((script) => (
+            <Paper
+              key={script.name}
+              elevation={1}
+              sx={{
+                p: 2,
+                mb: 2,
+                borderRadius: 1,
+                borderLeft: `6px solid ${
+                  script.required ? "#ff9800" : "#2196f3"
+                }`,
+                backgroundColor: "background.paper",
+                transition: "all 0.2s ease",
+                "&:hover": {
+                  boxShadow: 3,
+                  transform: "translateY(-2px)",
+                },
+              }}
+            >
+              <Box sx={{ mb: 1.5 }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontSize: "1.1rem",
+                    fontWeight: 500,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {script.name}
+                  {script.required ? (
+                    <Chip
+                      size="small"
+                      label="Requis"
+                      color="warning"
+                      sx={{ ml: 1, height: 24 }}
+                    />
+                  ) : (
+                    <Chip
+                      size="small"
+                      label="Optionnel"
+                      color="primary"
+                      sx={{ ml: 1, height: 24 }}
+                    />
+                  )}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Type: {script.type}
+                </Typography>
+              </Box>
+
+              <Divider sx={{ mb: 2 }} />
+
+              <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 500 }}>
+                Personnaliser les paramètres:
+              </Typography>
+
+              <Grid container spacing={2} sx={{ mb: 2 }}>
+                {powershellCommands[script.name]?.args.map((arg) => (
+                  <Grid item xs={12} sm={6} md={4} key={arg.name}>
+                    <TextField
+                      fullWidth
+                      label={arg.name}
+                      variant="outlined"
+                      size="small"
+                      defaultValue={arg.defaultValue}
+                      helperText={arg.description}
+                      onChange={(e) =>
+                        handleArgChange(script.name, arg.name, e.target.value)
+                      }
+                      InputProps={{
+                        startAdornment: (
+                          <Box
+                            component="span"
+                            sx={{ color: "text.secondary", mr: 0.5 }}
+                          >
+                            $
+                          </Box>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+
+              <Box
+                sx={{
+                  p: 2,
+                  borderRadius: 1,
+                  backgroundColor: "#f5f5f5",
+                  position: "relative",
+                  border: "1px solid #e0e0e0",
+                  fontFamily: "monospace",
+                }}
+              >
+                <pre
+                  style={{ margin: 0, overflowX: "auto", fontSize: "0.9rem" }}
+                >
+                  {getFullCommand(script.name)}
+                </pre>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color={copiedScript === script.name ? "success" : "primary"}
+                  onClick={() => copyToClipboard(script.name)}
+                  endIcon={
+                    copiedScript === script.name ? (
+                      <CheckIcon />
+                    ) : (
+                      <ContentCopyIcon />
+                    )
+                  }
+                  sx={{
+                    position: "absolute",
+                    right: 10,
+                    top: 10,
+                    textTransform: "none",
+                  }}
+                >
+                  {copiedScript === script.name ? "Copié!" : "Copier"}
+                </Button>
+              </Box>
+            </Paper>
+          ))}
+        </Box>
+      </Collapse>
+    </Paper>
+  );
+};
+
+// Modifier le composant FileUpload pour supprimer les contrôles d'import manuel
 const FileUpload = () => {
   const { dashboardType } = useParams();
   const navigate = useNavigate();
@@ -439,13 +1054,8 @@ const FileUpload = () => {
     success: [],
     errors: [],
   });
-  const [activeStep, setActiveStep] = useState(0);
-  const [fileName, setFileName] = useState("");
-  const [fileData, setFileData] = useState(null);
-  const [selectedDataType, setSelectedDataType] = useState("");
   const [uploadStatus, setUploadStatus] = useState(null);
   const [isLoadingDemo, setIsLoadingDemo] = useState(false);
-  const fileInputRef = useRef(null);
   const [uploadedFilesCount, setUploadedFilesCount] = useState(0);
 
   // Récupérer la configuration du dashboard sélectionné
@@ -455,535 +1065,182 @@ const FileUpload = () => {
     scripts: [],
   };
 
+  // Fonction pour vérifier si les données requises sont disponibles dans le contexte
+  const hasRequiredData = (scriptType) => {
+    switch (scriptType) {
+      case "system":
+        return (
+          dataContext.systemHealthData &&
+          dataContext.systemHealthData.length > 0
+        );
+      case "safes":
+        return dataContext.safesData && dataContext.safesData.length > 0;
+      case "accounts":
+        return dataContext.accountsData && dataContext.accountsData.length > 0;
+      case "users":
+        return dataContext.usersData && dataContext.usersData.length > 0;
+      case "certificates":
+        return (
+          dataContext.certificatesData &&
+          dataContext.certificatesData.length > 0
+        );
+      case "risk":
+        return dataContext.riskData && dataContext.riskData.length > 0;
+      case "sessions":
+        return dataContext.sessionsData && dataContext.sessionsData.length > 0;
+      case "pending":
+        return (
+          dataContext.pendingAccountsData &&
+          dataContext.pendingAccountsData.length > 0
+        );
+      case "applications":
+        return (
+          dataContext.applicationsData &&
+          dataContext.applicationsData.length > 0
+        );
+      case "performance":
+        return (
+          dataContext.performanceData && dataContext.performanceData.length > 0
+        );
+      case "usage":
+        return dataContext.usageData && dataContext.usageData.length > 0;
+      case "access":
+        return dataContext.accessData && dataContext.accessData.length > 0;
+      default:
+        return false;
+    }
+  };
+
   useEffect(() => {
     // Réinitialiser l'état lors du changement de type de dashboard
     setSelectedFiles([]);
     setError(null);
     setProcessedFiles({ success: [], errors: [] });
-    setActiveStep(0);
-    setFileName("");
-    setFileData(null);
-    setSelectedDataType("");
     setUploadStatus(null);
     setIsLoadingDemo(false);
   }, [dashboardType]);
 
-  const handleFileSelect = (event) => {
-    const files = Array.from(event.target.files);
-    const validFiles = files.filter(
-      (file) => file.type === "text/csv" || file.name.endsWith(".csv")
-    );
-
-    if (validFiles.length === 0) {
-      setError("Veuillez sélectionner uniquement des fichiers CSV valides.");
-      return;
-    }
-
-    setSelectedFiles((prev) => [...prev, ...validFiles]);
-    setError(null);
-  };
-
-  const handleRemoveFile = (index) => {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleUpload = async () => {
-    if (selectedFiles.length === 0) {
-      setError("Veuillez sélectionner au moins un fichier.");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    if (dataContext.resetAllData) {
-      dataContext.resetAllData();
-    } else {
-      console.warn("resetAllData n'est pas disponible dans le contexte");
-      dataContext.clearAllData();
-    }
-
-    const results = {
-      success: [],
-      errors: [],
-    };
-
-    for (const file of selectedFiles) {
-      try {
-        const data = await parseCSV(file);
-
-        // Déterminer le type de données en fonction du nom du fichier
-        let dataType = "unknown";
-        let dataStored = false;
-
-        // Vérifier par correspondance avec les scripts requis
-        for (const script of dashboardInfo.scripts) {
-          if (
-            file.name.toLowerCase().includes(script.name.toLowerCase()) ||
-            file.name.toLowerCase().includes(script.type.toLowerCase())
-          ) {
-            dataType = script.type;
-
-            // Stocker selon le type
-            switch (dataType) {
-              case "accounts":
-                dataContext.setAccountsData(data);
-                results.success.push(
-                  `Comptes importés avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              case "safes":
-                dataContext.setSafesData(data);
-                results.success.push(
-                  `Coffres importés avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              case "system":
-                dataContext.setSystemHealthData(data);
-                results.success.push(
-                  `Données système importées avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              case "users":
-                dataContext.setUsersData(data);
-                results.success.push(
-                  `Données utilisateurs importées avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              case "sessions":
-                dataContext.setSessionsData(data);
-                results.success.push(
-                  `Données de sessions importées avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              case "certificates":
-                dataContext.setCertificatesData(data);
-                results.success.push(
-                  `Données de certificats importées avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              case "risk":
-                dataContext.setRiskData(data);
-                results.success.push(
-                  `Données de risque importées avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              case "pending":
-                dataContext.setPendingData(data);
-                results.success.push(
-                  `Données de comptes en attente importées avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              case "applications":
-                dataContext.setApplicationsData(data);
-                results.success.push(
-                  `Données d'applications importées avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              case "performance":
-                dataContext.setPerformanceData(data);
-                results.success.push(
-                  `Données de performance importées avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              case "access":
-                dataContext.setAccessData(data);
-                results.success.push(
-                  `Données d'accès importées avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              case "usage":
-                dataContext.setUsageData(data);
-                results.success.push(
-                  `Données d'utilisation importées avec succès (${data.length} entrées)`
-                );
-                dataStored = true;
-                break;
-              default:
-                results.errors.push(`Type de données inconnu: ${dataType}`);
-            }
-            break;
-          }
-        }
-
-        // Si le type n'a pas été identifié par les scripts requis, essayer des matchs génériques
-        if (!dataStored) {
-          if (file.name.toLowerCase().includes("account")) {
-            dataContext.setAccountsData(data);
-            results.success.push(
-              `Comptes importés avec succès (${data.length} entrées)`
-            );
-          } else if (file.name.toLowerCase().includes("safe")) {
-            dataContext.setSafesData(data);
-            results.success.push(
-              `Coffres importés avec succès (${data.length} entrées)`
-            );
-          } else if (
-            file.name.toLowerCase().includes("system") ||
-            file.name.toLowerCase().includes("health")
-          ) {
-            dataContext.setSystemHealthData(data);
-            results.success.push(
-              `Données système importées avec succès (${data.length} entrées)`
-            );
-          } else {
-            results.errors.push(`Type de fichier non reconnu: ${file.name}`);
-          }
-        }
-      } catch (err) {
-        console.error("Erreur lors du traitement du fichier:", err);
-        results.errors.push(
-          `Erreur lors du traitement de ${file.name}: ${err.message}`
-        );
-      }
-    }
-
-    setProcessedFiles(results);
-    setLoading(false);
-
-    if (results.success.length > 0) {
-      setActiveStep(2); // Passer à l'étape de confirmation
-    }
-  };
-
-  const navigateToDashboard = () => {
-    console.log("Navigation vers le dashboard:", dashboardType);
-
-    console.log("État des données avant navigation:");
-    console.log("safesData:", dataContext.safesData?.length || 0, "éléments");
-    console.log(
-      "systemHealthData:",
-      dataContext.systemHealthData?.length || 0,
-      "éléments"
-    );
-    console.log(
-      "hasDashboardData:",
-      dataContext.hasDashboardData(dashboardType)
-    );
-
-    navigate(`/${dashboardType}`);
-  };
-
-  const navigateBack = () => {
-    navigate("/");
-  };
-
-  const getFileTypeCount = (type) => {
-    return selectedFiles.filter((file) =>
-      file.name.toLowerCase().includes(type.toLowerCase())
-    ).length;
-  };
-
-  const isRequiredScriptMissing = () => {
-    const requiredScripts = dashboardInfo.scripts.filter(
-      (script) => script.required
-    );
-
-    return requiredScripts.some((script) => {
-      return !selectedFiles.some(
-        (file) =>
-          file.name.toLowerCase().includes(script.name.toLowerCase()) ||
-          file.name.toLowerCase().includes(script.type.toLowerCase())
-      );
-    });
-  };
-
-  const getStepContent = (step) => {
-    switch (step) {
-      case 0:
-        return (
-          <>
-            <Typography variant="h6" gutterBottom>
-              Scripts requis pour ce dashboard
-            </Typography>
-            <Box sx={{ my: 2 }}>
-              {dashboardInfo.scripts.map((script, index) => (
-                <Card
-                  key={index}
-                  sx={{
-                    mb: 2,
-                    borderLeft: `4px solid ${
-                      script.required ? dashboardInfo.color : "#aaa"
-                    }`,
-                  }}
-                >
-                  <CardContent>
-                    <Typography variant="subtitle1" gutterBottom>
-                      {script.name}
-                      {script.required && (
-                        <Chip
-                          label="Requis"
-                          size="small"
-                          color="primary"
-                          sx={{ ml: 1, fontSize: "0.7rem" }}
-                        />
-                      )}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Type de données: {script.type}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              ))}
-            </Box>
-            <Button
-              variant="contained"
-              onClick={() => setActiveStep(1)}
-              sx={{ mt: 2 }}
-            >
-              Continuer
-            </Button>
-          </>
-        );
-      case 1:
-        return (
-          <>
-            <Typography variant="subtitle1" gutterBottom>
-              Sélectionnez les fichiers générés par les scripts requis
-            </Typography>
-            <input
-              accept=".csv"
-              style={{ display: "none" }}
-              id="file-upload"
-              multiple
-              type="file"
-              onChange={handleFileSelect}
-            />
-            <label htmlFor="file-upload">
-              <Button
-                variant="contained"
-                component="span"
-                disabled={loading}
-                startIcon={<CloudUploadIcon />}
-              >
-                Sélectionner des fichiers CSV
-              </Button>
-            </label>
-
-            {selectedFiles.length > 0 && (
-              <Box sx={{ mt: 3 }}>
-                <Typography variant="subtitle1" gutterBottom>
-                  Fichiers sélectionnés:
-                </Typography>
-                <List>
-                  {selectedFiles.map((file, index) => (
-                    <ListItem key={index}>
-                      <ListItemText
-                        primary={file.name}
-                        secondary={`${(file.size / 1024).toFixed(2)} KB`}
-                      />
-                      <ListItemSecondaryAction>
-                        <IconButton
-                          edge="end"
-                          onClick={() => handleRemoveFile(index)}
-                          disabled={loading}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  ))}
-                </List>
-
-                {isRequiredScriptMissing() && (
-                  <Alert severity="warning" sx={{ mt: 2, mb: 2 }}>
-                    Attention: Certains scripts requis semblent manquants.
-                    Vérifiez que vous avez bien sélectionné tous les fichiers
-                    nécessaires.
-                  </Alert>
-                )}
-
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleUpload}
-                  disabled={loading || selectedFiles.length === 0}
-                  sx={{ mt: 2 }}
-                >
-                  {loading ? (
-                    <>
-                      <CircularProgress size={24} sx={{ mr: 1 }} />
-                      Traitement en cours...
-                    </>
-                  ) : (
-                    "Traiter les fichiers"
-                  )}
-                </Button>
-              </Box>
-            )}
-          </>
-        );
-      case 2:
-        return (
-          <>
-            <Typography variant="h6" gutterBottom>
-              Importation terminée
-            </Typography>
-
-            {processedFiles.success.length > 0 && (
-              <Alert severity="success" sx={{ mb: 2 }}>
-                {processedFiles.success.join(", ")}
-              </Alert>
-            )}
-
-            {processedFiles.errors.length > 0 && (
-              <Paper sx={{ p: 2, mb: 2 }}>
-                <Button
-                  startIcon={
-                    showErrors ? <ExpandLessIcon /> : <ExpandMoreIcon />
-                  }
-                  onClick={() => setShowErrors(!showErrors)}
-                  sx={{ mb: 1 }}
-                >
-                  {showErrors ? "Masquer les erreurs" : "Afficher les erreurs"}
-                </Button>
-                <Collapse in={showErrors}>
-                  <List>
-                    {processedFiles.errors.map((error, index) => (
-                      <ListItem key={index}>
-                        <ListItemText primary={error} />
-                      </ListItem>
-                    ))}
-                  </List>
-                </Collapse>
-              </Paper>
-            )}
-
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={navigateToDashboard}
-              sx={{ mt: 2 }}
-            >
-              Accéder au dashboard
-            </Button>
-          </>
-        );
-      default:
-        return "Unknown step";
-    }
-  };
-
-  // Appelé quand un fichier est importé avec succès
+  // Fonction pour gérer le succès de l'upload d'un fichier
   const handleUploadSuccess = (scriptType) => {
-    // Ajouter cette donnée au processedFiles si elle n'existe pas déjà
-    setProcessedFiles((prev) => {
-      // Vérifier si ce type de script existe déjà dans les succès
-      if (!prev.success.some((file) => file.type === scriptType)) {
-        return {
-          ...prev,
-          success: [...prev.success, { type: scriptType }],
-        };
-      }
-      return prev;
-    });
-
-    // Incrémenter le compteur
     setUploadedFilesCount((prev) => prev + 1);
+    setProcessedFiles((prev) => ({
+      ...prev,
+      success: [
+        ...prev.success,
+        { type: scriptType, timestamp: new Date().toISOString() },
+      ],
+    }));
   };
 
   return (
-    <Paper sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
-      <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-        <IconButton onClick={() => navigate(-1)} sx={{ mr: 2 }}>
-          <ArrowBackIcon />
-        </IconButton>
-        <Typography variant="h5">
-          Importation des données pour {dashboardInfo.title}
-        </Typography>
-      </Box>
-
-      <Typography variant="body1" paragraph>
-        Pour alimenter ce dashboard, vous devez importer les fichiers suivants.
-        Cliquez sur le bouton "Importer" pour sélectionner le fichier
-        correspondant à chaque script, ou utilisez "Démo" pour charger des
-        données de démonstration.
-      </Typography>
-
-      <Box sx={{ mb: 3 }}>
-        {dashboardInfo.scripts.map((script, index) => (
-          <ScriptUploadItem
-            key={index}
-            script={script}
-            onFileUpload={dataContext.importCSV}
-            loadDemoData={dataContext.loadDemoData}
-            processedFiles={processedFiles}
-            onUploadSuccess={handleUploadSuccess}
-          />
-        ))}
-      </Box>
-
+    <Box sx={{ p: 3, maxWidth: 1200, mx: "auto" }}>
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
-          pt: 2,
-          borderTop: "1px solid #ddd",
+          alignItems: "center",
+          mb: 4,
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          pb: 2,
         }}
       >
-        <Typography variant="body2" color="text.secondary">
-          {processedFiles.success.length} fichier(s) importé(s) sur{" "}
-          {dashboardInfo.scripts.length}
-        </Typography>
-
         <Button
-          variant="contained"
-          color="primary"
-          disabled={
-            processedFiles.success.length === 0 ||
-            dashboardInfo.scripts
-              .filter((s) => s.required)
-              .some(
-                (requiredScript) =>
-                  !processedFiles.success.some(
-                    (f) => f.type === requiredScript.type
-                  )
-              )
-          }
-          onClick={navigateToDashboard}
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate("/")}
+          sx={{ mr: 2 }}
         >
-          Voir le dashboard
+          Accueil
         </Button>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{ flexGrow: 1, fontWeight: 500 }}
+        >
+          Import de données pour {dashboardInfo.title}
+        </Typography>
       </Box>
 
-      {processedFiles.errors.length > 0 && (
-        <Box sx={{ mt: 2 }}>
-          <Typography
-            variant="subtitle1"
-            color="error"
-            sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
-            onClick={() => setShowErrors(!showErrors)}
-          >
-            {showErrors ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            {processedFiles.errors.length} erreur(s) d'importation
-          </Typography>
-          <Collapse in={showErrors}>
-            <List>
-              {processedFiles.errors.map((error, index) => (
-                <ListItem key={index}>
-                  <ListItemText
-                    primary={error.file}
-                    secondary={error.message}
-                    primaryTypographyProps={{ color: "error" }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
-        </Box>
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
       )}
-    </Paper>
+
+      {uploadStatus && (
+        <Alert
+          severity={uploadStatus.success ? "success" : "error"}
+          sx={{ mb: 3 }}
+        >
+          {uploadStatus.message}
+        </Alert>
+      )}
+
+      <Paper
+        elevation={2}
+        sx={{
+          p: 3,
+          mb: 4,
+          borderRadius: 2,
+        }}
+      >
+        <Typography
+          variant="h5"
+          gutterBottom
+          sx={{ fontWeight: 500, display: "flex", alignItems: "center" }}
+        >
+          <CloudUploadIcon sx={{ mr: 2 }} />
+          Fichiers requis pour ce dashboard
+        </Typography>
+
+        <Typography variant="body1" color="text.secondary" paragraph>
+          Importez les fichiers CSV générés par les scripts PowerShell pour
+          alimenter ce dashboard.
+        </Typography>
+
+        <Box sx={{ mt: 3 }}>
+          {dashboardInfo.scripts.map((script) => (
+            <ScriptUploadItem
+              key={script.type}
+              script={script}
+              onFileUpload={dataContext.importCSV}
+              loadDemoData={dataContext.loadDemoData}
+              processedFiles={processedFiles}
+              onUploadSuccess={handleUploadSuccess}
+            />
+          ))}
+        </Box>
+
+        <Box sx={{ mt: 4 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate(`/${dashboardType}`)}
+            disabled={
+              !dashboardInfo.scripts
+                .filter((s) => s.required)
+                .every(
+                  (script) =>
+                    processedFiles.success.some(
+                      (file) => file.type === script.type
+                    ) || hasRequiredData(script.type)
+                )
+            }
+            startIcon={<PlayCircleFilledIcon />}
+            size="large"
+          >
+            Accéder au dashboard
+          </Button>
+        </Box>
+      </Paper>
+
+      {/* Afficher les commandes PowerShell pour les scripts manquants */}
+      <PowerShellCommandHelper
+        dashboardInfo={dashboardInfo}
+        processedFiles={processedFiles}
+        dataContext={dataContext}
+      />
+    </Box>
   );
 };
 
