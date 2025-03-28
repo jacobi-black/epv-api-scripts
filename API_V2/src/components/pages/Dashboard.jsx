@@ -21,6 +21,7 @@ import {
 import { useData } from "../../utils/DataContext";
 import HomeIcon from "@mui/icons-material/Home";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import DataStatusIndicator from "../common/DataStatusIndicator";
 
 // Configuration des onglets pour chaque type de dashboard
 const dashboardTabs = {
@@ -107,28 +108,28 @@ const Dashboard = ({ title }) => {
     tabs.findIndex((tab) => tab.path === currentPath)
   );
 
-  // Vérifier si les données nécessaires sont disponibles
-  console.log(`Vérification des données pour ${dashboardType}`);
-  console.log(`systemHealthData:`, dataContext.systemHealthData.length > 0);
-  console.log(`safesData:`, dataContext.safesData.length > 0);
-  const hasRequiredData = dataContext.hasDashboardData(dashboardType);
-  console.log(`hasRequiredData:`, hasRequiredData);
+  // Obtenir le statut des données pour ce dashboard
+  const dataStatus = dataContext.getDashboardDataStatus(dashboardType);
+
+  // Vérifier si des données sont disponibles (même partielles)
+  const hasAnyData = dataStatus.availableData.length > 0;
 
   const handleTabChange = (event, newValue) => {
     const targetPath = `/${dashboardType}${tabs[newValue].path}`;
     navigate(targetPath);
   };
 
-  // Si les données ne sont pas disponibles, afficher un message
-  if (!hasRequiredData) {
+  // Si aucune donnée n'est disponible, afficher un message
+  if (!hasAnyData) {
     return (
       <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
         <Paper sx={{ p: 3, textAlign: "center" }}>
           <Typography variant="h5" gutterBottom>
-            Données insuffisantes pour ce dashboard
+            Aucune donnée disponible pour ce dashboard
           </Typography>
           <Typography variant="body1" color="text.secondary" paragraph>
-            Pour visualiser ce dashboard, veuillez importer les fichiers requis.
+            Pour visualiser ce dashboard, veuillez importer au moins un des
+            fichiers requis.
           </Typography>
           <Button
             variant="contained"
@@ -173,6 +174,17 @@ const Dashboard = ({ title }) => {
       <Typography variant="h4" component="h1" gutterBottom>
         {title || dashboardNames[dashboardType]}
       </Typography>
+
+      {/* Indicateur de statut des données */}
+      <Box sx={{ mb: 3 }}>
+        <DataStatusIndicator
+          dashboardType={dashboardType}
+          requiredData={dataStatus.requiredData}
+          availableData={dataStatus.availableData}
+          missingData={dataStatus.missingData}
+          onUploadClick={() => navigate(`/upload/${dashboardType}`)}
+        />
+      </Box>
 
       {/* Onglets de navigation */}
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

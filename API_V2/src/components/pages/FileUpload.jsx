@@ -1057,6 +1057,7 @@ const FileUpload = () => {
   const [uploadStatus, setUploadStatus] = useState(null);
   const [isLoadingDemo, setIsLoadingDemo] = useState(false);
   const [uploadedFilesCount, setUploadedFilesCount] = useState(0);
+  const [uploadComplete, setUploadComplete] = useState(false);
 
   // Récupérer la configuration du dashboard sélectionné
   const dashboardInfo = dashboardConfig[dashboardType] || {
@@ -1122,7 +1123,9 @@ const FileUpload = () => {
 
   // Fonction pour gérer le succès de l'upload d'un fichier
   const handleUploadSuccess = (scriptType) => {
-    setUploadedFilesCount((prev) => prev + 1);
+    console.log(`Upload réussi pour le type ${scriptType}`);
+
+    // Ajouter le type de script aux fichiers traités
     setProcessedFiles((prev) => ({
       ...prev,
       success: [
@@ -1130,6 +1133,31 @@ const FileUpload = () => {
         { type: scriptType, timestamp: new Date().toISOString() },
       ],
     }));
+
+    // Vérifier si nous avons toutes les données requises pour ce dashboard
+    const allRequiredFilesProcessed = dashboardConfig[dashboardType].scripts
+      .filter((script) => script.required)
+      .every(
+        (script) =>
+          processedFiles.success.some((file) => file.type === script.type) ||
+          script.type === scriptType
+      );
+
+    console.log("Tous les fichiers requis traités:", allRequiredFilesProcessed);
+    console.log("Fichiers traités:", [
+      ...processedFiles.success,
+      { type: scriptType, timestamp: new Date().toISOString() },
+    ]);
+
+    if (allRequiredFilesProcessed) {
+      setUploadComplete(true);
+
+      // Afficher un message de succès plus longtemps pour permettre la persistance des données
+      setTimeout(() => {
+        console.log("Redirection vers le dashboard...", dashboardType);
+        navigate(`/${dashboardType}`);
+      }, 1500);
+    }
   };
 
   return (

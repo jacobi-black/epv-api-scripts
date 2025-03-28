@@ -19,8 +19,11 @@ import {
   TableCell,
   TextField,
   Chip,
+  Alert,
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import InfoIcon from "@mui/icons-material/Info";
+import DataStatusIndicator from "../common/DataStatusIndicator";
 import {
   PieChart,
   Pie,
@@ -45,46 +48,76 @@ const COLORS = [
   "#82ca9d",
 ];
 
+// Données de test pour affichage quand les données réelles ne sont pas disponibles
+const mockData = {
+  safes: [
+    {
+      SafeName: "Root",
+      Description: "Safe principal",
+      Status: "Active",
+      Size: 120,
+      LastModified: "2023-05-12",
+    },
+    {
+      SafeName: "Administrators",
+      Description: "Safe administrateur",
+      Status: "Active",
+      Size: 85,
+      LastModified: "2023-06-04",
+    },
+    {
+      SafeName: "Applications",
+      Description: "Applications intégrées",
+      Status: "Active",
+      Size: 230,
+      LastModified: "2023-05-28",
+    },
+    {
+      SafeName: "Backup",
+      Description: "Sauvegardes système",
+      Status: "Inactive",
+      Size: 320,
+      LastModified: "2023-01-15",
+    },
+    {
+      SafeName: "VendorAccess",
+      Description: "Accès fournisseurs",
+      Status: "Active",
+      Size: 45,
+      LastModified: "2023-04-20",
+    },
+  ],
+  statusDistribution: [
+    { name: "Actifs", value: 4 },
+    { name: "Inactifs", value: 1 },
+  ],
+  sizeDistribution: [
+    { name: "0-50 MB", value: 1 },
+    { name: "51-100 MB", value: 1 },
+    { name: "101-200 MB", value: 1 },
+    { name: ">200 MB", value: 2 },
+  ],
+};
+
 // SafesAnalysis Component
-const SafesAnalysis = () => {
-  const { safesData, safesStats } = useData();
+const SafesAnalysis = ({ dashboardType }) => {
+  const { safesData, safesStats, getDashboardDataStatus } = useData();
   const [stats, setStats] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredSafes, setFilteredSafes] = useState([]);
   const navigate = useNavigate();
 
+  // Vérifier la disponibilité des données
+  const hasSafesData = safesData && safesData.length > 0;
+  const dataStatus = getDashboardDataStatus(dashboardType || "capacity");
+
   // Calculate stats when safesData changes
   useEffect(() => {
-    if (safesData && safesData.length > 0) {
+    if (hasSafesData) {
       setStats(safesStats || getSafeStats(safesData));
       setFilteredSafes(safesData);
     }
-  }, [safesData, safesStats]);
-
-  // Si pas de données, afficher un message
-  if (!safesData || safesData.length === 0) {
-    return (
-      <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
-        <Paper sx={{ p: 3, textAlign: "center" }}>
-          <Typography variant="h5" gutterBottom>
-            Aucune donnée de safes disponible
-          </Typography>
-          <Typography variant="body1" color="text.secondary" paragraph>
-            Pour visualiser les analyses des safes, veuillez d'abord importer
-            vos données CSV.
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<UploadFileIcon />}
-            onClick={() => navigate("/upload")}
-          >
-            Importer des données
-          </Button>
-        </Paper>
-      </Box>
-    );
-  }
+  }, [safesData, safesStats, hasSafesData]);
 
   // Apply search filter
   useEffect(() => {
@@ -105,11 +138,35 @@ const SafesAnalysis = () => {
     setFilteredSafes(filtered);
   }, [safesData, searchTerm]);
 
+  // Fonction pour afficher un message lorsque les données ne sont pas disponibles
+  const renderDataNotAvailableMessage = () => (
+    <Alert
+      severity="info"
+      icon={<InfoIcon />}
+      sx={{ mb: 3 }}
+      action={
+        <Button
+          color="inherit"
+          size="small"
+          onClick={() => navigate(`/upload/${dashboardType || "capacity"}`)}
+        >
+          Importer
+        </Button>
+      }
+    >
+      Les données de safes ne sont pas disponibles. Certaines analyses ne
+      peuvent pas être affichées.
+    </Alert>
+  );
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
         Analyse des Safes
       </Typography>
+
+      {/* Indicateur de statut des données spécifique à cette page */}
+      {!hasSafesData && renderDataNotAvailableMessage()}
 
       {/* Search Bar */}
       <Paper sx={{ p: 2, mb: 3 }}>
@@ -130,7 +187,9 @@ const SafesAnalysis = () => {
               <Typography variant="h6" gutterBottom>
                 Total des Safes
               </Typography>
-              <Typography variant="h4">{stats?.totalSafes || 0}</Typography>
+              <Typography variant="h4">
+                {hasSafesData ? stats?.totalSafes || 0 : mockData.safes.length}
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -140,7 +199,11 @@ const SafesAnalysis = () => {
               <Typography variant="h6" gutterBottom>
                 Safes Actifs
               </Typography>
-              <Typography variant="h4">{stats?.activeSafes || 0}</Typography>
+              <Typography variant="h4">
+                {hasSafesData
+                  ? stats?.activeSafes || 0
+                  : mockData.safes.filter((s) => s.Status === "Active").length}
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -150,7 +213,12 @@ const SafesAnalysis = () => {
               <Typography variant="h6" gutterBottom>
                 Safes Inactifs
               </Typography>
-              <Typography variant="h4">{stats?.inactiveSafes || 0}</Typography>
+              <Typography variant="h4">
+                {hasSafesData
+                  ? stats?.inactiveSafes || 0
+                  : mockData.safes.filter((s) => s.Status === "Inactive")
+                      .length}
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -161,9 +229,14 @@ const SafesAnalysis = () => {
                 Taille Moyenne
               </Typography>
               <Typography variant="h4">
-                {stats?.averageSize
-                  ? `${stats.averageSize.toFixed(2)} MB`
-                  : "0 MB"}
+                {hasSafesData
+                  ? stats?.averageSize
+                    ? `${stats.averageSize.toFixed(2)} MB`
+                    : "0 MB"
+                  : `${(
+                      mockData.safes.reduce((acc, safe) => acc + safe.Size, 0) /
+                      mockData.safes.length
+                    ).toFixed(2)} MB`}
               </Typography>
             </CardContent>
           </Card>
@@ -182,7 +255,11 @@ const SafesAnalysis = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={stats?.statusDistribution || []}
+                    data={
+                      hasSafesData
+                        ? stats?.statusDistribution || []
+                        : mockData.statusDistribution
+                    }
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
@@ -190,7 +267,10 @@ const SafesAnalysis = () => {
                     outerRadius={80}
                     label
                   >
-                    {(stats?.statusDistribution || []).map((entry, index) => (
+                    {(hasSafesData
+                      ? stats?.statusDistribution || []
+                      : mockData.statusDistribution
+                    ).map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={COLORS[index % COLORS.length]}
@@ -213,7 +293,13 @@ const SafesAnalysis = () => {
             </Typography>
             <Box sx={{ height: 300 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats?.sizeDistribution || []}>
+                <BarChart
+                  data={
+                    hasSafesData
+                      ? stats?.sizeDistribution || []
+                      : mockData.sizeDistribution
+                  }
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -241,28 +327,44 @@ const SafesAnalysis = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredSafes.map((safe, index) => (
-                <TableRow key={index}>
-                  <TableCell>{safe.SafeName}</TableCell>
-                  <TableCell>{safe.Description}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={safe.Status}
-                      color={safe.Status === "Active" ? "success" : "default"}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell>{safe.Size ? `${safe.Size} MB` : "N/A"}</TableCell>
-                  <TableCell>
-                    {safe.LastModified
-                      ? new Date(safe.LastModified).toLocaleDateString()
-                      : "N/A"}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {(hasSafesData ? filteredSafes : mockData.safes).map(
+                (safe, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{safe.SafeName}</TableCell>
+                    <TableCell>{safe.Description}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={safe.Status}
+                        color={safe.Status === "Active" ? "success" : "default"}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell>{safe.Size}</TableCell>
+                    <TableCell>{safe.LastModified}</TableCell>
+                  </TableRow>
+                )
+              )}
             </TableBody>
           </Table>
         </TableContainer>
+        {!hasSafesData && (
+          <Box sx={{ p: 2, textAlign: "center" }}>
+            <Typography variant="body2" color="text.secondary">
+              Les données affichées sont des exemples. Importez vos données pour
+              voir les analyses réelles.
+            </Typography>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              startIcon={<UploadFileIcon />}
+              onClick={() => navigate(`/upload/${dashboardType || "capacity"}`)}
+              sx={{ mt: 1 }}
+            >
+              Importer des données
+            </Button>
+          </Box>
+        )}
       </Paper>
     </Box>
   );

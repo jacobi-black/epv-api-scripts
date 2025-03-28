@@ -31,6 +31,8 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import DnsIcon from "@mui/icons-material/Dns";
 import StorageIcon from "@mui/icons-material/Storage";
 import SecurityIcon from "@mui/icons-material/Security";
+import InfoIcon from "@mui/icons-material/Info";
+import DataStatusIndicator from "../common/DataStatusIndicator";
 
 // Importation des composants de graphiques
 import ServicesStatusChart from "../charts/ServicesStatusChart";
@@ -152,12 +154,17 @@ const mockData = {
 
 // SystemHealth Component
 const SystemHealth = ({ dashboardType, subview }) => {
-  const { systemHealthData, systemHealthStats } = useData();
+  const { systemHealthData, systemHealthStats, getDashboardDataStatus } =
+    useData();
   const [stats, setStats] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredMetrics, setFilteredMetrics] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
   const navigate = useNavigate();
+
+  // Obtenir le statut des données
+  const dataStatus = getDashboardDataStatus(dashboardType || "health");
+  const hasSystemHealthData = systemHealthData && systemHealthData.length > 0;
 
   // Si un subview est fourni, définir l'onglet en conséquence
   useEffect(() => {
@@ -172,36 +179,11 @@ const SystemHealth = ({ dashboardType, subview }) => {
 
   // Calculate stats when systemHealthData changes
   useEffect(() => {
-    if (systemHealthData && systemHealthData.length > 0) {
+    if (hasSystemHealthData) {
       setStats(systemHealthStats || getSystemHealthStats(systemHealthData));
       setFilteredMetrics(systemHealthData);
     }
-  }, [systemHealthData, systemHealthStats]);
-
-  // Si pas de données, afficher un message
-  if (!systemHealthData || systemHealthData.length === 0) {
-    return (
-      <Box sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
-        <Paper sx={{ p: 3, textAlign: "center" }}>
-          <Typography variant="h5" gutterBottom>
-            Aucune donnée système disponible
-          </Typography>
-          <Typography variant="body1" color="text.secondary" paragraph>
-            Pour visualiser l'état du système, veuillez d'abord importer vos
-            données CSV.
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<UploadFileIcon />}
-            onClick={() => navigate("/upload/health")}
-          >
-            Importer des données
-          </Button>
-        </Paper>
-      </Box>
-    );
-  }
+  }, [systemHealthData, systemHealthStats, hasSystemHealthData]);
 
   // Apply search filter
   useEffect(() => {
@@ -225,6 +207,27 @@ const SystemHealth = ({ dashboardType, subview }) => {
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
   };
+
+  // Affichage des messages pour les données manquantes
+  const renderDataNotAvailableMessage = (dataType) => (
+    <Paper sx={{ p: 3, textAlign: "center", mb: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        Données {dataType} non disponibles
+      </Typography>
+      <Typography variant="body2" color="text.secondary" paragraph>
+        Certaines analyses ne peuvent être affichées sans les données requises.
+      </Typography>
+      <Button
+        variant="outlined"
+        color="primary"
+        startIcon={<UploadFileIcon />}
+        onClick={() => navigate(`/upload/${dashboardType || "health"}`)}
+        size="small"
+      >
+        Importer des données
+      </Button>
+    </Paper>
+  );
 
   return (
     <Box>
@@ -251,275 +254,493 @@ const SystemHealth = ({ dashboardType, subview }) => {
         </Box>
       </Box>
 
-      {/* Navigation Tabs */}
-      <Paper sx={{ mb: 3 }}>
-        <Tabs
-          value={currentTab}
-          onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="system health tabs"
-        >
+      {/* Onglets pour les différentes vues */}
+      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+        <Tabs value={currentTab} onChange={handleTabChange}>
           <Tab
-            label="Statut Services"
             icon={<DnsIcon />}
             iconPosition="start"
+            label="Services & Composants"
           />
           <Tab
-            label="Connectivité"
             icon={<StorageIcon />}
             iconPosition="start"
+            label="Connectivité & Réplication"
           />
           <Tab
-            label="Certificats"
             icon={<SecurityIcon />}
             iconPosition="start"
+            label="Certificats"
           />
         </Tabs>
-      </Paper>
+      </Box>
 
-      {/* Onglet Statut Services */}
+      {/* Recherche et filtres */}
+      <Box sx={{ mb: 3 }}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          size="small"
+          placeholder="Rechercher par composant, statut..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <FilterListIcon sx={{ mr: 1, color: "action.active" }} />
+            ),
+          }}
+        />
+      </Box>
+
+      {/* Panneau 1: Services et Composants */}
       {currentTab === 0 && (
-        <>
-          {/* Search Bar */}
-          <Paper sx={{ p: 2, mb: 3 }}>
-            <TextField
-              fullWidth
-              label="Rechercher un composant"
-              variant="outlined"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </Paper>
+        <Box>
+          {hasSystemHealthData ? (
+            <>
+              {/* Vue d'ensemble des KPIs */}
+              <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Services Actifs
+                      </Typography>
+                      <Typography variant="h3" color="primary">
+                        {stats?.activeServices ||
+                          mockData.services.filter(
+                            (s) => s.status === "Running"
+                          ).length}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        services en exécution
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Services Arrêtés
+                      </Typography>
+                      <Typography
+                        variant="h3"
+                        color={stats?.stoppedServices > 0 ? "error" : "success"}
+                      >
+                        {stats?.stoppedServices ||
+                          mockData.services.filter(
+                            (s) => s.status === "Stopped"
+                          ).length}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        services arrêtés
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Services en Alerte
+                      </Typography>
+                      <Typography
+                        variant="h3"
+                        color={
+                          stats?.warningServices > 0
+                            ? "warning.main"
+                            : "success"
+                        }
+                      >
+                        {stats?.warningServices ||
+                          mockData.services.filter(
+                            (s) => s.status === "Warning"
+                          ).length}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        services en avertissement
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Disponibilité
+                      </Typography>
+                      <Typography
+                        variant="h3"
+                        color={
+                          stats?.availability > 99 ? "success" : "warning.main"
+                        }
+                      >
+                        {stats?.availability || "99.7"}%
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        taux de disponibilité
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
 
-          {/* Statistics Cards */}
-          <Grid container spacing={3} sx={{ mb: 3 }}>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Total des Composants
-                  </Typography>
-                  <Typography variant="h4">
-                    {stats?.totalComponents || 0}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Composants Sains
-                  </Typography>
-                  <Typography variant="h4" color="success.main">
-                    {stats?.healthyComponents || 0}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Composants en Alerte
-                  </Typography>
-                  <Typography variant="h4" color="warning.main">
-                    {stats?.warningComponents || 0}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Composants en Erreur
-                  </Typography>
-                  <Typography variant="h4" color="error.main">
-                    {stats?.errorComponents || 0}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-
-          {/* Service Status Chart */}
-          <Grid container spacing={3} sx={{ mb: 3 }}>
-            <Grid item xs={12}>
-              <ServicesStatusChart data={mockData.services} />
-            </Grid>
-          </Grid>
-
-          {/* Components Table */}
-          <Paper sx={{ width: "100%", overflow: "hidden" }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Composant</TableCell>
-                    <TableCell>État</TableCell>
-                    <TableCell>CPU (%)</TableCell>
-                    <TableCell>Mémoire (%)</TableCell>
-                    <TableCell>Dernière Mise à Jour</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredMetrics.map((metric, index) => (
-                    <TableRow key={index} hover>
-                      <TableCell>{metric.Component}</TableCell>
-                      <TableCell>
-                        <Chip
-                          label={metric.Status}
-                          color={
-                            metric.Status === "Healthy"
-                              ? "success"
-                              : metric.Status === "Warning"
-                              ? "warning"
-                              : "error"
-                          }
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>{metric.CPU || "N/A"}</TableCell>
-                      <TableCell>{metric.Memory || "N/A"}</TableCell>
-                      <TableCell>{metric.LastUpdated || "N/A"}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-        </>
+              {/* Graphiques et tableaux de services */}
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <Card sx={{ height: "100%" }}>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        État des Services
+                      </Typography>
+                      <ServicesStatusChart
+                        data={
+                          stats?.servicesStatusData ||
+                          mockData.services.map((service) => ({
+                            ...service,
+                            status: service.status,
+                          }))
+                        }
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Card sx={{ height: "100%" }}>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Détail des Services
+                      </Typography>
+                      <TableContainer>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Nom du Service</TableCell>
+                              <TableCell>Composant</TableCell>
+                              <TableCell align="right">Statut</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {(filteredMetrics.length > 0
+                              ? filteredMetrics
+                              : mockData.services
+                            )
+                              .map((service, index) => (
+                                <TableRow key={index}>
+                                  <TableCell>
+                                    {service.name || service.Service}
+                                  </TableCell>
+                                  <TableCell>
+                                    {service.component || service.Component}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    <Chip
+                                      size="small"
+                                      label={service.status || service.Status}
+                                      color={
+                                        (service.status || service.Status) ===
+                                        "Running"
+                                          ? "success"
+                                          : (service.status ||
+                                              service.Status) === "Stopped"
+                                          ? "error"
+                                          : "warning"
+                                      }
+                                    />
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                              .slice(0, 5)}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </>
+          ) : (
+            renderDataNotAvailableMessage("de services")
+          )}
+        </Box>
       )}
 
-      {/* Onglet Connectivité */}
+      {/* Panneau 2: Connectivité et Réplication */}
       {currentTab === 1 && (
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Alert severity="info" sx={{ mb: 3 }}>
-              Cette section montre la connectivité entre les différents
-              composants CyberArk et l'état de la réplication.
-            </Alert>
-          </Grid>
-
-          <Grid item xs={12}>
-            <ConnectivityChart data={mockData.connectivity} height={400} />
-          </Grid>
-
-          <Grid item xs={12}>
-            <ReplicationStatusChart data={mockData.replication} />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Paper sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                Recommandations de Connectivité
-              </Typography>
-              <Grid container spacing={2} sx={{ mt: 1 }}>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Optimisation des Performances
-                  </Typography>
-                  <Typography paragraph>
-                    • Assurez-vous que la latence entre PVWA et Vault reste
-                    inférieure à 50ms
-                    <br />
-                    • Maintenez une connexion stable entre tous les composants
-                    CPM et le Vault
-                    <br />• Vérifiez régulièrement la qualité du réseau entre
-                    les sites principaux et DR
-                  </Typography>
+        <Box>
+          {hasSystemHealthData ? (
+            <>
+              {/* KPIs de Connectivité et Réplication */}
+              <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Sites DR
+                      </Typography>
+                      <Typography variant="h3" color="primary">
+                        {stats?.drSitesCount || mockData.replication.length}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        sites de réplication
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Résolution des Problèmes
-                  </Typography>
-                  <Typography paragraph>
-                    • Problème de connexion PVWA-DR: vérifiez les règles de
-                    pare-feu
-                    <br />
-                    • Latence élevée Vault-DR: optimisez la bande passante
-                    réseau entre sites
-                    <br />• Pour tout composant déconnecté, vérifiez les
-                    services Windows et les configurations réseau
-                  </Typography>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Sites Connectés
+                      </Typography>
+                      <Typography variant="h3" color="success">
+                        {stats?.connectedSites ||
+                          mockData.replication.filter(
+                            (s) => s.status === "Connected"
+                          ).length}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        sites connectés
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Sites Déconnectés
+                      </Typography>
+                      <Typography
+                        variant="h3"
+                        color={
+                          stats?.disconnectedSites > 0 ? "error" : "success"
+                        }
+                      >
+                        {stats?.disconnectedSites ||
+                          mockData.replication.filter(
+                            (s) => s.status === "Disconnected"
+                          ).length}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        sites déconnectés
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Délai Moyen
+                      </Typography>
+                      <Typography
+                        variant="h3"
+                        color={
+                          stats?.avgDelay > 100 ? "warning.main" : "success"
+                        }
+                      >
+                        {stats?.avgDelay || "148"}ms
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        délai de réplication
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
               </Grid>
-            </Paper>
-          </Grid>
-        </Grid>
+
+              {/* Graphiques de Connectivité et Réplication */}
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <Card sx={{ height: "100%" }}>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Statut de Réplication
+                      </Typography>
+                      <ReplicationStatusChart
+                        data={
+                          stats?.replicationStatusData || mockData.replication
+                        }
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Card sx={{ height: "100%" }}>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Connectivité des Composants
+                      </Typography>
+                      <ConnectivityChart
+                        data={stats?.connectivityData || mockData.connectivity}
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </>
+          ) : (
+            renderDataNotAvailableMessage("de connectivité")
+          )}
+        </Box>
       )}
 
-      {/* Onglet Certificats */}
+      {/* Panneau 3: Certificats */}
       {currentTab === 2 && (
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Alert severity="info" sx={{ mb: 3 }}>
-              Cette section montre l'état des certificats utilisés par les
-              différents composants CyberArk.
-            </Alert>
-          </Grid>
-
-          <Grid item xs={12}>
-            <CertificatesStatusChart
-              data={mockData.certificates}
-              height={350}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Paper sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                Bonnes Pratiques pour la Gestion des Certificats
-              </Typography>
-              <Grid container spacing={2} sx={{ mt: 1 }}>
-                <Grid item xs={12} md={4}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Cycle de Vie
-                  </Typography>
-                  <Typography paragraph>
-                    • Planifiez le renouvellement des certificats 30 jours avant
-                    leur expiration
-                    <br />
-                    • Conservez une documentation à jour de tous les certificats
-                    et de leurs emplacements
-                    <br />• Implémentez un processus de gestion automatisée du
-                    cycle de vie des certificats
-                  </Typography>
+        <Box>
+          {hasSystemHealthData ? (
+            <>
+              {/* KPIs de Certificats */}
+              <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Total Certificats
+                      </Typography>
+                      <Typography variant="h3" color="primary">
+                        {stats?.certificatesCount ||
+                          mockData.certificates.length}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        certificats installés
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Sécurité
-                  </Typography>
-                  <Typography paragraph>
-                    • Utilisez des certificats avec des clés d'au moins 2048
-                    bits
-                    <br />
-                    • Assurez-vous que tous les certificats sont émis par une
-                    autorité de certification approuvée
-                    <br />• Vérifiez régulièrement la chaîne de confiance des
-                    certificats
-                  </Typography>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Expirent Bientôt
+                      </Typography>
+                      <Typography variant="h3" color="warning.main">
+                        {stats?.expiringCertificates || "2"}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        dans les 30 jours
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Bonnes Pratiques
-                  </Typography>
-                  <Typography paragraph>
-                    • Utilisez des certificats wildcard avec prudence et
-                    uniquement lorsque nécessaire
-                    <br />
-                    • Configurez des alertes pour les certificats approchant de
-                    leur date d'expiration
-                    <br />• Testez le processus de renouvellement des
-                    certificats avant leur expiration
-                  </Typography>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Expirés
+                      </Typography>
+                      <Typography
+                        variant="h3"
+                        color={
+                          stats?.expiredCertificates > 0 ? "error" : "success"
+                        }
+                      >
+                        {stats?.expiredCertificates || "0"}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        certificats expirés
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Valides
+                      </Typography>
+                      <Typography variant="h3" color="success">
+                        {stats?.validCertificates || "6"}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        certificats valides
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
               </Grid>
-            </Paper>
-          </Grid>
-        </Grid>
+
+              {/* Graphiques de Certificats */}
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <Card sx={{ height: "100%" }}>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Statut des Certificats
+                      </Typography>
+                      <CertificatesStatusChart
+                        data={
+                          stats?.certificatesStatusData || mockData.certificates
+                        }
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Card sx={{ height: "100%" }}>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Certificats par Composant
+                      </Typography>
+                      <TableContainer>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Nom</TableCell>
+                              <TableCell>Composant</TableCell>
+                              <TableCell>Expiration</TableCell>
+                              <TableCell align="right">Statut</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {(stats?.certificates || mockData.certificates)
+                              .map((cert, index) => {
+                                const expiryDate = new Date(cert.expiryDate);
+                                const today = new Date();
+                                const daysUntilExpiry = Math.ceil(
+                                  (expiryDate - today) / (1000 * 60 * 60 * 24)
+                                );
+
+                                let status = "Valide";
+                                let color = "success";
+
+                                if (daysUntilExpiry < 0) {
+                                  status = "Expiré";
+                                  color = "error";
+                                } else if (daysUntilExpiry < 30) {
+                                  status = `Expire dans ${daysUntilExpiry}j`;
+                                  color = "warning";
+                                }
+
+                                return (
+                                  <TableRow key={index}>
+                                    <TableCell>{cert.name}</TableCell>
+                                    <TableCell>{cert.component}</TableCell>
+                                    <TableCell>{cert.expiryDate}</TableCell>
+                                    <TableCell align="right">
+                                      <Chip
+                                        size="small"
+                                        label={status}
+                                        color={color}
+                                      />
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })
+                              .slice(0, 5)}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </>
+          ) : (
+            renderDataNotAvailableMessage("de certificats")
+          )}
+        </Box>
       )}
     </Box>
   );
