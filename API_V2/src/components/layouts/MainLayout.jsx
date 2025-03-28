@@ -35,9 +35,6 @@ import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import AppsRoundedIcon from "@mui/icons-material/AppsRounded";
 
-// Composant de tutoriel
-import { InteractiveTutorial } from "../help";
-
 // Palette de couleurs très simplifiée - principalement des teintes de bleu et gris
 const colorPalette = {
   primary: "#1976d2",
@@ -67,68 +64,60 @@ const menuItems = [
     icon: <HomeRoundedIcon />,
     path: "/",
     exact: true,
+    color: colorPalette.primary,
   },
   {
     text: "Capacity Dashboard",
     icon: <SpeedIcon />,
     path: "/capacity",
-    priority: "Haute",
     color: colorPalette.primaryDark,
   },
   {
     text: "Health Dashboard",
     icon: <HealthAndSafetyRoundedIcon />,
     path: "/health",
-    priority: "Haute",
     color: colorPalette.primary,
   },
   {
     text: "Security & Compliance",
     icon: <SecurityRoundedIcon />,
     path: "/security",
-    priority: "Haute",
     color: colorPalette.primaryDark,
   },
   {
     text: "Privileged Accounts",
     icon: <AccountCircleRoundedIcon />,
     path: "/privileged-accounts",
-    priority: "Moyenne",
     color: colorPalette.primary,
   },
   {
     text: "Session Monitoring",
     icon: <MonitorHeartRoundedIcon />,
     path: "/sessions",
-    priority: "Moyenne",
     color: colorPalette.primaryLight,
   },
   {
     text: "Password Rotation",
     icon: <PasswordRoundedIcon />,
     path: "/password-rotation",
-    priority: "Moyenne",
     color: colorPalette.primaryDark,
   },
   {
     text: "Applications & API",
     icon: <ApiRoundedIcon />,
     path: "/application-usage",
-    priority: "Basse",
     color: colorPalette.grey600,
   },
   {
     text: "Incident Response",
     icon: <ReportProblemRoundedIcon />,
     path: "/incident-response",
-    priority: "Basse",
     color: colorPalette.primary,
   },
   {
     text: "Adoption & Efficiency",
     icon: <AssessmentRoundedIcon />,
     path: "/adoption-efficiency",
-    priority: "Basse",
     color: colorPalette.primaryLight,
   },
 ];
@@ -330,17 +319,6 @@ function MainLayout({ children }) {
   // Vérifier si on est sur la page d'accueil
   const isHomePage = location.pathname === "/";
 
-  // Grouper les éléments par priorité
-  const highPriorityItems = menuItems.filter(
-    (item) => item.priority === "Haute"
-  );
-  const mediumPriorityItems = menuItems.filter(
-    (item) => item.priority === "Moyenne"
-  );
-  const lowPriorityItems = menuItems.filter(
-    (item) => item.priority === "Basse"
-  );
-
   // Favoris
   const favoriteItems = menuItems.filter((item) =>
     favorites.includes(item.path)
@@ -401,20 +379,6 @@ function MainLayout({ children }) {
         transition: "background 0.5s ease",
       }}
     >
-      {/* Bouton d'accueil flottant - n'apparaît que si on n'est pas déjà sur la page d'accueil */}
-      {!isHomePage && (
-        <Zoom in={!isHomePage} timeout={500}>
-          <HomeButton
-            size="medium"
-            onClick={handleGoHome}
-            aria-label="retour à l'accueil"
-            isdarkmode={isDarkMode.toString()}
-          >
-            <HomeRoundedIcon />
-          </HomeButton>
-        </Zoom>
-      )}
-
       {/* Contenu principal avec transition */}
       <Fade in={true} timeout={500}>
         <MainContent haspadding="true">
@@ -428,15 +392,6 @@ function MainLayout({ children }) {
           >
             {children}
           </Box>
-
-          {/* Tutoriel interactif - conservé pour l'onboarding */}
-          <InteractiveTutorial
-            tutorialType={
-              currentDashboardType === "home" ? "home" : "dashboard"
-            }
-            autoStart={false}
-            showButton={true}
-          />
         </MainContent>
       </Fade>
 
@@ -456,15 +411,17 @@ function MainLayout({ children }) {
         )}
       </ThemeToggleButton>
 
-      {/* Bouton menu flottant */}
-      <MenuButton
-        color="primary"
-        onClick={handleMenuOpen}
-        aria-label="menu principal"
-        isdarkmode={isDarkMode.toString()}
-      >
-        <AppsRoundedIcon />
-      </MenuButton>
+      {/* Bouton menu flottant - caché sur la page d'accueil */}
+      {!isHomePage && (
+        <MenuButton
+          color="primary"
+          onClick={handleMenuOpen}
+          aria-label="menu principal"
+          isdarkmode={isDarkMode.toString()}
+        >
+          <AppsRoundedIcon />
+        </MenuButton>
+      )}
 
       {/* Menu complet */}
       <MenuContainer
@@ -584,7 +541,7 @@ function MainLayout({ children }) {
           </>
         )}
 
-        {/* Priorité Haute */}
+        {/* Tous les dashboards */}
         <Box
           sx={{
             px: 3,
@@ -604,226 +561,68 @@ function MainLayout({ children }) {
               opacity: 0.7,
             }}
           >
-            PRIORITÉ HAUTE
+            DASHBOARDS
           </Typography>
           <PriorityLabel
-            label={`${highPriorityItems.length}`}
+            label={`${menuItems.length - 1}`}
             size="small"
             color={colorPalette.primary}
             isdarkmode={isDarkMode.toString()}
           />
         </Box>
 
-        {highPriorityItems.map((item) => (
-          <AnimatedMenuItem
-            key={item.text}
-            onClick={() => handleNavigation(item.path)}
-            active={isPathActive(item.path)}
-            color={item.color}
-            isdarkmode={isDarkMode.toString()}
-          >
-            <ListItemIcon sx={{ color: item.color }}>{item.icon}</ListItemIcon>
-            <Typography
-              variant="body1"
-              sx={{
-                fontWeight: isPathActive(item.path) ? 600 : 400,
-                color: isDarkMode
-                  ? theme.palette.common.white
-                  : theme.palette.text.primary,
-                flexGrow: 1,
-              }}
+        {menuItems
+          .filter((item) => item.path !== "/")
+          .map((item) => (
+            <AnimatedMenuItem
+              key={item.text}
+              onClick={() => handleNavigation(item.path)}
+              active={isPathActive(item.path)}
+              color={item.color}
+              isdarkmode={isDarkMode.toString()}
             >
-              {item.text}
-            </Typography>
-            <Tooltip
-              title={
-                favorites.includes(item.path)
-                  ? "Retirer des favoris"
-                  : "Ajouter aux favoris"
-              }
-              arrow
-            >
-              <IconButton
-                size="small"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleFavorite(item.path);
-                }}
+              <ListItemIcon sx={{ color: item.color }}>
+                {item.icon}
+              </ListItemIcon>
+              <Typography
+                variant="body1"
                 sx={{
-                  ml: 1,
-                  p: 0.5,
-                  color: favorites.includes(item.path)
-                    ? item.color
-                    : colorPalette.greyLight,
+                  fontWeight: isPathActive(item.path) ? 600 : 400,
+                  color: isDarkMode
+                    ? theme.palette.common.white
+                    : theme.palette.text.primary,
+                  flexGrow: 1,
                 }}
               >
-                <FavoriteRoundedIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </AnimatedMenuItem>
-        ))}
-
-        <Divider sx={{ my: 1, mx: 2 }} />
-
-        {/* Priorité Moyenne */}
-        <Box
-          sx={{
-            px: 3,
-            py: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            fontWeight="bold"
-            sx={{
-              fontSize: "0.7rem",
-              letterSpacing: 1,
-              opacity: 0.7,
-            }}
-          >
-            PRIORITÉ MOYENNE
-          </Typography>
-          <PriorityLabel
-            label={`${mediumPriorityItems.length}`}
-            size="small"
-            color={colorPalette.primaryLight}
-            isdarkmode={isDarkMode.toString()}
-          />
-        </Box>
-
-        {mediumPriorityItems.map((item) => (
-          <AnimatedMenuItem
-            key={item.text}
-            onClick={() => handleNavigation(item.path)}
-            active={isPathActive(item.path)}
-            color={item.color}
-            isdarkmode={isDarkMode.toString()}
-          >
-            <ListItemIcon sx={{ color: item.color }}>{item.icon}</ListItemIcon>
-            <Typography
-              variant="body1"
-              sx={{
-                fontWeight: isPathActive(item.path) ? 600 : 400,
-                color: isDarkMode
-                  ? theme.palette.common.white
-                  : theme.palette.text.primary,
-                flexGrow: 1,
-              }}
-            >
-              {item.text}
-            </Typography>
-            <Tooltip
-              title={
-                favorites.includes(item.path)
-                  ? "Retirer des favoris"
-                  : "Ajouter aux favoris"
-              }
-              arrow
-            >
-              <IconButton
-                size="small"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleFavorite(item.path);
-                }}
-                sx={{
-                  ml: 1,
-                  p: 0.5,
-                  color: favorites.includes(item.path)
-                    ? item.color
-                    : colorPalette.greyLight,
-                }}
+                {item.text}
+              </Typography>
+              <Tooltip
+                title={
+                  favorites.includes(item.path)
+                    ? "Retirer des favoris"
+                    : "Ajouter aux favoris"
+                }
+                arrow
               >
-                <FavoriteRoundedIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </AnimatedMenuItem>
-        ))}
-
-        <Divider sx={{ my: 1, mx: 2 }} />
-
-        {/* Priorité Basse */}
-        <Box
-          sx={{
-            px: 3,
-            py: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            fontWeight="bold"
-            sx={{
-              fontSize: "0.7rem",
-              letterSpacing: 1,
-              opacity: 0.7,
-            }}
-          >
-            PRIORITÉ BASSE
-          </Typography>
-          <PriorityLabel
-            label={`${lowPriorityItems.length}`}
-            size="small"
-            color={colorPalette.grey500}
-            isdarkmode={isDarkMode.toString()}
-          />
-        </Box>
-
-        {lowPriorityItems.map((item) => (
-          <AnimatedMenuItem
-            key={item.text}
-            onClick={() => handleNavigation(item.path)}
-            active={isPathActive(item.path)}
-            color={item.color}
-            isdarkmode={isDarkMode.toString()}
-          >
-            <ListItemIcon sx={{ color: item.color }}>{item.icon}</ListItemIcon>
-            <Typography
-              variant="body1"
-              sx={{
-                fontWeight: isPathActive(item.path) ? 600 : 400,
-                color: isDarkMode
-                  ? theme.palette.common.white
-                  : theme.palette.text.primary,
-                flexGrow: 1,
-              }}
-            >
-              {item.text}
-            </Typography>
-            <Tooltip
-              title={
-                favorites.includes(item.path)
-                  ? "Retirer des favoris"
-                  : "Ajouter aux favoris"
-              }
-              arrow
-            >
-              <IconButton
-                size="small"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleFavorite(item.path);
-                }}
-                sx={{
-                  ml: 1,
-                  p: 0.5,
-                  color: favorites.includes(item.path)
-                    ? item.color
-                    : colorPalette.greyLight,
-                }}
-              >
-                <FavoriteRoundedIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </AnimatedMenuItem>
-        ))}
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(item.path);
+                  }}
+                  sx={{
+                    ml: 1,
+                    p: 0.5,
+                    color: favorites.includes(item.path)
+                      ? item.color
+                      : colorPalette.greyLight,
+                  }}
+                >
+                  <FavoriteRoundedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </AnimatedMenuItem>
+          ))}
 
         <Divider sx={{ my: 1, mx: 2 }} />
 

@@ -36,7 +36,6 @@ const dashboards = [
       "/System Health/System-Health.ps1",
       "/Safe Management/Get-Safes.ps1",
     ],
-    chipLabel: "Priorité Haute",
   },
   {
     id: "health",
@@ -49,7 +48,6 @@ const dashboards = [
       "/System Health/System-Health.ps1",
       "/Test HTML5 Certificate/Test-HTML5Gateway.ps1",
     ],
-    chipLabel: "Priorité Haute",
   },
   {
     id: "security",
@@ -62,7 +60,6 @@ const dashboards = [
       "/Security Events/Get-AccoutnsRiskReport.ps1",
       "/Reports/Accounts/Accounts_Inventory.ps1",
     ],
-    chipLabel: "Priorité Haute",
   },
   {
     id: "privileged-accounts",
@@ -75,7 +72,6 @@ const dashboards = [
       "/Get Accounts/Get-Account.ps1",
       "/User Management/Get-UsersActivityReport.ps1",
     ],
-    chipLabel: "Priorité Moyenne",
   },
   {
     id: "sessions",
@@ -88,7 +84,6 @@ const dashboards = [
       "/PSM Sessions Management/PSM-SessionsManagement.ps1",
       "/Security Events/Get-AccoutnsRiskReport.ps1",
     ],
-    chipLabel: "Priorité Moyenne",
   },
   {
     id: "password-rotation",
@@ -101,7 +96,6 @@ const dashboards = [
       "/Safe Management/Get-Safes.ps1",
       "/Get Accounts/Get-PendingAccounts.ps1",
     ],
-    chipLabel: "Priorité Moyenne",
   },
   {
     id: "application-usage",
@@ -114,7 +108,6 @@ const dashboards = [
       "/AAM Applications/Get-Applications.ps1",
       "/CCP Setup/Get-CCPPerformance.ps1",
     ],
-    chipLabel: "Priorité Basse",
   },
   {
     id: "incident-response",
@@ -127,7 +120,6 @@ const dashboards = [
       "/Security Events/Get-AccoutnsRiskReport.ps1",
       "/System Health/System-Health.ps1",
     ],
-    chipLabel: "Priorité Basse",
   },
   {
     id: "adoption-efficiency",
@@ -140,7 +132,6 @@ const dashboards = [
       "/User Management/Get-UsersActivityReport.ps1",
       "/Reports/Accounts/Accounts_Usage.ps1",
     ],
-    chipLabel: "Priorité Basse",
   },
 ];
 
@@ -212,17 +203,6 @@ const Home = () => {
                     <Typography variant="h5" component="h2" gutterBottom>
                       {dashboard.title}
                     </Typography>
-                    <Chip
-                      label={dashboard.chipLabel}
-                      size="small"
-                      sx={{
-                        backgroundColor: dashboard.chipLabel.includes("Haute")
-                          ? "#e3f2fd"
-                          : dashboard.chipLabel.includes("Moyenne")
-                          ? "#fff3e0"
-                          : "#f5f5f5",
-                      }}
-                    />
                   </Box>
                   <Typography variant="body2" color="text.secondary" paragraph>
                     {dashboard.description}
