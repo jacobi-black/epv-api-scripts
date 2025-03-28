@@ -1,8 +1,8 @@
 import React from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { DataProvider, useData } from "./utils/DataContext";
+import { DataProvider } from "./utils/DataContext";
 
 // Layouts
 import MainLayout from "./components/layouts/MainLayout";
@@ -28,68 +28,53 @@ import AdoptionEfficiency from "./components/pages/AdoptionEfficiency";
 // Create a theme
 const theme = createTheme({
   palette: {
+    mode: "light",
     primary: {
-      main: "#004e8c",
+      main: "#1976d2",
     },
     secondary: {
-      main: "#11cb5f",
+      main: "#dc004e",
     },
     background: {
-      default: "#f5f5f5",
+      default: "#fafafa",
     },
   },
   typography: {
-    fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-    ].join(","),
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     h1: {
-      fontSize: "2.5rem",
-      fontWeight: 700,
+      fontSize: "2.2rem",
+      fontWeight: 500,
+    },
+    h2: {
+      fontSize: "1.8rem",
+      fontWeight: 500,
+    },
+    h3: {
+      fontSize: "1.5rem",
+      fontWeight: 500,
     },
   },
   components: {
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: "10px",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-        },
-      },
-    },
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: "4px",
-          textTransform: "none",
+          borderRadius: 8,
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          "&:hover": {
+            boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)",
+          },
         },
       },
     },
   },
 });
-
-// Composant qui vérifie si les données requises sont disponibles
-// et redirige vers la page d'upload si nécessaire
-const DashboardGuard = ({ element, dashboardType }) => {
-  const { hasDashboardData } = useData();
-  const navigate = useNavigate();
-
-  // Si les données requises pour ce dashboard ne sont pas disponibles,
-  // rediriger vers la page d'upload correspondante
-  React.useEffect(() => {
-    if (!hasDashboardData(dashboardType)) {
-      navigate(`/upload/${dashboardType}`);
-    }
-  }, [dashboardType, hasDashboardData, navigate]);
-
-  // Retourner le composant normalement si les données sont disponibles
-  return element;
-};
 
 function App() {
   return (
@@ -107,12 +92,7 @@ function App() {
             {/* Dashboard Capacité */}
             <Route
               path="/capacity"
-              element={
-                <DashboardGuard
-                  element={<Dashboard title="Capacity Dashboard" />}
-                  dashboardType="capacity"
-                />
-              }
+              element={<Dashboard title="Capacity Dashboard" />}
             >
               <Route index element={<CapacityPlanning />} />
               <Route
@@ -128,12 +108,7 @@ function App() {
             {/* Dashboard Santé */}
             <Route
               path="/health"
-              element={
-                <DashboardGuard
-                  element={<Dashboard title="Health Dashboard" />}
-                  dashboardType="health"
-                />
-              }
+              element={<Dashboard title="Health Dashboard" />}
             >
               <Route index element={<SystemHealth dashboardType="health" />} />
               <Route
@@ -149,216 +124,140 @@ function App() {
             {/* Dashboard Sécurité et Conformité */}
             <Route
               path="/security"
-              element={
-                <DashboardGuard
-                  element={
-                    <Dashboard title="Security and Compliance Dashboard" />
-                  }
-                  dashboardType="security"
-                />
-              }
+              element={<Dashboard title="Security and Compliance Dashboard" />}
             >
-              <Route
-                index
-                element={<SecurityCompliance dashboardType="security" />}
-              />
+              <Route index element={<SecurityCompliance />} />
               <Route
                 path="accounts"
                 element={<AccountsAnalysis dashboardType="security" />}
               />
               <Route
                 path="violations"
-                element={<SecurityCompliance dashboardType="violations" />}
+                element={<SecurityCompliance subview="violations" />}
               />
               <Route
                 path="risks"
-                element={<SecurityCompliance dashboardType="risks" />}
+                element={<SecurityCompliance subview="risks" />}
               />
             </Route>
 
-            {/* Dashboard Accounts Analysis */}
-            <Route
-              path="/accounts-analysis"
-              element={
-                <DashboardGuard
-                  element={<Dashboard title="Accounts Analysis Dashboard" />}
-                  dashboardType="accounts-analysis"
-                />
-              }
-            >
-              <Route
-                index
-                element={<AccountsAnalysis dashboardType="accounts" />}
-              />
-            </Route>
-
-            {/* Dashboard Privileged Accounts */}
+            {/* Dashboard Utilisation des Comptes Privilégiés */}
             <Route
               path="/privileged-accounts"
               element={
-                <DashboardGuard
-                  element={<Dashboard title="Privileged Accounts Dashboard" />}
-                  dashboardType="privileged-accounts"
-                />
+                <Dashboard title="Privileged Accounts Usage Dashboard" />
               }
             >
-              <Route
-                index
-                element={<PrivilegedAccounts dashboardType="overview" />}
-              />
+              <Route index element={<PrivilegedAccounts />} />
               <Route
                 path="usage"
-                element={<PrivilegedAccounts dashboardType="usage" />}
+                element={<PrivilegedAccounts subview="usage" />}
               />
               <Route
                 path="team"
-                element={<PrivilegedAccounts dashboardType="team" />}
+                element={<PrivilegedAccounts subview="team" />}
               />
               <Route
                 path="trends"
-                element={<PrivilegedAccounts dashboardType="trends" />}
+                element={<PrivilegedAccounts subview="trends" />}
               />
             </Route>
 
-            {/* Dashboard Sessions */}
+            {/* Dashboard Monitoring des Sessions */}
             <Route
               path="/sessions"
-              element={
-                <DashboardGuard
-                  element={<Dashboard title="Sessions Dashboard" />}
-                  dashboardType="sessions"
-                />
-              }
+              element={<Dashboard title="Session Monitoring Dashboard" />}
             >
-              <Route
-                index
-                element={<SessionMonitoring dashboardType="overview" />}
-              />
+              <Route index element={<SessionMonitoring />} />
               <Route
                 path="active"
-                element={<SessionMonitoring dashboardType="active" />}
+                element={<SessionMonitoring subview="active" />}
               />
               <Route
                 path="anomalies"
-                element={<SessionMonitoring dashboardType="anomalies" />}
+                element={<SessionMonitoring subview="anomalies" />}
               />
-              <Route
-                path="geo"
-                element={<SessionMonitoring dashboardType="geo" />}
-              />
+              <Route path="geo" element={<SessionMonitoring subview="geo" />} />
             </Route>
 
-            {/* Dashboard Password Rotation */}
+            {/* Dashboard Rotation des Mots de Passe */}
             <Route
               path="/password-rotation"
-              element={
-                <DashboardGuard
-                  element={<Dashboard title="Password Rotation Dashboard" />}
-                  dashboardType="password-rotation"
-                />
-              }
+              element={<Dashboard title="Password Rotation Dashboard" />}
             >
-              <Route
-                index
-                element={<PasswordRotation dashboardType="overview" />}
-              />
+              <Route index element={<PasswordRotation />} />
               <Route
                 path="performance"
-                element={<PasswordRotation dashboardType="performance" />}
+                element={<PasswordRotation subview="performance" />}
               />
               <Route
                 path="issues"
-                element={<PasswordRotation dashboardType="issues" />}
+                element={<PasswordRotation subview="issues" />}
               />
               <Route
                 path="safes"
-                element={<PasswordRotation dashboardType="safes" />}
+                element={<PasswordRotation subview="safes" />}
               />
             </Route>
 
-            {/* Dashboard Application Usage */}
+            {/* Dashboard Utilisation des Applications et API */}
             <Route
               path="/application-usage"
-              element={
-                <DashboardGuard
-                  element={<Dashboard title="Application Usage Dashboard" />}
-                  dashboardType="application-usage"
-                />
-              }
+              element={<Dashboard title="Applications & API Usage Dashboard" />}
             >
+              <Route index element={<ApplicationUsage />} />
               <Route
-                index
-                element={<ApplicationUsage dashboardType="overview" />}
+                path="apps"
+                element={<ApplicationUsage subview="apps" />}
               />
-              <Route
-                path="api"
-                element={<ApplicationUsage dashboardType="api" />}
-              />
+              <Route path="api" element={<ApplicationUsage subview="api" />} />
               <Route
                 path="trends"
-                element={<ApplicationUsage dashboardType="trends" />}
+                element={<ApplicationUsage subview="trends" />}
               />
             </Route>
 
-            {/* Dashboard Incident Response */}
+            {/* Dashboard Réponse aux Incidents */}
             <Route
               path="/incident-response"
-              element={
-                <DashboardGuard
-                  element={<Dashboard title="Incident Response Dashboard" />}
-                  dashboardType="incident-response"
-                />
-              }
+              element={<Dashboard title="Incident Response Dashboard" />}
             >
-              <Route
-                index
-                element={<IncidentResponse dashboardType="overview" />}
-              />
+              <Route index element={<IncidentResponse />} />
               <Route
                 path="active"
-                element={<IncidentResponse dashboardType="active" />}
+                element={<IncidentResponse subview="active" />}
               />
               <Route
                 path="resolution"
-                element={<IncidentResponse dashboardType="resolution" />}
+                element={<IncidentResponse subview="resolution" />}
               />
               <Route
                 path="trends"
-                element={<IncidentResponse dashboardType="trends" />}
+                element={<IncidentResponse subview="trends" />}
               />
             </Route>
 
-            {/* Dashboard Adoption & Efficiency */}
+            {/* Dashboard Efficacité et Adoption */}
             <Route
               path="/adoption-efficiency"
-              element={
-                <DashboardGuard
-                  element={
-                    <Dashboard title="Adoption & Efficiency Dashboard" />
-                  }
-                  dashboardType="adoption-efficiency"
-                />
-              }
+              element={<Dashboard title="Adoption & Efficiency Dashboard" />}
             >
+              <Route index element={<AdoptionEfficiency />} />
               <Route
-                index
-                element={<AdoptionEfficiency dashboardType="overview" />}
-              />
-              <Route
-                path="teams"
-                element={<AdoptionEfficiency dashboardType="teams" />}
+                path="departments"
+                element={<AdoptionEfficiency subview="departments" />}
               />
               <Route
                 path="operational"
-                element={<AdoptionEfficiency dashboardType="operational" />}
+                element={<AdoptionEfficiency subview="operational" />}
               />
               <Route
                 path="satisfaction"
-                element={<AdoptionEfficiency dashboardType="satisfaction" />}
+                element={<AdoptionEfficiency subview="satisfaction" />}
               />
             </Route>
 
-            {/* Redirection par défaut vers l'accueil */}
+            {/* Redirection par défaut */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </MainLayout>

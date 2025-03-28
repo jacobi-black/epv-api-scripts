@@ -367,12 +367,12 @@ const AdoptionEfficiency = ({ subview }) => {
     ],
   };
 
-  const satisfactionData = {
-    labels: Object.keys(satisfaction?.byFeature || {}),
+  const satisfactionChartData = {
+    labels: Object.keys(satisfactionData?.byFeature || {}),
     datasets: [
       {
         label: "Satisfaction par fonctionnalité",
-        data: Object.values(satisfaction?.byFeature || {}),
+        data: Object.values(satisfactionData?.byFeature || {}),
         backgroundColor: [
           "#4caf50",
           "#2196f3",
@@ -733,7 +733,7 @@ const AdoptionEfficiency = ({ subview }) => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {satisfaction?.comments.map((comment) => (
+                        {satisfactionData?.comments.map((comment) => (
                           <TableRow key={comment.id}>
                             <TableCell>{comment.user}</TableCell>
                             <TableCell>{comment.department}</TableCell>
@@ -760,7 +760,7 @@ const AdoptionEfficiency = ({ subview }) => {
                   </Typography>
                   <Box sx={{ height: 300, mt: 2 }}>
                     <Bar
-                      data={satisfactionData}
+                      data={satisfactionChartData}
                       options={{
                         responsive: true,
                         maintainAspectRatio: false,
@@ -804,7 +804,7 @@ const AdoptionEfficiency = ({ subview }) => {
                         datasets: [
                           {
                             label: "Satisfaction globale",
-                            data: satisfaction?.byMonth || [],
+                            data: satisfactionData?.byMonth || [],
                             borderColor: "#2196f3",
                             backgroundColor: "rgba(33, 150, 243, 0.1)",
                             tension: 0.3,
@@ -916,7 +916,7 @@ const AdoptionEfficiency = ({ subview }) => {
                           Satisfaction utilisateurs
                         </Typography>
                         <Typography variant="h4">
-                          {satisfaction?.overall || "-"}/5
+                          {satisfactionData?.overall || "-"}/5
                         </Typography>
                       </Box>
                     </Box>

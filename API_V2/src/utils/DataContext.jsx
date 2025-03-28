@@ -140,6 +140,13 @@ export const DataProvider = ({ children }) => {
                 const stats = getAccountStats(parsedData);
                 setAccountsStats(stats);
                 break;
+              case "usage":
+                // Traiter les données d'utilisation comme des données de comptes
+                setAccountsData(parsedData);
+                // Calculer les statistiques sur les comptes
+                const usageStats = getAccountStats(parsedData);
+                setAccountsStats(usageStats);
+                break;
               case "sessions":
                 setSessionsData(parsedData);
                 break;
