@@ -33,6 +33,16 @@ export const DataProvider = ({ children }) => {
   const [riskData, setRiskData] = useState([]);
   const [complianceData, setComplianceData] = useState([]);
 
+  // Ajout des nouveaux états pour les types manquants
+  const [applicationsData, setApplicationsData] = useState([]);
+  const [performanceData, setPerformanceData] = useState([]);
+  const [usageData, setUsageData] = useState([]);
+  const [accessData, setAccessData] = useState([]);
+  const [pendingAccountsData, setPendingAccountsData] = useState([]);
+
+  // État pour le mode démo - initialisation à true pour permettre l'affichage des dashboards par défaut
+  const [isDemoMode, setIsDemoMode] = useState(true);
+
   // États pour les données complémentaires/secondaires
   const [safeMembersData, setSafeMembersData] = useState([]);
   const [platformsData, setPlatformsData] = useState([]);
@@ -124,6 +134,65 @@ export const DataProvider = ({ children }) => {
     setCpmData(data);
   };
 
+  // Fonction pour charger les données des certificats HTML5 Gateway
+  const loadCertificatesData = (data) => {
+    // Formater les données si nécessaire
+    const formattedData = data.map((item) => {
+      // Calcul des jours restants jusqu'à l'expiration
+      const today = new Date();
+      const expiryDate = new Date(item.expiryDate);
+      const daysRemaining = Math.floor(
+        (expiryDate - today) / (1000 * 60 * 60 * 24)
+      );
+
+      return {
+        ...item,
+        daysRemaining,
+        status:
+          daysRemaining <= 14
+            ? "Critical"
+            : daysRemaining <= 30
+            ? "Warning"
+            : "OK",
+      };
+    });
+
+    setCertificatesData(formattedData);
+
+    // Mise à jour des stats de santé du système si nécessaire
+    if (systemHealthData.length > 0) {
+      const updatedStats = {
+        ...systemHealthStats,
+        certificates: {
+          total: formattedData.length,
+          expiringSoon: formattedData.filter((cert) => cert.daysRemaining <= 30)
+            .length,
+          expired: formattedData.filter((cert) => cert.daysRemaining <= 0)
+            .length,
+          valid: formattedData.filter((cert) => cert.daysRemaining > 30).length,
+          criticalCerts: formattedData.filter(
+            (cert) => cert.daysRemaining <= 14
+          ).length,
+          warningCerts: formattedData.filter(
+            (cert) => cert.daysRemaining > 14 && cert.daysRemaining <= 30
+          ).length,
+        },
+      };
+
+      setSystemHealthStats(updatedStats);
+    }
+  };
+
+  // Fonction pour charger les données d'utilisation d'application
+  const loadUsageData = (data) => {
+    setUsageData(data);
+  };
+
+  // Fonction pour charger les données d'accès
+  const loadAccessData = (data) => {
+    setAccessData(data);
+  };
+
   // Calculer les statistiques du système
   const calculateSystemHealthStats = (healthData, componentsData = []) => {
     if (!healthData.length) return {};
@@ -183,6 +252,11 @@ export const DataProvider = ({ children }) => {
     setCapacityData([]);
     setRiskData([]);
     setComplianceData([]);
+    setApplicationsData([]);
+    setPerformanceData([]);
+    setUsageData([]);
+    setAccessData([]);
+    setPendingAccountsData([]);
   };
 
   // Alias pour clearAllData pour compatibilité avec le code existant
@@ -370,6 +444,10 @@ export const DataProvider = ({ children }) => {
     console.log("certificatesData:", certificatesData?.length || 0);
     console.log("complianceData:", complianceData?.length || 0);
     console.log("riskData:", riskData?.length || 0);
+    console.log("applicationsData:", applicationsData?.length || 0);
+    console.log("performanceData:", performanceData?.length || 0);
+    console.log("usageData:", usageData?.length || 0);
+    console.log("accessData:", accessData?.length || 0);
 
     // Forcer une vérification stricte avec Array.isArray pour éviter des faux positifs
     const checkDataAvailable = (data) => Array.isArray(data) && data.length > 0;
@@ -417,17 +495,29 @@ export const DataProvider = ({ children }) => {
         if (checkDataAvailable(safesData)) result.availableData.push("safes");
         break;
       case "application-usage":
-        result.requiredData = ["accounts", "sessions"];
+        result.requiredData = ["accounts", "sessions", "applications", "usage"];
         if (checkDataAvailable(accountsData))
           result.availableData.push("accounts");
         if (checkDataAvailable(sessionsData))
           result.availableData.push("sessions");
+        if (checkDataAvailable(applicationsData))
+          result.availableData.push("applications");
+        if (checkDataAvailable(usageData)) result.availableData.push("usage");
+        break;
+      case "access-management":
+        result.requiredData = ["access", "users", "accounts"];
+        if (checkDataAvailable(accessData)) result.availableData.push("access");
+        if (checkDataAvailable(usersData)) result.availableData.push("users");
+        if (checkDataAvailable(accountsData))
+          result.availableData.push("accounts");
         break;
       case "incident-response":
-        result.requiredData = ["systemHealth", "risk"];
+        result.requiredData = ["systemHealth", "risk", "performance"];
         if (checkDataAvailable(systemHealthData))
           result.availableData.push("systemHealth");
         if (checkDataAvailable(riskData)) result.availableData.push("risk");
+        if (checkDataAvailable(performanceData))
+          result.availableData.push("performance");
         break;
       case "adoption-efficiency":
         result.requiredData = ["users", "accounts", "sessions"];
@@ -493,17 +583,23 @@ export const DataProvider = ({ children }) => {
                 loadAccountsData(parsedData);
                 break;
               case "usage":
-                // Traiter les données d'utilisation comme des données de comptes
-                loadAccountsData(parsedData);
-                // Calculer les statistiques sur les comptes
-                const usageStats = getAccountStats(parsedData);
-                setAccountsStats(usageStats);
+                setUsageData(parsedData);
+                // Calculer les statistiques sur les utilisations
+                break;
+              case "access":
+                setAccessData(parsedData);
+                break;
+              case "applications":
+                setApplicationsData(parsedData);
+                break;
+              case "performance":
+                setPerformanceData(parsedData);
                 break;
               case "sessions":
                 setSessionsData(parsedData);
                 break;
               case "certificates":
-                setCertificatesData(parsedData);
+                loadCertificatesData(parsedData);
                 break;
               case "platforms":
                 loadPlatformsData(parsedData);
@@ -532,6 +628,9 @@ export const DataProvider = ({ children }) => {
                 break;
               case "components":
                 loadComponentsData(parsedData);
+                break;
+              case "pending":
+                setPendingAccountsData(parsedData);
                 break;
               default:
                 throw new Error(`Type de données non reconnu: ${dataType}`);
@@ -584,6 +683,11 @@ export const DataProvider = ({ children }) => {
     capacityData,
     riskData,
     complianceData,
+    applicationsData,
+    performanceData,
+    usageData,
+    accessData,
+    pendingAccountsData,
 
     // Statistiques calculées
     accountsStats,
@@ -606,12 +710,33 @@ export const DataProvider = ({ children }) => {
     setCapacityData,
     setRiskData,
     setComplianceData,
+    setApplicationsData,
+    setPerformanceData,
+    setUsageData,
+    setAccessData,
+    setPendingAccountsData,
+
+    // Fonctions de chargement
+    loadAccountsData,
+    loadSafesData,
+    loadSafeMembersData,
+    loadSystemHealthData,
+    loadComponentsData,
+    loadPlatformsData,
+    loadCpmData,
+    loadCertificatesData,
+    loadUsageData,
+    loadAccessData,
 
     importCSV,
     clearAllData,
     resetAllData,
     hasDashboardData,
     getDashboardDataStatus, // Exposer la nouvelle fonction
+
+    // Paramètres globaux de l'application
+    isDemoMode,
+    setIsDemoMode,
   };
 
   return (

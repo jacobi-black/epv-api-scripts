@@ -33,7 +33,6 @@ import { ChartjsLine, ChartjsBar, ChartjsPie } from "../charts";
 import { Helmet } from "react-helmet";
 import { useData } from "../../utils/DataContext";
 
-const { TabPane } = Tabs;
 const { Option } = Select;
 
 const ExecutiveDashboard = ({ subview }) => {
@@ -271,265 +270,179 @@ const ExecutiveDashboard = ({ subview }) => {
     },
   ];
 
-  if (loading) {
-    return (
-      <div className="loader-container">
-        <div className="loader"></div>
-        <p>Loading executive dashboard...</p>
-      </div>
-    );
-  }
-
-  if (!hasRequiredData) {
-    return (
-      <Alert
-        message="Données requises manquantes"
-        description="Veuillez importer les fichiers de données nécessaires pour visualiser le dashboard exécutif. Rendez-vous dans la section 'Import Data' pour charger les fichiers de rapport de risque, d'inventaire de comptes et de santé système."
-        type="info"
-        showIcon
-        action={
-          <Button type="primary" href="/upload/executive">
-            Importer des données
-          </Button>
-        }
-      />
-    );
-  }
-
-  return (
-    <div className="executive-dashboard">
-      <Helmet>
-        <title>Executive Dashboard | CyberArk Capacity Planning</title>
-      </Helmet>
-
-      <div className="dashboard-header">
-        <h1>
-          <DashboardOutlined /> Executive Dashboard
-        </h1>
-        <p>
-          Strategic overview of security, compliance, and resource allocation
-        </p>
-      </div>
-
-      <div className="dashboard-filters">
-        <Row gutter={16} align="middle">
-          <Col xs={24} sm={12} md={8} lg={6}>
-            <Select
-              value={timeRange}
-              onChange={setTimeRange}
-              style={{ width: "100%" }}
-            >
-              <Option value="month">Current Month</Option>
-              <Option value="quarter">Current Quarter</Option>
-              <Option value="year">Current Year</Option>
-              <Option value="ytd">Year to Date</Option>
-            </Select>
-          </Col>
-          <Col xs={24} sm={6} md={4} lg={3}>
-            <Button type="primary" icon={<DownloadOutlined />}>
-              Export Report
-            </Button>
-          </Col>
-        </Row>
-      </div>
-
-      {/* KPI Summary Cards */}
-      <Row gutter={16}>
-        <Col xs={24} sm={12} md={8} lg={4}>
-          <Card
-            className={`dashboard-card ${isDarkMode ? "dark-card" : ""}`}
-            style={{ height: "100%" }}
-          >
-            <Statistic
-              title="Security Score"
-              value={executiveData.kpis.securityScore}
-              precision={0}
-              valueStyle={{ color: "#1890ff" }}
-              prefix={<SecurityScanOutlined />}
-              suffix="%"
+  // Définition des onglets pour le composant Tabs
+  const tabItems = [
+    {
+      key: "1",
+      label: "Vue d'ensemble",
+      children: (
+        <div>
+          {!hasRequiredData && (
+            <Alert
+              message="Données de démonstration"
+              description="Ce dashboard affiche actuellement des données de démonstration. Pour voir vos données réelles, veuillez importer vos rapports depuis l'onglet 'Importation de fichiers'."
+              type="info"
+              showIcon
+              style={{ marginBottom: 16 }}
             />
-            <div className="trend-indicator">
-              {executiveData.kpis.securityTrend > 0 ? (
-                <span style={{ color: "#52c41a" }}>
-                  <ArrowUpOutlined /> {executiveData.kpis.securityTrend}%
-                </span>
-              ) : (
-                <span style={{ color: "#f5222d" }}>
-                  <ArrowDownOutlined />{" "}
-                  {Math.abs(executiveData.kpis.securityTrend)}%
-                </span>
-              )}
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={4}>
-          <Card
-            className={`dashboard-card ${isDarkMode ? "dark-card" : ""}`}
-            style={{ height: "100%" }}
-          >
-            <Statistic
-              title="Compliance Level"
-              value={executiveData.kpis.complianceLevel}
-              precision={0}
-              valueStyle={{ color: "#52c41a" }}
-              prefix={<LockOutlined />}
-              suffix="%"
-            />
-            <div className="trend-indicator">
-              {executiveData.kpis.complianceTrend > 0 ? (
-                <span style={{ color: "#52c41a" }}>
-                  <ArrowUpOutlined /> {executiveData.kpis.complianceTrend}%
-                </span>
-              ) : (
-                <span style={{ color: "#f5222d" }}>
-                  <ArrowDownOutlined />{" "}
-                  {Math.abs(executiveData.kpis.complianceTrend)}%
-                </span>
-              )}
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={4}>
-          <Card
-            className={`dashboard-card ${isDarkMode ? "dark-card" : ""}`}
-            style={{ height: "100%" }}
-          >
-            <Statistic
-              title="Active Accounts"
-              value={executiveData.kpis.activeAccounts}
-              precision={0}
-              valueStyle={{ color: "#722ed1" }}
-              prefix={<ShoppingOutlined />}
-            />
-            <div className="trend-indicator">
-              {executiveData.kpis.accountsTrend > 0 ? (
-                <span style={{ color: "#52c41a" }}>
-                  <ArrowUpOutlined /> {executiveData.kpis.accountsTrend}%
-                </span>
-              ) : (
-                <span style={{ color: "#f5222d" }}>
-                  <ArrowDownOutlined />{" "}
-                  {Math.abs(executiveData.kpis.accountsTrend)}%
-                </span>
-              )}
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={4}>
-          <Card
-            className={`dashboard-card ${isDarkMode ? "dark-card" : ""}`}
-            style={{ height: "100%" }}
-          >
-            <Statistic
-              title="Active Users"
-              value={executiveData.kpis.activeUsers}
-              precision={0}
-              valueStyle={{ color: "#eb2f96" }}
-              prefix={<UserOutlined />}
-            />
-            <div className="trend-indicator">
-              {executiveData.kpis.usersTrend > 0 ? (
-                <span style={{ color: "#52c41a" }}>
-                  <ArrowUpOutlined /> {executiveData.kpis.usersTrend}%
-                </span>
-              ) : (
-                <span style={{ color: "#f5222d" }}>
-                  <ArrowDownOutlined />{" "}
-                  {Math.abs(executiveData.kpis.usersTrend)}%
-                </span>
-              )}
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={4}>
-          <Card
-            className={`dashboard-card ${isDarkMode ? "dark-card" : ""}`}
-            style={{ height: "100%" }}
-          >
-            <Statistic
-              title="Security Incidents"
-              value={executiveData.kpis.incidents}
-              precision={0}
-              valueStyle={{ color: "#fa8c16" }}
-              prefix={<ExclamationCircleOutlined />}
-            />
-            <div className="trend-indicator">
-              {executiveData.kpis.incidentsTrend < 0 ? (
-                <span style={{ color: "#52c41a" }}>
-                  <ArrowDownOutlined />{" "}
-                  {Math.abs(executiveData.kpis.incidentsTrend)}%
-                </span>
-              ) : (
-                <span style={{ color: "#f5222d" }}>
-                  <ArrowUpOutlined /> {executiveData.kpis.incidentsTrend}%
-                </span>
-              )}
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={4}>
-          <Card
-            className={`dashboard-card ${isDarkMode ? "dark-card" : ""}`}
-            style={{ height: "100%" }}
-          >
-            <Statistic
-              title="Current Risk Level"
-              value={executiveData.kpis.riskLevel}
-              valueStyle={{
-                color:
-                  executiveData.kpis.riskLevel === "Low"
-                    ? "#52c41a"
-                    : executiveData.kpis.riskLevel === "Medium"
-                    ? "#faad14"
-                    : "#f5222d",
-              }}
-              prefix={<FundOutlined />}
-            />
-            <div className="trend-indicator">
-              {executiveData.kpis.riskTrend < 0 ? (
-                <span style={{ color: "#52c41a" }}>
-                  <ArrowDownOutlined /> Improving
-                </span>
-              ) : executiveData.kpis.riskTrend > 0 ? (
-                <span style={{ color: "#f5222d" }}>
-                  <ArrowUpOutlined /> Worsening
-                </span>
-              ) : (
-                <span style={{ color: "#faad14" }}>Stable</span>
-              )}
-            </div>
-          </Card>
-        </Col>
-      </Row>
+          )}
 
-      <Tabs
-        activeKey={activeTab}
-        onChange={setActiveTab}
-        className="dashboard-tabs"
-      >
-        <TabPane
-          tab={
-            <span>
-              <LineChartOutlined /> Strategic Overview
-            </span>
-          }
-          key="1"
-        >
-          <Row gutter={16}>
-            <Col xs={24} lg={12}>
-              <Card
-                title="Security & Compliance Trends"
-                className={`dashboard-card ${isDarkMode ? "dark-card" : ""}`}
-              >
-                <ChartjsLine data={executiveData.securityTrends} />
+          <Row gutter={[16, 16]}>
+            <Col xs={24} sm={12} md={6}>
+              <Card loading={loading}>
+                <Statistic
+                  title="Score de Sécurité"
+                  value={executiveData?.kpis.securityScore || 0}
+                  suffix="/ 100"
+                  valueStyle={{ color: "#1890ff" }}
+                  prefix={<SecurityScanOutlined />}
+                />
+                <div style={{ marginTop: 10 }}>
+                  {executiveData?.kpis.securityTrend > 0 ? (
+                    <span style={{ color: "#52c41a" }}>
+                      <ArrowUpOutlined /> {executiveData?.kpis.securityTrend}%
+                    </span>
+                  ) : (
+                    <span style={{ color: "#f5222d" }}>
+                      <ArrowDownOutlined />{" "}
+                      {Math.abs(executiveData?.kpis.securityTrend || 0)}%
+                    </span>
+                  )}
+                  <span style={{ marginLeft: 8, color: "#8c8c8c" }}>
+                    depuis le dernier trimestre
+                  </span>
+                </div>
               </Card>
             </Col>
-            <Col xs={24} lg={12}>
-              <Card
-                title="Risk Distribution"
-                className={`dashboard-card ${isDarkMode ? "dark-card" : ""}`}
-              >
-                <ChartjsPie data={executiveData.riskDistribution} />
+            <Col xs={24} sm={12} md={6}>
+              <Card loading={loading}>
+                <Statistic
+                  title="Niveau de Conformité"
+                  value={executiveData?.kpis.complianceLevel || 0}
+                  suffix="/ 100"
+                  valueStyle={{ color: "#52c41a" }}
+                  prefix={<LockOutlined />}
+                />
+                <div style={{ marginTop: 10 }}>
+                  {executiveData?.kpis.complianceTrend > 0 ? (
+                    <span style={{ color: "#52c41a" }}>
+                      <ArrowUpOutlined /> {executiveData?.kpis.complianceTrend}%
+                    </span>
+                  ) : (
+                    <span style={{ color: "#f5222d" }}>
+                      <ArrowDownOutlined />{" "}
+                      {Math.abs(executiveData?.kpis.complianceTrend || 0)}%
+                    </span>
+                  )}
+                  <span style={{ marginLeft: 8, color: "#8c8c8c" }}>
+                    depuis le dernier trimestre
+                  </span>
+                </div>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Card loading={loading}>
+                <Statistic
+                  title="Comptes Actifs"
+                  value={executiveData?.kpis.activeAccounts || 0}
+                  valueStyle={{ color: "#722ed1" }}
+                  prefix={<ShoppingOutlined />}
+                />
+                <div style={{ marginTop: 10 }}>
+                  {executiveData?.kpis.accountsTrend > 0 ? (
+                    <span style={{ color: "#52c41a" }}>
+                      <ArrowUpOutlined /> {executiveData?.kpis.accountsTrend}%
+                    </span>
+                  ) : (
+                    <span style={{ color: "#f5222d" }}>
+                      <ArrowDownOutlined />{" "}
+                      {Math.abs(executiveData?.kpis.accountsTrend || 0)}%
+                    </span>
+                  )}
+                  <span style={{ marginLeft: 8, color: "#8c8c8c" }}>
+                    depuis le dernier trimestre
+                  </span>
+                </div>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Card loading={loading}>
+                <Statistic
+                  title="Utilisateurs Actifs"
+                  value={executiveData?.kpis.activeUsers || 0}
+                  valueStyle={{ color: "#eb2f96" }}
+                  prefix={<UserOutlined />}
+                />
+                <div style={{ marginTop: 10 }}>
+                  {executiveData?.kpis.usersTrend > 0 ? (
+                    <span style={{ color: "#52c41a" }}>
+                      <ArrowUpOutlined /> {executiveData?.kpis.usersTrend}%
+                    </span>
+                  ) : (
+                    <span style={{ color: "#f5222d" }}>
+                      <ArrowDownOutlined />{" "}
+                      {Math.abs(executiveData?.kpis.usersTrend || 0)}%
+                    </span>
+                  )}
+                  <span style={{ marginLeft: 8, color: "#8c8c8c" }}>
+                    depuis le dernier trimestre
+                  </span>
+                </div>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Card loading={loading}>
+                <Statistic
+                  title="Incidents de Sécurité"
+                  value={executiveData?.kpis.incidents || 0}
+                  valueStyle={{ color: "#fa8c16" }}
+                  prefix={<ExclamationCircleOutlined />}
+                />
+                <div style={{ marginTop: 10 }}>
+                  {executiveData?.kpis.incidentsTrend < 0 ? (
+                    <span style={{ color: "#52c41a" }}>
+                      <ArrowDownOutlined />{" "}
+                      {Math.abs(executiveData?.kpis.incidentsTrend || 0)}%
+                    </span>
+                  ) : (
+                    <span style={{ color: "#f5222d" }}>
+                      <ArrowUpOutlined /> {executiveData?.kpis.incidentsTrend}%
+                    </span>
+                  )}
+                  <span style={{ marginLeft: 8, color: "#8c8c8c" }}>
+                    depuis le dernier trimestre
+                  </span>
+                </div>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Card loading={loading}>
+                <Statistic
+                  title="Niveau de Risque Actuel"
+                  value={executiveData?.kpis.riskLevel}
+                  valueStyle={{
+                    color:
+                      executiveData?.kpis.riskLevel === "Low"
+                        ? "#52c41a"
+                        : executiveData?.kpis.riskLevel === "Medium"
+                        ? "#faad14"
+                        : "#f5222d",
+                  }}
+                  prefix={<FundOutlined />}
+                />
+                <div style={{ marginTop: 10 }}>
+                  {executiveData?.kpis.riskTrend < 0 ? (
+                    <span style={{ color: "#52c41a" }}>
+                      <ArrowDownOutlined /> Amélioration
+                    </span>
+                  ) : executiveData?.kpis.riskTrend > 0 ? (
+                    <span style={{ color: "#f5222d" }}>
+                      <ArrowUpOutlined /> Dégradation
+                    </span>
+                  ) : (
+                    <span style={{ color: "#faad14" }}>Stable</span>
+                  )}
+                </div>
               </Card>
             </Col>
           </Row>
@@ -541,7 +454,7 @@ const ExecutiveDashboard = ({ subview }) => {
                 className={`dashboard-card ${isDarkMode ? "dark-card" : ""}`}
               >
                 <Table
-                  dataSource={executiveData.keyProjects}
+                  dataSource={executiveData?.keyProjects}
                   columns={projectsColumns}
                   rowKey="id"
                   pagination={false}
@@ -549,31 +462,60 @@ const ExecutiveDashboard = ({ subview }) => {
               </Card>
             </Col>
           </Row>
-        </TabPane>
-
-        <TabPane
-          tab={
-            <span>
-              <BarChartOutlined /> Resource Planning
-            </span>
-          }
-          key="2"
-        >
-          <Row gutter={16}>
-            <Col xs={24} lg={12}>
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: "Tendances de Sécurité",
+      children: (
+        <div>
+          <Row gutter={[16, 16]}>
+            <Col xs={24}>
               <Card
-                title="Resource Allocation"
-                className={`dashboard-card ${isDarkMode ? "dark-card" : ""}`}
+                title="Évolution des Métriques de Sécurité"
+                loading={loading}
               >
-                <ChartjsPie data={executiveData.resourceAllocation} />
+                <ChartjsLine
+                  data={executiveData?.securityTrends || { datasets: [] }}
+                />
               </Card>
             </Col>
-            <Col xs={24} lg={12}>
+          </Row>
+
+          <Row gutter={16} className="mt-4">
+            <Col xs={24}>
               <Card
-                title="Budget Allocation & Forecast"
+                title="Risk Distribution"
                 className={`dashboard-card ${isDarkMode ? "dark-card" : ""}`}
               >
-                <ChartjsBar data={executiveData.budgetAllocation} />
+                <ChartjsPie
+                  data={executiveData?.riskDistribution || { datasets: [] }}
+                />
+              </Card>
+            </Col>
+          </Row>
+        </div>
+      ),
+    },
+    {
+      key: "3",
+      label: "Allocation des Ressources",
+      children: (
+        <div>
+          <Row gutter={[16, 16]}>
+            <Col xs={24} md={12}>
+              <Card title="Distribution des Ressources" loading={loading}>
+                <ChartjsPie
+                  data={executiveData?.resourceAllocation || { datasets: [] }}
+                />
+              </Card>
+            </Col>
+            <Col xs={24} md={12}>
+              <Card title="Distribution des Risques" loading={loading}>
+                <ChartjsPie
+                  data={executiveData?.riskDistribution || { datasets: [] }}
+                />
               </Card>
             </Col>
           </Row>
@@ -609,17 +551,28 @@ const ExecutiveDashboard = ({ subview }) => {
               </Card>
             </Col>
           </Row>
-        </TabPane>
+        </div>
+      ),
+    },
+    {
+      key: "4",
+      label: "Rapports Financiers",
+      children: (
+        <div>
+          <Row gutter={[16, 16]}>
+            <Col xs={24}>
+              <Card
+                title="Allocation et Utilisation du Budget"
+                loading={loading}
+              >
+                <ChartjsBar
+                  data={executiveData?.budgetAllocation || { datasets: [] }}
+                />
+              </Card>
+            </Col>
+          </Row>
 
-        <TabPane
-          tab={
-            <span>
-              <PieChartOutlined /> Future Planning
-            </span>
-          }
-          key="3"
-        >
-          <Row gutter={16}>
+          <Row gutter={16} className="mt-4">
             <Col xs={24}>
               <Card
                 title="Strategic Initiatives"
@@ -703,9 +656,85 @@ const ExecutiveDashboard = ({ subview }) => {
               </Card>
             </Col>
           </Row>
-        </TabPane>
-      </Tabs>
-    </div>
+        </div>
+      ),
+    },
+  ];
+
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+  };
+
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <div className="loader"></div>
+        <p>Loading executive dashboard...</p>
+      </div>
+    );
+  }
+
+  if (!hasRequiredData) {
+    return (
+      <Alert
+        message="Données requises manquantes"
+        description="Veuillez importer les fichiers de données nécessaires pour visualiser le dashboard exécutif. Rendez-vous dans la section 'Import Data' pour charger les fichiers de rapport de risque, d'inventaire de comptes et de santé système."
+        type="info"
+        showIcon
+        action={
+          <Button type="primary" href="/upload/executive">
+            Importer des données
+          </Button>
+        }
+      />
+    );
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>Executive Dashboard | CyberArk Capacity Planning</title>
+      </Helmet>
+
+      <div className="executive-dashboard">
+        <div className="dashboard-header">
+          <h1>
+            <DashboardOutlined /> Executive Dashboard
+          </h1>
+          <p>
+            Strategic overview of security, compliance, and resource allocation
+          </p>
+        </div>
+
+        <div className="dashboard-filters">
+          <Row gutter={16} align="middle">
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Select
+                value={timeRange}
+                onChange={setTimeRange}
+                style={{ width: "100%" }}
+              >
+                <Option value="month">Current Month</Option>
+                <Option value="quarter">Current Quarter</Option>
+                <Option value="year">Current Year</Option>
+                <Option value="ytd">Year to Date</Option>
+              </Select>
+            </Col>
+            <Col xs={24} sm={6} md={4} lg={3}>
+              <Button type="primary" icon={<DownloadOutlined />}>
+                Export Report
+              </Button>
+            </Col>
+          </Row>
+        </div>
+
+        <Tabs
+          activeKey={activeTab}
+          onChange={handleTabChange}
+          items={tabItems}
+        />
+      </div>
+    </>
   );
 };
 

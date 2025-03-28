@@ -94,10 +94,7 @@ const dashboardCategories = {
         "Monitor the health status of CyberArk services, components and certificates.",
       icon: <HealthIcon sx={{ fontSize: 40 }} />,
       colorIndex: 1,
-      scripts: [
-        "/System Health/System-Health.ps1",
-        "/Test HTML5 Certificate/Test-HTML5Gateway.ps1",
-      ],
+      scripts: ["/System Health/System-Health.ps1"],
     },
     {
       id: "performance",
@@ -109,6 +106,7 @@ const dashboardCategories = {
       scripts: [
         "/System Health/System-Health.ps1",
         "/PSM Sessions Management/PSM-SessionsManagement.ps1",
+        "/HTML5 Gateway/Test-HTML5Gateway.ps1",
       ],
     },
   ],
@@ -120,18 +118,6 @@ const dashboardCategories = {
         "Track security compliance, policy violations and risk metrics for privileged accounts.",
       icon: <SecurityIcon sx={{ fontSize: 40 }} />,
       colorIndex: 2,
-      scripts: [
-        "/Security Events/Get-AccoutnsRiskReport.ps1",
-        "/Reports/Accounts/Accounts_Inventory.ps1",
-      ],
-    },
-    {
-      id: "compliance",
-      title: "Compliance Dashboard",
-      description:
-        "Monitor regulatory compliance, audit results and security controls to meet industry standards.",
-      icon: <ComplianceIcon sx={{ fontSize: 40 }} />,
-      colorIndex: 9,
       scripts: [
         "/Security Events/Get-AccoutnsRiskReport.ps1",
         "/Reports/Accounts/Accounts_Inventory.ps1",
@@ -223,6 +209,8 @@ const dashboardCategories = {
       scripts: [
         "/System Health/System-Health.ps1",
         "/Security Events/Get-AccoutnsRiskReport.ps1",
+        "/Reports/Accounts/Accounts_Inventory.ps1",
+        "/User Management/Get-UsersActivityReport.ps1",
       ],
     },
   ],

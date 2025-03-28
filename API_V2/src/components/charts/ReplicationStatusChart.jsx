@@ -2,13 +2,13 @@ import React from "react";
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Cell,
 } from "recharts";
 import { Box, Typography, Paper, Grid, Chip } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -17,7 +17,7 @@ import SyncIcon from "@mui/icons-material/Sync";
 
 const ReplicationStatusChart = ({
   data,
-  title = "État de la Réplication",
+  title = "Réplication vers les Sites DR",
   height = 300,
 }) => {
   // Formatter pour le tooltip

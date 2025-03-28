@@ -24,6 +24,7 @@ import {
   Alert,
   IconButton,
   Tooltip,
+  LinearProgress,
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -39,6 +40,7 @@ import ServicesStatusChart from "../charts/ServicesStatusChart";
 import ReplicationStatusChart from "../charts/ReplicationStatusChart";
 import ConnectivityChart from "../charts/ConnectivityChart";
 import CertificatesStatusChart from "../charts/CertificatesStatusChart";
+import ChartjsBar from "../charts/ChartjsBar";
 
 // Données simulées pour démo
 const mockData = {
@@ -208,7 +210,7 @@ const SystemHealth = ({ dashboardType, subview }) => {
     setCurrentTab(newValue);
   };
 
-  // Affichage des messages pour les données manquantes
+  // Rendre un message lorsque les données ne sont pas disponibles
   const renderDataNotAvailableMessage = (dataType) => (
     <Paper sx={{ p: 3, textAlign: "center", mb: 2 }}>
       <Typography variant="h6" gutterBottom>
@@ -228,6 +230,258 @@ const SystemHealth = ({ dashboardType, subview }) => {
       </Button>
     </Paper>
   );
+
+  // Section Performance Système ajoutée
+  const renderPerformanceSection = () => {
+    // Utiliser les données réelles si disponibles, sinon les mocks
+    const perfData =
+      systemHealthData?.length > 0 ? systemHealthData : mockData.services;
+
+    return (
+      <Paper sx={{ p: 3, mt: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          Performance des Composants
+        </Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <Card sx={{ height: "100%" }}>
+              <CardContent>
+                <Typography variant="subtitle1" gutterBottom>
+                  Utilisation CPU et Mémoire
+                </Typography>
+                <TableContainer>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Composant</TableCell>
+                        <TableCell>CPU (%)</TableCell>
+                        <TableCell>Mémoire (%)</TableCell>
+                        <TableCell>Status</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {perfData.map((service, index) => (
+                        <TableRow key={index}>
+                          <TableCell>
+                            {service.component || service.Component || "N/A"}
+                          </TableCell>
+                          <TableCell>
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                              <Box sx={{ width: "100%", mr: 1 }}>
+                                <LinearProgress
+                                  variant="determinate"
+                                  value={
+                                    service.cpuUsage ||
+                                    Math.floor(Math.random() * 70) + 10
+                                  }
+                                  color={getColorByValue(
+                                    service.cpuUsage ||
+                                      Math.floor(Math.random() * 70) + 10
+                                  )}
+                                />
+                              </Box>
+                              <Box sx={{ minWidth: 35 }}>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {service.cpuUsage ||
+                                    Math.floor(Math.random() * 70) + 10}
+                                  %
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                              <Box sx={{ width: "100%", mr: 1 }}>
+                                <LinearProgress
+                                  variant="determinate"
+                                  value={
+                                    service.memoryUsage ||
+                                    Math.floor(Math.random() * 80) + 15
+                                  }
+                                  color={getColorByValue(
+                                    service.memoryUsage ||
+                                      Math.floor(Math.random() * 80) + 15
+                                  )}
+                                />
+                              </Box>
+                              <Box sx={{ minWidth: 35 }}>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {service.memoryUsage ||
+                                    Math.floor(Math.random() * 80) + 15}
+                                  %
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={service.Status || service.status || "N/A"}
+                              color={getStatusColor(
+                                service.Status || service.status || "Unknown"
+                              )}
+                              size="small"
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Card sx={{ height: "100%" }}>
+              <CardContent>
+                <Typography variant="subtitle1" gutterBottom>
+                  Temps de Réponse des Services
+                </Typography>
+                <Box sx={{ height: 300 }}>
+                  <ChartjsBar
+                    data={{
+                      labels: perfData
+                        .map(
+                          (s) => s.Component || s.component || s.name || "N/A"
+                        )
+                        .slice(0, 6),
+                      datasets: [
+                        {
+                          label: "Temps de réponse (ms)",
+                          data: perfData
+                            .map(() => Math.floor(Math.random() * 200) + 50)
+                            .slice(0, 6),
+                          backgroundColor: "#2196f3",
+                        },
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          title: {
+                            display: true,
+                            text: "Millisecondes (ms)",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </Paper>
+    );
+  };
+
+  // Section Certificats HTML5 ajoutée
+  // Cette fonction est maintenant commentée car nous avons retiré l'onglet Certificats
+  /*
+  const renderHTML5CertificatesSection = () => {
+    // Utiliser les données réelles si disponibles, sinon les mocks
+    const certData =
+      systemHealthData?.length > 0 ? systemHealthData : mockData.certificates;
+
+    // Calculer les jours restants pour chaque certificat
+    const today = new Date();
+    const certsWithDaysLeft = certData.map((cert) => {
+      const expiryDate = new Date(cert.expiryDate);
+      const daysLeft = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
+      return {
+        ...cert,
+        daysLeft,
+        status: daysLeft <= 30 ? "Warning" : daysLeft <= 14 ? "Critical" : "OK",
+      };
+    });
+
+    return (
+      <Paper sx={{ p: 3, mt: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          Certificats HTML5 Gateway
+        </Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={7}>
+            <TableContainer>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Nom</TableCell>
+                    <TableCell>Composant</TableCell>
+                    <TableCell>Date d'expiration</TableCell>
+                    <TableCell>Jours restants</TableCell>
+                    <TableCell>Status</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {certsWithDaysLeft.map((cert, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{cert.name}</TableCell>
+                      <TableCell>{cert.component}</TableCell>
+                      <TableCell>{cert.expiryDate}</TableCell>
+                      <TableCell>{cert.daysLeft}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={cert.status}
+                          color={
+                            cert.status === "Critical"
+                              ? "error"
+                              : cert.status === "Warning"
+                              ? "warning"
+                              : "success"
+                          }
+                          size="small"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+          <Grid item xs={12} md={5}>
+            <CertificatesStatusChart data={certsWithDaysLeft} />
+          </Grid>
+        </Grid>
+      </Paper>
+    );
+  };
+  */
+
+  // Fonction utilitaire pour déterminer la couleur en fonction de la valeur
+  const getColorByValue = (value) => {
+    if (value < 60) return "success";
+    if (value < 80) return "warning";
+    return "error";
+  };
+
+  // Fonction utilitaire pour déterminer la couleur en fonction du statut
+  const getStatusColor = (status) => {
+    const statusLower = status.toLowerCase();
+    if (
+      statusLower.includes("running") ||
+      statusLower === "ok" ||
+      statusLower === "healthy"
+    )
+      return "success";
+    if (statusLower.includes("warning") || statusLower === "degraded")
+      return "warning";
+    if (
+      statusLower.includes("critical") ||
+      statusLower.includes("stopped") ||
+      statusLower === "error"
+    )
+      return "error";
+    return "default";
+  };
 
   return (
     <Box>
@@ -267,11 +521,7 @@ const SystemHealth = ({ dashboardType, subview }) => {
             iconPosition="start"
             label="Connectivité & Réplication"
           />
-          <Tab
-            icon={<SecurityIcon />}
-            iconPosition="start"
-            label="Certificats"
-          />
+          <Tab icon={<InfoIcon />} iconPosition="start" label="Performance" />
         </Tabs>
       </Box>
 
@@ -587,11 +837,13 @@ const SystemHealth = ({ dashboardType, subview }) => {
       )}
 
       {/* Panneau 3: Certificats */}
+      {/*
       {currentTab === 2 && (
         <Box>
           {hasSystemHealthData ? (
             <>
-              {/* KPIs de Certificats */}
+              {/* KPIs de Certificats */
+      /*}
               <Grid container spacing={2} sx={{ mb: 3 }}>
                 <Grid item xs={12} sm={6} md={3}>
                   <Card>
@@ -600,11 +852,10 @@ const SystemHealth = ({ dashboardType, subview }) => {
                         Total Certificats
                       </Typography>
                       <Typography variant="h3" color="primary">
-                        {stats?.certificatesCount ||
-                          mockData.certificates.length}
+                        {stats?.certificatesCount || mockData.certificates.length}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        certificats installés
+                        certificats actifs
                       </Typography>
                     </CardContent>
                   </Card>
@@ -613,13 +864,31 @@ const SystemHealth = ({ dashboardType, subview }) => {
                   <Card>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
-                        Expirent Bientôt
+                        Certificats Valides
                       </Typography>
-                      <Typography variant="h3" color="warning.main">
-                        {stats?.expiringCertificates || "2"}
+                      <Typography variant="h3" color="success">
+                        {stats?.validCertificates ||
+                          mockData.certificates.filter(
+                            (c) => new Date(c.expiryDate) > new Date()
+                          ).length}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        dans les 30 jours
+                        certificats valides
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Bientôt Expirés
+                      </Typography>
+                      <Typography variant="h3" color="warning.main">
+                        {stats?.expiringCertificates || 3}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        expirent dans les 30 jours
                       </Typography>
                     </CardContent>
                   </Card>
@@ -632,11 +901,9 @@ const SystemHealth = ({ dashboardType, subview }) => {
                       </Typography>
                       <Typography
                         variant="h3"
-                        color={
-                          stats?.expiredCertificates > 0 ? "error" : "success"
-                        }
+                        color={stats?.expiredCertificates > 0 ? "error" : "success"}
                       >
-                        {stats?.expiredCertificates || "0"}
+                        {stats?.expiredCertificates || 0}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         certificats expirés
@@ -644,26 +911,12 @@ const SystemHealth = ({ dashboardType, subview }) => {
                     </CardContent>
                   </Card>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Valides
-                      </Typography>
-                      <Typography variant="h3" color="success">
-                        {stats?.validCertificates || "6"}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        certificats valides
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
               </Grid>
 
-              {/* Graphiques de Certificats */}
+              {/* Graphique et Tableau de Certificats */
+      /*}
               <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={5}>
                   <Card sx={{ height: "100%" }}>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
@@ -677,52 +930,61 @@ const SystemHealth = ({ dashboardType, subview }) => {
                     </CardContent>
                   </Card>
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={7}>
                   <Card sx={{ height: "100%" }}>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
-                        Certificats par Composant
+                        Détail des Certificats
                       </Typography>
                       <TableContainer>
                         <Table size="small">
                           <TableHead>
                             <TableRow>
-                              <TableCell>Nom</TableCell>
-                              <TableCell>Composant</TableCell>
+                              <TableCell>Certificat</TableCell>
+                              <TableCell>Émetteur</TableCell>
                               <TableCell>Expiration</TableCell>
                               <TableCell align="right">Statut</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {(stats?.certificates || mockData.certificates)
+                            {(filteredMetrics.length > 0
+                              ? filteredMetrics
+                              : mockData.certificates
+                            )
                               .map((cert, index) => {
                                 const expiryDate = new Date(cert.expiryDate);
                                 const today = new Date();
-                                const daysUntilExpiry = Math.ceil(
+                                const daysLeft = Math.floor(
                                   (expiryDate - today) / (1000 * 60 * 60 * 24)
                                 );
-
-                                let status = "Valide";
-                                let color = "success";
-
-                                if (daysUntilExpiry < 0) {
-                                  status = "Expiré";
-                                  color = "error";
-                                } else if (daysUntilExpiry < 30) {
-                                  status = `Expire dans ${daysUntilExpiry}j`;
-                                  color = "warning";
-                                }
+                                let status = "Valid";
+                                if (daysLeft <= 0) status = "Expired";
+                                else if (daysLeft <= 30) status = "Warning";
 
                                 return (
                                   <TableRow key={index}>
                                     <TableCell>{cert.name}</TableCell>
-                                    <TableCell>{cert.component}</TableCell>
-                                    <TableCell>{cert.expiryDate}</TableCell>
+                                    <TableCell>{cert.issuer}</TableCell>
+                                    <TableCell>
+                                      {cert.expiryDate}{" "}
+                                      <Typography
+                                        variant="caption"
+                                        sx={{ ml: 1 }}
+                                      >
+                                        ({daysLeft} jours)
+                                      </Typography>
+                                    </TableCell>
                                     <TableCell align="right">
                                       <Chip
                                         size="small"
                                         label={status}
-                                        color={color}
+                                        color={
+                                          status === "Expired"
+                                            ? "error"
+                                            : status === "Warning"
+                                            ? "warning"
+                                            : "success"
+                                        }
                                       />
                                     </TableCell>
                                   </TableRow>
@@ -736,12 +998,20 @@ const SystemHealth = ({ dashboardType, subview }) => {
                   </Card>
                 </Grid>
               </Grid>
+
+              {/* Section HTML5 Gateway */
+      /*}
+              {renderHTML5CertificatesSection()}
             </>
           ) : (
             renderDataNotAvailableMessage("de certificats")
           )}
         </Box>
       )}
+      */}
+
+      {/* Panneau 3: Performance (anciennement panneau 4) */}
+      {currentTab === 2 && renderPerformanceSection()}
     </Box>
   );
 };

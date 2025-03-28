@@ -41,10 +41,14 @@ const PerformanceDashboard = ({ subview }) => {
   const [timeRange, setTimeRange] = useState("7d");
   const [activeTab, setActiveTab] = useState(subview || "1");
   const dataContext = useData();
-  const { systemData, certificatesData } = dataContext;
+  const { systemHealthData, certificatesData, isDemoMode } = dataContext;
 
   // Vérifier si les données nécessaires sont disponibles
-  const hasRequiredData = systemData?.length > 0;
+  // Modification pour accepter toutes sources de données pertinentes
+  const hasRequiredData =
+    (systemHealthData && systemHealthData.length > 0) ||
+    (certificatesData && certificatesData.length > 0) ||
+    isDemoMode; // Permettre le mode démo pour voir les données
 
   // Vérifie le mode sombre selon les préférences système
   useEffect(() => {
@@ -379,7 +383,7 @@ const PerformanceDashboard = ({ subview }) => {
         type="info"
         showIcon
         action={
-          <Button type="primary" href="/upload/performance">
+          <Button type="primary" href="/upload">
             Importer des données
           </Button>
         }
@@ -390,7 +394,7 @@ const PerformanceDashboard = ({ subview }) => {
   return (
     <div className="performance-dashboard">
       <Helmet>
-        <title>Performance Dashboard | CyberArk Capacity Planning</title>
+        <title>Performance Dashboard | CyberArk PAM</title>
       </Helmet>
 
       <div className="dashboard-header">
@@ -399,6 +403,16 @@ const PerformanceDashboard = ({ subview }) => {
         </h1>
         <p>Monitor and optimize system performance across all components</p>
       </div>
+
+      {isDemoMode && !systemHealthData?.length && (
+        <Alert
+          message="Mode démonstration"
+          description="Vous visualisez actuellement des données de démonstration. Pour voir vos données réelles, veuillez importer vos fichiers dans la section 'Import Data'."
+          type="info"
+          showIcon
+          style={{ marginBottom: 16 }}
+        />
+      )}
 
       <div className="dashboard-filters">
         <Row gutter={16} align="middle">

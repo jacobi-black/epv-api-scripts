@@ -31,18 +31,30 @@ const ChartjsBar = ({ data, options = {} }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const containerRef = useRef(null);
+  const [chartId] = useState(
+    `bar-chart-${Math.random().toString(36).substring(2, 9)}`
+  ); // ID unique
 
   // Observer les changements de taille du conteneur
   const { width } = useResizeObserver({ ref: containerRef });
+
+  // Vérifier si les données sont valides
+  const isDataValid =
+    data &&
+    data.datasets &&
+    data.datasets.length > 0 &&
+    data.labels &&
+    data.labels.length > 0;
 
   useEffect(() => {
     // Si l'instance du graphique existe déjà, la détruire
     if (chartInstance.current) {
       chartInstance.current.destroy();
+      chartInstance.current = null;
     }
 
-    // Créer une nouvelle instance du graphique
-    if (chartRef.current && data) {
+    // Créer une nouvelle instance du graphique seulement si les données sont valides
+    if (chartRef.current && isDataValid) {
       const ctx = chartRef.current.getContext("2d");
 
       // Configuration par défaut pour les graphiques barres
@@ -156,28 +168,57 @@ const ChartjsBar = ({ data, options = {} }) => {
       // Fusionner les options par défaut avec les options personnalisées
       const mergedOptions = { ...defaultOptions, ...options };
 
-      // Créer l'instance du graphique
-      chartInstance.current = new Chart(ctx, {
-        type: "bar",
-        data: data,
-        options: mergedOptions,
-      });
+      try {
+        // Créer l'instance du graphique avec un ID unique
+        chartInstance.current = new Chart(ctx, {
+          type: "bar",
+          data: data,
+          options: mergedOptions,
+          id: chartId,
+        });
+      } catch (error) {
+        console.error("Error creating bar chart:", error);
+      }
     }
 
     // Nettoyer lors du démontage du composant
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();
+        chartInstance.current = null;
       }
     };
-  }, [data, options, width]);
+  }, [data, options, width, isDataValid, chartId]);
+
+  // Si les données ne sont pas valides, afficher un message
+  if (!isDataValid) {
+    return (
+      <div
+        ref={containerRef}
+        style={{
+          width: "100%",
+          height: "300px",
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#f5f5f5",
+          borderRadius: "4px",
+        }}
+      >
+        <p style={{ color: "#999", fontSize: "14px" }}>
+          Données insuffisantes pour afficher ce graphique
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div
       ref={containerRef}
       style={{ width: "100%", height: "300px", position: "relative" }}
     >
-      <canvas ref={chartRef}></canvas>
+      <canvas ref={chartRef} id={chartId}></canvas>
     </div>
   );
 };

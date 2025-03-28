@@ -60,27 +60,25 @@ const dashboardConfig = {
   },
   health: {
     title: "Health Dashboard",
-    color: "#2e7d32",
-    scripts: [
-      { name: "System-Health.ps1", type: "system", required: true },
-      { name: "Test-HTML5Gateway.ps1", type: "certificates", required: true },
-    ],
+    color: "#2196f3",
+    scripts: [{ name: "System-Health.ps1", type: "system", required: true }],
   },
   security: {
     title: "Security & Compliance Dashboard",
     color: "#d32f2f",
     scripts: [
-      { name: "Get-AccoutnsRiskReport.ps1", type: "risk", required: true },
-      { name: "Accounts_Inventory.ps1", type: "accounts", required: true },
-      { name: "Safe_Inventory.ps1", type: "safes", required: false },
+      { name: "Get-AccountReport.ps1", type: "risk", required: true },
+      { name: "Get-Accounts.ps1", type: "accounts", required: true },
+      { name: "Safe-Management.ps1", type: "safes", required: false },
     ],
   },
   "privileged-accounts": {
     title: "Privileged Accounts Usage Dashboard",
     color: "#7b1fa2",
     scripts: [
-      { name: "Get-Account.ps1", type: "accounts", required: true },
+      { name: "Get-Accounts.ps1", type: "accounts", required: true },
       { name: "Get-UsersActivityReport.ps1", type: "users", required: true },
+      { name: "Invoke-BulkAccountActions.ps1", type: "usage", required: false },
     ],
   },
   sessions: {
@@ -89,7 +87,7 @@ const dashboardConfig = {
     scripts: [
       { name: "PSM-SessionsManagement.ps1", type: "sessions", required: true },
       { name: "Get-AdHocAccess.ps1", type: "access", required: false },
-      { name: "Get-AccoutnsRiskReport.ps1", type: "risk", required: true },
+      { name: "Get-AccountReport.ps1", type: "risk", required: false },
     ],
   },
   "password-rotation": {
@@ -97,8 +95,8 @@ const dashboardConfig = {
     color: "#0097a7",
     scripts: [
       { name: "Get-Safes.ps1", type: "safes", required: true },
-      { name: "Get-PendingAccounts.ps1", type: "pending", required: true },
-      { name: "Accounts_Inventory.ps1", type: "accounts", required: true },
+      { name: "Get-Accounts.ps1", type: "accounts", required: true },
+      { name: "Invoke-BulkAccountActions.ps1", type: "usage", required: true },
     ],
   },
   "application-usage": {
@@ -107,14 +105,16 @@ const dashboardConfig = {
     scripts: [
       { name: "Get-Applications.ps1", type: "applications", required: true },
       { name: "Get-CCPPerformance.ps1", type: "performance", required: true },
+      { name: "Get-Accounts.ps1", type: "accounts", required: false },
     ],
   },
   "incident-response": {
     title: "Incident Response Dashboard",
     color: "#e91e63",
     scripts: [
-      { name: "Get-AccoutnsRiskReport.ps1", type: "risk", required: true },
+      { name: "Get-AccountReport.ps1", type: "risk", required: true },
       { name: "System-Health.ps1", type: "system", required: true },
+      { name: "Get-AdHocAccess.ps1", type: "access", required: false },
     ],
   },
   "adoption-efficiency": {
@@ -122,7 +122,8 @@ const dashboardConfig = {
     color: "#009688",
     scripts: [
       { name: "Get-UsersActivityReport.ps1", type: "users", required: true },
-      { name: "Accounts_Usage.ps1", type: "usage", required: true },
+      { name: "Get-Accounts.ps1", type: "accounts", required: true },
+      { name: "PSM-SessionsManagement.ps1", type: "sessions", required: false },
     ],
   },
   performance: {
@@ -130,25 +131,35 @@ const dashboardConfig = {
     color: "#3f51b5",
     scripts: [
       { name: "System-Health.ps1", type: "system", required: true },
+      { name: "PSM-SessionsManagement.ps1", type: "sessions", required: true },
       { name: "Test-HTML5Gateway.ps1", type: "certificates", required: false },
-    ],
-  },
-  compliance: {
-    title: "Compliance Dashboard",
-    color: "#673ab7",
-    scripts: [
-      { name: "Get-AccoutnsRiskReport.ps1", type: "risk", required: true },
-      { name: "Accounts_Inventory.ps1", type: "accounts", required: false },
-      { name: "Safe_Inventory.ps1", type: "safes", required: false },
     ],
   },
   executive: {
     title: "Executive Dashboard",
     color: "#607d8b",
     scripts: [
-      { name: "Get-AccoutnsRiskReport.ps1", type: "risk", required: true },
-      { name: "Accounts_Inventory.ps1", type: "accounts", required: true },
       { name: "System-Health.ps1", type: "system", required: true },
+      { name: "Get-AccountReport.ps1", type: "risk", required: true },
+      { name: "Get-Accounts.ps1", type: "accounts", required: true },
+      { name: "Get-UsersActivityReport.ps1", type: "users", required: false },
+    ],
+  },
+  "safes-analysis": {
+    title: "Safes Analysis Dashboard",
+    color: "#00acc1",
+    scripts: [
+      { name: "Safe-Management.ps1", type: "safes", required: true },
+      { name: "Get-Accounts.ps1", type: "accounts", required: false },
+    ],
+  },
+  "accounts-analysis": {
+    title: "Accounts Analysis Dashboard",
+    color: "#ff5722",
+    scripts: [
+      { name: "Get-Accounts.ps1", type: "accounts", required: true },
+      { name: "Safe-Management.ps1", type: "safes", required: true },
+      { name: "Invoke-BulkAccountActions.ps1", type: "usage", required: false },
     ],
   },
 };
@@ -157,13 +168,8 @@ const dashboardConfig = {
 const powershellCommands = {
   "System-Health.ps1": {
     command:
-      "./System-Health.ps1 -Server $Server -ExportPath $OutputFolder -OutputCSV System_Health.csv",
+      "./System-Health.ps1 -ExportPath $OutputFolder -OutputCSV System_Health.csv",
     args: [
-      {
-        name: "Server",
-        defaultValue: "cyberark.local",
-        description: "Nom du serveur CyberArk",
-      },
       {
         name: "OutputFolder",
         defaultValue: "C:/Temp",
@@ -194,12 +200,12 @@ const powershellCommands = {
   },
   "Test-HTML5Gateway.ps1": {
     command:
-      "./Test-HTML5Gateway.ps1 -Gateway $Gateway -ExportPath $OutputFolder -OutputCSV Certificates.csv",
+      "./Test-HTML5Gateway.ps1 -Gateway $Gateway -ExportPath $OutputFolder -OutputCSV HTML5_Gateway_Test.csv",
     args: [
       {
         name: "Gateway",
         defaultValue: "https://gateway.cyberark.local",
-        description: "URL du HTML5 Gateway",
+        description: "URL de la passerelle HTML5",
       },
       {
         name: "OutputFolder",
@@ -208,9 +214,9 @@ const powershellCommands = {
       },
     ],
   },
-  "Get-AccoutnsRiskReport.ps1": {
+  "Get-AccountReport.ps1": {
     command:
-      "./Get-AccoutnsRiskReport.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Accounts_Risk.csv",
+      "./Get-AccountReport.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Accounts_Risk.csv",
     args: [
       {
         name: "PVWA",
@@ -271,19 +277,14 @@ const powershellCommands = {
       },
     ],
   },
-  "Get-Account.ps1": {
+  "Get-Accounts.ps1": {
     command:
-      "./Get-Account.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Accounts.csv",
+      "./Get-Accounts.ps1 -PVWAURL $PVWA -List -Report -CSVPath $OutputFolder/Accounts.csv",
     args: [
       {
         name: "PVWA",
         defaultValue: "https://pvwa.cyberark.local",
         description: "URL du PVWA",
-      },
-      {
-        name: "AuthType",
-        defaultValue: "CyberArk",
-        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
       },
       {
         name: "OutputFolder",
@@ -446,6 +447,43 @@ const powershellCommands = {
         name: "Days",
         defaultValue: "30",
         description: "Nombre de jours d'historique à extraire",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Safe-Management.ps1": {
+    command:
+      "./Safe-Management.ps1 -PVWAURL $PVWA -Report -OutputPath $OutputFolder/Safes.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
+  "Invoke-BulkAccountActions.ps1": {
+    command:
+      "./Invoke-BulkAccountActions.ps1 -PVWAURL $PVWA -AuthType $AuthType -AccountsAction 'Verify' -ExportPath $OutputFolder -OutputCSV Accounts_Usage.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
       },
       {
         name: "OutputFolder",
@@ -719,33 +757,27 @@ const ScriptUploadItem = ({
         </Box>
 
         <Box>
-          {isProcessed || hasData ? (
-            <Chip
-              icon={<CloudUploadIcon />}
-              label="Importé"
-              color="success"
-              variant="outlined"
-            />
-          ) : (
-            <>
-              <input
-                type="file"
-                accept=".csv"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                onChange={handleFileSelect}
-              />
-              <Button
-                variant="outlined"
-                component="span"
-                onClick={() => fileInputRef.current.click()}
-                startIcon={<CloudUploadIcon />}
-                disabled={isUploading}
-              >
-                {isUploading ? "Importation..." : "Importer"}
-              </Button>
-            </>
-          )}
+          <input
+            type="file"
+            accept=".csv"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileSelect}
+          />
+          <Button
+            variant={isProcessed || hasData ? "outlined" : "contained"}
+            component="span"
+            onClick={() => fileInputRef.current.click()}
+            startIcon={<CloudUploadIcon />}
+            disabled={isUploading}
+            color={isProcessed || hasData ? "success" : "primary"}
+          >
+            {isUploading
+              ? "Importation..."
+              : isProcessed || hasData
+              ? "Mettre à jour"
+              : "Importer"}
+          </Button>
         </Box>
       </Box>
 
@@ -770,6 +802,35 @@ const PowerShellCommandHelper = ({
   const [customArgs, setCustomArgs] = useState({});
   const [copiedScript, setCopiedScript] = useState(null);
   const [isExpanded, setIsExpanded] = useState(true);
+
+  // Configuration initiale des arguments par défaut pour chaque script
+  const [scriptArguments, setScriptArguments] = useState({
+    "Get-AccountReport.ps1": {
+      PVWA: "https://cyberark.example.com",
+      AuthType: "LDAP",
+      OutputFolder: "./output",
+    },
+    "Get-Accounts.ps1": {
+      PVWA: "https://cyberark.example.com",
+      OutputFolder: "./output",
+    },
+    "Safe-Management.ps1": {
+      PVWA: "https://cyberark.example.com",
+      OutputFolder: "./output",
+    },
+    "Invoke-BulkAccountActions.ps1": {
+      PVWA: "https://cyberark.example.com",
+      AuthType: "LDAP",
+      OutputFolder: "./output",
+    },
+    "System-Health.ps1": {
+      OutputFolder: "./output",
+    },
+    "Test-HTML5Gateway.ps1": {
+      Gateway: "https://gateway.example.com",
+      OutputFolder: "./output",
+    },
+  });
 
   // Fonction pour vérifier si un script a déjà été traité ou si les données sont présentes
   const isScriptProcessed = (script) => {
@@ -837,20 +898,28 @@ const PowerShellCommandHelper = ({
 
   // Mettre à jour la commande avec les arguments personnalisés
   const getFullCommand = (scriptName) => {
-    const scriptConfig = powershellCommands[scriptName];
-    if (!scriptConfig) return "# Commande non disponible pour ce script";
+    const args = scriptArguments[scriptName] || {};
+    const argString = Object.entries(args)
+      .filter(([_, value]) => value && value.toString().trim() !== "")
+      .map(([key, value]) => `-${key} '${value}'`)
+      .join(" ");
 
-    let command = scriptConfig.command;
-
-    // Remplacer les arguments par les valeurs personnalisées
-    if (scriptConfig.args) {
-      scriptConfig.args.forEach((arg) => {
-        const argValue = customArgs[scriptName]?.[arg.name] || arg.defaultValue;
-        command = command.replace(`$${arg.name}`, argValue);
-      });
+    switch (scriptName) {
+      case "Get-AccountReport.ps1":
+        return `$env:COLUMNS="$((Get-Host).UI.RawUI.BufferSize.Width)"; ./Get-AccountReport.ps1 ${argString}`;
+      case "Get-Accounts.ps1":
+        return `$env:COLUMNS="$((Get-Host).UI.RawUI.BufferSize.Width)"; ./Get-Accounts.ps1 ${argString}`;
+      case "Safe-Management.ps1":
+        return `$env:COLUMNS="$((Get-Host).UI.RawUI.BufferSize.Width)"; ./Safe-Management.ps1 ${argString}`;
+      case "Invoke-BulkAccountActions.ps1":
+        return `$env:COLUMNS="$((Get-Host).UI.RawUI.BufferSize.Width)"; ./Invoke-BulkAccountActions.ps1 ${argString}`;
+      case "System-Health.ps1":
+        return `$env:COLUMNS="$((Get-Host).UI.RawUI.BufferSize.Width)"; ./System-Health.ps1 ${argString}`;
+      case "Test-HTML5Gateway.ps1":
+        return `$env:COLUMNS="$((Get-Host).UI.RawUI.BufferSize.Width)"; ./Test-HTML5Gateway.ps1 ${argString}`;
+      default:
+        return `$env:COLUMNS="$((Get-Host).UI.RawUI.BufferSize.Width)"; ./${scriptName} ${argString}`;
     }
-
-    return command;
   };
 
   // Gérer les changements d'arguments personnalisés
@@ -1178,11 +1247,14 @@ const FileUpload = () => {
     if (allRequiredFilesProcessed) {
       setUploadComplete(true);
 
-      // Afficher un message de succès plus longtemps pour permettre la persistance des données
-      setTimeout(() => {
-        console.log("Redirection vers le dashboard...", dashboardType);
-        navigate(`/${dashboardType}`);
-      }, 1500);
+      // Afficher un message de succès mais ne pas rediriger automatiquement
+      setUploadStatus({
+        success: true,
+        message:
+          "Tous les fichiers requis ont été importés avec succès. Vous pouvez maintenant accéder au dashboard.",
+      });
+
+      // La redirection automatique a été supprimée
     }
   };
 

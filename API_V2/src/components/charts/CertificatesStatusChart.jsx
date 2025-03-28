@@ -24,6 +24,7 @@ import {
   TableRow,
   Chip,
 } from "@mui/material";
+import { ChartjsPie } from "./";
 
 const CertificatesStatusChart = ({
   data,
@@ -81,17 +82,99 @@ const CertificatesStatusChart = ({
     return "#4caf50"; // Vert pour > 90 jours
   };
 
-  // Calculer les statistiques
+  // Statistiques sur les certificats
   const expiringSoon = sortedData.filter(
-    (cert) => cert.daysRemaining <= 30
+    (cert) => cert.daysRemaining <= 30 && cert.daysRemaining > 0
   ).length;
-  const expiringMedium = sortedData.filter(
-    (cert) => cert.daysRemaining > 30 && cert.daysRemaining <= 90
-  ).length;
-  const validCerts = sortedData.filter(
-    (cert) => cert.daysRemaining > 90
-  ).length;
+  const expired = sortedData.filter((cert) => cert.daysRemaining <= 0).length;
   const totalCerts = sortedData.length;
+
+  // Utiliser les données passées en props ou des données de démonstration par défaut
+  const certificatesData = data || [
+    {
+      name: "PVWA Certificate",
+      component: "PVWA",
+      expiryDate: "2023-12-25",
+      status: "OK",
+      daysLeft: 180,
+    },
+    {
+      name: "CPM Certificate",
+      component: "CPM",
+      expiryDate: "2023-11-15",
+      status: "Warning",
+      daysLeft: 25,
+    },
+    {
+      name: "PSM Certificate",
+      component: "PSM",
+      expiryDate: "2023-10-05",
+      status: "Critical",
+      daysLeft: 5,
+    },
+    {
+      name: "PVWA Load Balancer",
+      component: "Load Balancer",
+      expiryDate: "2024-01-20",
+      status: "OK",
+      daysLeft: 210,
+    },
+    {
+      name: "DR Certificate",
+      component: "DR",
+      expiryDate: "2023-09-30",
+      status: "Critical",
+      daysLeft: 2,
+    },
+  ];
+
+  // Calculer le nombre de certificats par statut
+  const statusCounts = certificatesData.reduce((acc, cert) => {
+    acc[cert.status] = (acc[cert.status] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Préparer les données pour le graphique
+  const pieChartData = {
+    labels: Object.keys(statusCounts),
+    datasets: [
+      {
+        data: Object.values(statusCounts),
+        backgroundColor: [
+          "#4caf50", // OK - vert
+          "#ff9800", // Warning - orange
+          "#f44336", // Critical - rouge
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Options du graphique
+  const pieChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "right",
+        labels: {
+          boxWidth: 15,
+          padding: 15,
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const label = context.label || "";
+            const value = context.raw || 0;
+            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+            const percentage = Math.round((value / total) * 100);
+            return `${label}: ${value} (${percentage}%)`;
+          },
+        },
+      },
+    },
+  };
 
   return (
     <Paper sx={{ p: 2 }}>
@@ -119,14 +202,9 @@ const CertificatesStatusChart = ({
                 variant={expiringSoon > 0 ? "default" : "outlined"}
               />
               <Chip
-                label={`${expiringMedium} expirent dans 30-90 jours`}
-                color="warning"
-                variant={expiringMedium > 0 ? "default" : "outlined"}
-              />
-              <Chip
-                label={`${validCerts} valides > 90 jours`}
-                color="success"
-                variant={validCerts > 0 ? "default" : "outlined"}
+                label={`${expired} certificats expirés`}
+                color="error"
+                variant={expired > 0 ? "default" : "outlined"}
               />
             </Box>
           </Box>
@@ -219,6 +297,40 @@ const CertificatesStatusChart = ({
             </TableBody>
           </Table>
         </TableContainer>
+      </Box>
+
+      <Box sx={{ position: "relative", height: "100%", width: "100%" }}>
+        <Typography variant="subtitle1" gutterBottom align="center">
+          État des Certificats
+        </Typography>
+        <Box sx={{ height: 300 }}>
+          <ChartjsPie data={pieChartData} options={pieChartOptions} />
+        </Box>
+        {certificatesData.filter((cert) => cert.status === "Critical").length >
+          0 && (
+          <Typography
+            variant="body2"
+            color="error"
+            align="center"
+            sx={{ mt: 2 }}
+          >
+            {
+              certificatesData.filter((cert) => cert.status === "Critical")
+                .length
+            }{" "}
+            certificat(s) à renouveler d'urgence
+          </Typography>
+        )}
+        {certificatesData.filter((cert) => cert.status === "Warning").length >
+          0 && (
+          <Typography variant="body2" color="warning.main" align="center">
+            {
+              certificatesData.filter((cert) => cert.status === "Warning")
+                .length
+            }{" "}
+            certificat(s) à renouveler prochainement
+          </Typography>
+        )}
       </Box>
     </Paper>
   );
