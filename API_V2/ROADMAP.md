@@ -242,10 +242,10 @@
   - [x] Alertes pour données manquantes
   - [x] Indicateurs de chargement
   - [x] Notifications d'erreurs explicites
-- [ ] Aide et onboarding
-  - [ ] Tooltips contextuels
-  - [ ] Guides d'utilisation intégrés
-  - [ ] Tutoriels interactifs pour les nouveaux utilisateurs
+- [x] Aide et onboarding
+  - [x] Tooltips contextuels
+  - [x] Guides d'utilisation intégrés
+  - [x] Tutoriels interactifs pour les nouveaux utilisateurs
 
 ## Phase 6 : Documentation et Support
 

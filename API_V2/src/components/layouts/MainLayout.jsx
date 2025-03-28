@@ -1,28 +1,27 @@
 import React, { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import {
   Box,
-  Drawer,
-  AppBar,
-  Toolbar,
-  List,
+  Fab,
+  Menu,
+  MenuItem,
   Typography,
-  Divider,
-  IconButton,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   useTheme,
   useMediaQuery,
-  Collapse,
-  Tooltip,
+  Divider,
+  IconButton,
+  Zoom,
+  Avatar,
+  Stack,
+  Paper,
+  ListItemIcon,
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon,
 } from "@mui/material";
 
 // Icons
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import HomeIcon from "@mui/icons-material/Home";
 import SpeedIcon from "@mui/icons-material/Speed";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
@@ -33,54 +32,13 @@ import PasswordIcon from "@mui/icons-material/Password";
 import ApiIcon from "@mui/icons-material/Api";
 import ReportIcon from "@mui/icons-material/Report";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import InfoIcon from "@mui/icons-material/Info";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import MenuIcon from "@mui/icons-material/Menu";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CloseIcon from "@mui/icons-material/Close";
 
-const drawerWidth = 260;
-
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: `-${drawerWidth}px`,
-    ...(open && {
-      transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginLeft: 0,
-    }),
-  })
-);
-
-const AppBarStyled = styled(AppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-}));
+// Composants d'aide et de tutoriel
+import { ContextualTooltip, UserGuide, InteractiveTutorial } from "../help";
 
 // Menu items with nested structure
 const menuItems = [
@@ -155,33 +113,79 @@ const menuItems = [
   },
 ];
 
+const MainContent = styled("main")(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  minHeight: "100vh",
+  backgroundColor: theme.palette.background.default,
+}));
+
+// Style du titre flottant minimal
+const PageTitle = styled(Paper)(({ theme }) => ({
+  position: "absolute",
+  top: 16,
+  left: 16,
+  padding: theme.spacing(1, 2),
+  display: "flex",
+  alignItems: "center",
+  borderRadius: 30,
+  boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+  zIndex: 100,
+  backgroundColor: theme.palette.background.paper,
+  "& .MuiIconButton-root": {
+    marginRight: theme.spacing(1),
+  },
+}));
+
+// Menu de navigation flottant
+const NavigationFab = styled(Fab)(({ theme }) => ({
+  position: "fixed",
+  left: theme.spacing(2),
+  bottom: theme.spacing(2),
+  zIndex: 1000,
+}));
+
+const MenuContainer = styled(Menu)(({ theme }) => ({
+  "& .MuiMenu-paper": {
+    maxWidth: 320,
+    maxHeight: "80vh",
+    borderRadius: theme.spacing(1),
+    boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+  },
+}));
+
 function MainLayout({ children }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const [open, setOpen] = useState(!isMobile);
-  const [openGroups, setOpenGroups] = useState({
-    high: true,
-    medium: isMobile ? false : true,
-    low: isMobile ? false : true,
-  });
-
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  // État pour le menu flottant
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const [showBackButton, setShowBackButton] = useState(false);
+
+  // Déterminer le type de dashboard actuel pour le guide et le tutoriel
+  const getCurrentDashboardType = () => {
+    const path = location.pathname.split("/")[1];
+    if (!path) return "home";
+
+    if (path === "capacity") return "capacity";
+    if (path === "health") return "health";
+    if (path === "security") return "security";
+    if (path === "privileged-accounts") return "privileged";
+    if (path === "sessions") return "sessions";
+    if (path === "password-rotation") return "password";
+    if (path === "application-usage") return "application";
+    if (path === "incident-response") return "incident";
+    if (path === "adoption-efficiency") return "adoption";
+
+    return "home";
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const currentDashboardType = getCurrentDashboardType();
 
-  const handleGroupToggle = (group) => {
-    setOpenGroups((prev) => ({
-      ...prev,
-      [group]: !prev[group],
-    }));
-  };
+  // Vérifier si on est sur la page d'accueil
+  const isHomePage = location.pathname === "/";
 
   // Grouper les éléments par priorité
   const highPriorityItems = menuItems.filter(
@@ -193,9 +197,23 @@ function MainLayout({ children }) {
   const lowPriorityItems = menuItems.filter(
     (item) => item.priority === "Basse"
   );
-  const otherItems = menuItems.filter((item) => !item.priority);
 
-  // Vérifier si un chemin est actif (pour la sélection dans le menu)
+  // Gérer l'ouverture et la fermeture du menu
+  const handleMenuOpen = (event) => {
+    setMenuAnchor(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchor(null);
+  };
+
+  // Naviguer et fermer le menu
+  const handleNavigation = (path) => {
+    navigate(path);
+    handleMenuClose();
+  };
+
+  // Vérifier si un chemin est actif
   const isPathActive = (path) => {
     if (path === "/") {
       return location.pathname === "/";
@@ -203,204 +221,216 @@ function MainLayout({ children }) {
     return location.pathname.startsWith(path);
   };
 
-  return (
-    <Box sx={{ display: "flex" }}>
-      <AppBarStyled position="fixed" open={open} color="primary">
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ mr: 2, ...(open && { display: "none" }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            CyberArk Capacity Planning Dashboard
-          </Typography>
-          <Tooltip title="À propos">
-            <IconButton color="inherit">
-              <InfoIcon />
-            </IconButton>
-          </Tooltip>
-        </Toolbar>
-      </AppBarStyled>
+  // Déterminer le titre de la page actuelle
+  const getCurrentPageTitle = () => {
+    const currentItem = menuItems.find((item) => isPathActive(item.path));
+    return currentItem ? currentItem.text : "CyberArk Capacity Planning";
+  };
 
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
+  // Gérer la navigation vers la page d'accueil
+  const handleGoHome = () => {
+    navigate("/");
+  };
+
+  // Afficher le bouton de retour si on n'est pas sur la page d'accueil
+  React.useEffect(() => {
+    setShowBackButton(!isHomePage);
+  }, [location.pathname, isHomePage]);
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        position: "relative",
+      }}
+    >
+      {/* Titre minimaliste flottant */}
+      <PageTitle elevation={2}>
+        {showBackButton && (
+          <IconButton
+            size="small"
+            onClick={handleGoHome}
+            aria-label="retour à l'accueil"
+          >
+            <ArrowBackIcon fontSize="small" />
+          </IconButton>
+        )}
+        <Typography variant="subtitle1" component="h1" fontWeight="500">
+          {getCurrentPageTitle()}
+        </Typography>
+
+        {/* Aide contextuelle à droite du titre */}
+        <Stack direction="row" spacing={1} sx={{ ml: 2 }}>
+          <UserGuide
+            dashboardType={currentDashboardType}
+            buttonVariant="text"
+            buttonProps={{
+              size: "small",
+              sx: { minWidth: 0, p: 0.5 },
+            }}
+          />
+
+          <ContextualTooltip
+            title="Besoin d'aide ?"
+            placement="bottom"
+            showIcon={true}
+          />
+        </Stack>
+      </PageTitle>
+
+      {/* Contenu principal */}
+      <MainContent>
+        {children}
+
+        {/* Tutoriel interactif */}
+        <InteractiveTutorial
+          tutorialType={currentDashboardType === "home" ? "home" : "dashboard"}
+          autoStart={false}
+          showButton={true}
+        />
+      </MainContent>
+
+      {/* Menu de navigation flottant */}
+      <NavigationFab color="primary" aria-label="menu" onClick={handleMenuOpen}>
+        <MenuIcon />
+      </NavigationFab>
+
+      <MenuContainer
+        anchorEl={menuAnchor}
+        open={Boolean(menuAnchor)}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
         }}
-        variant={isMobile ? "temporary" : "persistent"}
-        anchor="left"
-        open={open}
-        onClose={handleDrawerClose}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
       >
-        <DrawerHeader>
-          <Box
+        {/* Accueil */}
+        <MenuItem
+          onClick={() => handleNavigation("/")}
+          selected={isPathActive("/")}
+          sx={{
+            borderLeft: isPathActive("/") ? "4px solid #1976d2" : "none",
+            pl: isPathActive("/") ? 2 : 3,
+          }}
+        >
+          <ListItemIcon>
+            <HomeIcon color={isPathActive("/") ? "primary" : "inherit"} />
+          </ListItemIcon>
+          <Typography variant="body1">Accueil</Typography>
+        </MenuItem>
+
+        <Divider sx={{ my: 1 }} />
+        <MenuItem disabled dense>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            fontWeight="bold"
+          >
+            PRIORITÉ HAUTE
+          </Typography>
+        </MenuItem>
+
+        {highPriorityItems.map((item) => (
+          <MenuItem
+            key={item.text}
+            onClick={() => handleNavigation(item.path)}
+            selected={isPathActive(item.path)}
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "100%",
-              padding: "1rem",
+              borderLeft: isPathActive(item.path)
+                ? `4px solid ${item.color}`
+                : "none",
+              pl: isPathActive(item.path) ? 2 : 3,
             }}
           >
-            <SecurityIcon color="primary" fontSize="large" />
+            <ListItemIcon sx={{ color: item.color }}>{item.icon}</ListItemIcon>
             <Typography
-              variant="h6"
-              component="div"
-              color="primary"
-              sx={{ ml: 1 }}
+              variant="body1"
+              sx={{ color: isPathActive(item.path) ? item.color : "inherit" }}
             >
-              CyberArk EPV Dashboard
+              {item.text}
             </Typography>
-          </Box>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
+          </MenuItem>
+        ))}
+
+        <Divider sx={{ my: 1 }} />
+        <MenuItem disabled dense>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            fontWeight="bold"
+          >
+            PRIORITÉ MOYENNE
+          </Typography>
+        </MenuItem>
+
+        {mediumPriorityItems.map((item) => (
+          <MenuItem
+            key={item.text}
+            onClick={() => handleNavigation(item.path)}
+            selected={isPathActive(item.path)}
+            sx={{
+              borderLeft: isPathActive(item.path)
+                ? `4px solid ${item.color}`
+                : "none",
+              pl: isPathActive(item.path) ? 2 : 3,
+            }}
+          >
+            <ListItemIcon sx={{ color: item.color }}>{item.icon}</ListItemIcon>
+            <Typography
+              variant="body1"
+              sx={{ color: isPathActive(item.path) ? item.color : "inherit" }}
+            >
+              {item.text}
+            </Typography>
+          </MenuItem>
+        ))}
+
+        <Divider sx={{ my: 1 }} />
+        <MenuItem disabled dense>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            fontWeight="bold"
+          >
+            PRIORITÉ BASSE
+          </Typography>
+        </MenuItem>
+
+        {lowPriorityItems.map((item) => (
+          <MenuItem
+            key={item.text}
+            onClick={() => handleNavigation(item.path)}
+            selected={isPathActive(item.path)}
+            sx={{
+              borderLeft: isPathActive(item.path)
+                ? `4px solid ${item.color}`
+                : "none",
+              pl: isPathActive(item.path) ? 2 : 3,
+            }}
+          >
+            <ListItemIcon sx={{ color: item.color }}>{item.icon}</ListItemIcon>
+            <Typography
+              variant="body1"
+              sx={{ color: isPathActive(item.path) ? item.color : "inherit" }}
+            >
+              {item.text}
+            </Typography>
+          </MenuItem>
+        ))}
+
+        <Divider sx={{ my: 1 }} />
+        <MenuItem onClick={handleMenuClose} sx={{ justifyContent: "center" }}>
+          <IconButton size="small">
+            <CloseIcon fontSize="small" />
           </IconButton>
-        </DrawerHeader>
-        <Divider />
-
-        <List sx={{ p: 0 }}>
-          {/* Items sans priorité */}
-          {otherItems.map((item) => (
-            <ListItem key={item.text} disablePadding>
-              <ListItemButton
-                selected={isPathActive(item.path)}
-                onClick={() => {
-                  navigate(item.path);
-                  if (isMobile) handleDrawerClose();
-                }}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-
-          {/* Groupe Priorité Haute */}
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => handleGroupToggle("high")}>
-              <ListItemText
-                primary="Priorité Haute"
-                sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}
-              />
-              {openGroups.high ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-          </ListItem>
-          <Collapse in={openGroups.high} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {highPriorityItems.map((item) => (
-                <ListItem key={item.text} disablePadding>
-                  <ListItemButton
-                    selected={isPathActive(item.path)}
-                    onClick={() => {
-                      navigate(item.path);
-                      if (isMobile) handleDrawerClose();
-                    }}
-                    sx={{
-                      pl: 4,
-                      borderLeft: isPathActive(item.path)
-                        ? `4px solid ${item.color}`
-                        : "none",
-                    }}
-                  >
-                    <ListItemIcon sx={{ color: item.color }}>
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={item.text} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
-
-          {/* Groupe Priorité Moyenne */}
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => handleGroupToggle("medium")}>
-              <ListItemText
-                primary="Priorité Moyenne"
-                sx={{ color: theme.palette.warning.main, fontWeight: "bold" }}
-              />
-              {openGroups.medium ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-          </ListItem>
-          <Collapse in={openGroups.medium} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {mediumPriorityItems.map((item) => (
-                <ListItem key={item.text} disablePadding>
-                  <ListItemButton
-                    selected={isPathActive(item.path)}
-                    onClick={() => {
-                      navigate(item.path);
-                      if (isMobile) handleDrawerClose();
-                    }}
-                    sx={{
-                      pl: 4,
-                      borderLeft: isPathActive(item.path)
-                        ? `4px solid ${item.color}`
-                        : "none",
-                    }}
-                  >
-                    <ListItemIcon sx={{ color: item.color }}>
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={item.text} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
-
-          {/* Groupe Priorité Basse */}
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => handleGroupToggle("low")}>
-              <ListItemText
-                primary="Priorité Basse"
-                sx={{ color: theme.palette.text.secondary, fontWeight: "bold" }}
-              />
-              {openGroups.low ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-          </ListItem>
-          <Collapse in={openGroups.low} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {lowPriorityItems.map((item) => (
-                <ListItem key={item.text} disablePadding>
-                  <ListItemButton
-                    selected={isPathActive(item.path)}
-                    onClick={() => {
-                      navigate(item.path);
-                      if (isMobile) handleDrawerClose();
-                    }}
-                    sx={{
-                      pl: 4,
-                      borderLeft: isPathActive(item.path)
-                        ? `4px solid ${item.color}`
-                        : "none",
-                    }}
-                  >
-                    <ListItemIcon sx={{ color: item.color }}>
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={item.text} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
-        </List>
-      </Drawer>
-
-      <Main open={open}>
-        <DrawerHeader />
-        {children}
-      </Main>
+        </MenuItem>
+      </MenuContainer>
     </Box>
   );
 }
