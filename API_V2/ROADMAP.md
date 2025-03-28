@@ -87,16 +87,16 @@
   - [x] Structure des composants avec placeholders
   - [x] Vérification de la disponibilité des données requises
   - [x] Feedback utilisateur pour données manquantes
-- [ ] Vue d'ensemble avec KPIs principaux
-  - [ ] Taux de conformité des comptes privilégiés aux politiques
-  - [ ] Nombre de violations de politiques détectées
-  - [ ] Comptes non conformes par catégorie
-  - [ ] Nombre de tentatives d'accès refusées
-  - [ ] Pourcentage de comptes non gérés ou mal configurés
-- [ ] Sous-dashboards thématiques
-  - [ ] "Conformité Comptes" - Analyse des comptes et conformité
-  - [ ] "Violations" - Suivi des incidents de sécurité
-  - [ ] "Risques" - Évaluation des risques et alertes
+- [x] Vue d'ensemble avec KPIs principaux
+  - [x] Taux de conformité des comptes privilégiés aux politiques
+  - [x] Nombre de violations de politiques détectées
+  - [x] Comptes non conformes par catégorie
+  - [x] Nombre de tentatives d'accès refusées
+  - [x] Pourcentage de comptes non gérés ou mal configurés
+- [x] Sous-dashboards thématiques
+  - [x] "Conformité Comptes" - Analyse des comptes et conformité
+  - [x] "Violations" - Suivi des incidents de sécurité
+  - [x] "Risques" - Évaluation des risques et alertes
 
 ### 2.4 Dashboard d'Inventaire et Analyse des Comptes
 
@@ -104,14 +104,14 @@
   - [x] Structure des composants avec placeholders
   - [x] Vérification de la disponibilité des données requises
   - [x] Feedback utilisateur pour données manquantes
-- [ ] Vue d'ensemble avec KPIs principaux
-  - [ ] Distribution des comptes par type
-  - [ ] Âge des comptes et conformité
-  - [ ] Comptes critiques et leur statut
-- [ ] Sous-dashboards thématiques
-  - [ ] "Inventaire des Comptes" - Vue détaillée du parc de comptes
-  - [ ] "Analyses & Tendances" - Distribution et évolution
-  - [ ] "Comptes à Risque" - Identification des comptes sensibles
+- [x] Vue d'ensemble avec KPIs principaux
+  - [x] Distribution des comptes par type
+  - [x] Âge des comptes et conformité
+  - [x] Comptes critiques et leur statut
+- [x] Sous-dashboards thématiques
+  - [x] "Inventaire des Comptes" - Vue détaillée du parc de comptes
+  - [x] "Analyses & Tendances" - Distribution et évolution
+  - [x] "Comptes à Risque" - Identification des comptes sensibles
 
 ## Phase 3 : Dashboards Secondaires (Priorité Moyenne)
 
