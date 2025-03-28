@@ -162,6 +162,15 @@ const dashboardConfig = {
       { name: "Invoke-BulkAccountActions.ps1", type: "usage", required: false },
     ],
   },
+  "safes-platforms": {
+    title: "Safes & Platforms Dashboard",
+    color: "#4CAF50",
+    scripts: [
+      { name: "Get-Safes.ps1", type: "safes", required: true },
+      { name: "Get-Accounts.ps1", type: "accounts", required: true },
+      { name: "Get-Platforms.ps1", type: "platforms", required: true },
+    ],
+  },
 };
 
 // Configuration des commandes PowerShell pour chaque script
@@ -492,6 +501,27 @@ const powershellCommands = {
       },
     ],
   },
+  "Get-Platforms.ps1": {
+    command:
+      "./Get-Platforms.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Platforms.csv",
+    args: [
+      {
+        name: "PVWA",
+        defaultValue: "https://pvwa.cyberark.local",
+        description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
+      },
+      {
+        name: "OutputFolder",
+        defaultValue: "C:/Temp",
+        description: "Dossier de sortie pour les fichiers CSV",
+      },
+    ],
+  },
 };
 
 // Étape 3: Aperçu et Confirmation
@@ -603,6 +633,7 @@ const ScriptUploadItem = ({
 }) => {
   const fileInputRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
   const dataContext = useData(); // Accéder directement au contexte de données
 
@@ -629,6 +660,10 @@ const ScriptUploadItem = ({
         return (
           dataContext.certificatesData &&
           dataContext.certificatesData.length > 0
+        );
+      case "platforms":
+        return (
+          dataContext.platformsData && dataContext.platformsData.length > 0
         );
       default:
         return false;
@@ -696,6 +731,13 @@ const ScriptUploadItem = ({
                 } éléments`
               );
               break;
+            case "platforms":
+              console.log(
+                `platformsData: ${
+                  dataContext.platformsData?.length || 0
+                } éléments`
+              );
+              break;
           }
         }, 200); // Attendre un peu que le state soit mis à jour
       }
@@ -707,6 +749,38 @@ const ScriptUploadItem = ({
       });
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  // Gérer le chargement des données de démo
+  const handleLoadDemo = async () => {
+    setIsDemoLoading(true);
+    setUploadStatus(null);
+
+    try {
+      console.log(`Chargement des données de démo pour ${script.type}`);
+      const result = await dataContext.loadDemoData(script.type);
+      console.log(`Résultat du chargement de démo:`, result);
+
+      setUploadStatus({
+        success: result.success,
+        message: result.message,
+      });
+
+      if (result.success) {
+        onUploadSuccess(script.type);
+      }
+    } catch (error) {
+      console.error(
+        `Erreur lors du chargement des données de démo pour ${script.type}:`,
+        error
+      );
+      setUploadStatus({
+        success: false,
+        message: `Erreur de chargement des données de démo: ${error.message}`,
+      });
+    } finally {
+      setIsDemoLoading(false);
     }
   };
 
@@ -756,7 +830,7 @@ const ScriptUploadItem = ({
           </Typography>
         </Box>
 
-        <Box>
+        <Box sx={{ display: "flex", gap: 1 }}>
           <input
             type="file"
             accept=".csv"
@@ -769,14 +843,25 @@ const ScriptUploadItem = ({
             component="span"
             onClick={() => fileInputRef.current.click()}
             startIcon={<CloudUploadIcon />}
-            disabled={isUploading}
+            disabled={isUploading || isDemoLoading}
             color={isProcessed || hasData ? "success" : "primary"}
+            size="small"
           >
             {isUploading
               ? "Importation..."
               : isProcessed || hasData
               ? "Mettre à jour"
               : "Importer"}
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleLoadDemo}
+            disabled={isUploading || isDemoLoading}
+            size="small"
+          >
+            {isDemoLoading ? "Chargement..." : "Utiliser démo"}
           </Button>
         </Box>
       </Box>

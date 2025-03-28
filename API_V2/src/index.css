@@ -1,9 +1,9 @@
 :root {
   --primary-color: #1976d2;
   --secondary-color: #dc004e;
-  --success-color: #4caf50;
-  --warning-color: #ff9800;
-  --danger-color: #f44336;
+  --success-color: #52c41a;
+  --warning-color: #faad14;
+  --danger-color: #f5222d;
   --light-color: #f5f5f5;
   --dark-color: #212121;
   --background-color: #fafafa;
@@ -12,6 +12,20 @@
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
   --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+
+  /* Couleurs du dashboard Performance */
+  --chart-blue: #1890ff;
+  --chart-green: #52c41a;
+  --chart-yellow: #faad14;
+  --chart-red: #f5222d;
+  --chart-purple: #722ed1;
+  --chart-cyan: #13c2c2;
+
+  /* Couleurs de fond pour les cartes */
+  --card-background: #ffffff;
+  --card-background-dark: #252525;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 * {
@@ -91,4 +105,368 @@ button {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
+}
+
+/* Styles spécifiques pour les dashboards */
+.dashboard-header {
+  margin-bottom: 24px;
+}
+
+.dashboard-header h1 {
+  font-size: 24px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.dashboard-header h1 svg,
+.dashboard-header h1 .anticon {
+  margin-right: 8px;
+}
+
+.dashboard-header p {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+}
+
+.dashboard-filters {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+}
+
+.dashboard-card {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+}
+
+.dashboard-card:hover {
+  box-shadow: var(--card-hover-shadow);
+}
+
+.dashboard-card .ant-card-head {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  min-height: 48px;
+}
+
+.dashboard-card .ant-card-head-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.dashboard-tabs {
+  margin-top: 24px;
+}
+
+.dashboard-tabs .ant-tabs-nav {
+  margin-bottom: 16px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.status-indicator .anticon {
+  margin-right: 4px;
+}
+
+.mt-4 {
+  margin-top: 16px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.success-text {
+  color: var(--success-color);
+}
+
+.warning-text {
+  color: var(--warning-color);
+}
+
+.danger-text {
+  color: var(--danger-color);
+}
+
+/* Mode sombre pour les dashboards */
+.dark-card {
+  background-color: var(--card-background-dark);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark-card .ant-card-head {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-card .ant-card-head-title {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark-card .ant-table {
+  background: transparent;
+}
+
+.dark-card .ant-table-thead > tr > th {
+  background-color: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-card .ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.dark-card .ant-table-tbody > tr:hover > td {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.dark-card .ant-progress-text {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark-card .ant-statistic-title {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.dark-card .ant-statistic-content {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.chart-explanation {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 8px 0;
+}
+
+.dark-card .chart-explanation {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Harmonisation entre Material-UI et Ant Design pour les dashboards */
+.MuiPaper-root {
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.MuiPaper-root:hover {
+  box-shadow: var(--card-hover-shadow);
+}
+
+.MuiTypography-h5 {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.MuiTypography-h5 svg {
+  margin-right: 8px;
+}
+
+.MuiTypography-h6 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.MuiCard-root {
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.MuiCard-root:hover {
+  box-shadow: var(--card-hover-shadow);
+}
+
+.MuiAlert-root {
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.MuiGrid-container,
+.ant-row {
+  margin-bottom: 16px;
+}
+
+.MuiTabs-root,
+.ant-tabs {
+  margin-top: 24px;
+}
+
+.MuiTab-root,
+.ant-tabs-tab {
+  font-weight: 500;
+  text-transform: none;
+}
+
+.MuiTab-root .MuiSvgIcon-root,
+.ant-tabs-tab .anticon {
+  margin-right: 8px;
+}
+
+.MuiButton-root {
+  text-transform: none;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.MuiButton-root.MuiButton-contained {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.MuiButton-root.MuiButton-outlined {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.MuiChip-root {
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 13px;
+  height: 24px;
+}
+
+.MuiChip-root.MuiChip-colorSuccess {
+  background-color: rgba(82, 196, 26, 0.1);
+  color: var(--success-color);
+}
+
+.MuiChip-root.MuiChip-colorWarning {
+  background-color: rgba(250, 173, 20, 0.1);
+  color: var(--warning-color);
+}
+
+.MuiChip-root.MuiChip-colorError {
+  background-color: rgba(245, 34, 45, 0.1);
+  color: var(--danger-color);
+}
+
+/* Harmonisation des couleurs de graphiques entre Recharts et ChartJS */
+.recharts-default-tooltip {
+  background-color: white !important;
+  border-radius: 8px !important;
+  border: none !important;
+  box-shadow: var(--card-shadow) !important;
+  padding: 8px 12px !important;
+}
+
+.recharts-tooltip-label {
+  font-weight: 500 !important;
+  margin-bottom: 4px !important;
+}
+
+.recharts-legend-item {
+  margin-right: 16px !important;
+}
+
+/* Mode sombre pour Material-UI */
+.MuiPaper-root.dark-card {
+  background-color: var(--card-background-dark);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.MuiPaper-root.dark-card .MuiTypography-root {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.MuiPaper-root.dark-card .MuiTypography-colorTextSecondary {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.MuiPaper-root.dark-card .MuiDivider-root {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.MuiPaper-root.dark-card .MuiTableCell-head {
+  background-color: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.MuiPaper-root.dark-card .MuiTableCell-body {
+  color: rgba(255, 255, 255, 0.65);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.MuiPaper-root.dark-card .MuiTableRow-root:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Classes spécifiques pour harmoniser les espaces */
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mb-1 {
+  margin-bottom: 4px;
+}
+
+.mb-2 {
+  margin-bottom: 8px;
+}
+
+.mb-3 {
+  margin-bottom: 16px;
+}
+
+.mb-4 {
+  margin-bottom: 24px;
+}
+
+.mt-0 {
+  margin-top: 0;
+}
+
+.mt-1 {
+  margin-top: 4px;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+
+.mt-3 {
+  margin-top: 16px;
+}
+
+.mt-4 {
+  margin-top: 24px;
+}
+
+.p-0 {
+  padding: 0;
+}
+
+.p-1 {
+  padding: 4px;
+}
+
+.p-2 {
+  padding: 8px;
+}
+
+.p-3 {
+  padding: 16px;
+}
+
+.p-4 {
+  padding: 24px;
 }

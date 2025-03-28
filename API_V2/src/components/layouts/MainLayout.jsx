@@ -6,7 +6,7 @@ import {
   Menu,
   MenuItem,
   Typography,
-  useTheme,
+  useTheme as useMuiTheme,
   useMediaQuery,
   Divider,
   IconButton,
@@ -17,6 +17,7 @@ import {
   Tooltip,
   Fab,
 } from "@mui/material";
+import { useTheme } from "../../utils/ThemeContext";
 
 // Icons
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
@@ -34,6 +35,7 @@ import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import AppsRoundedIcon from "@mui/icons-material/AppsRounded";
+import { Storage as DatabaseIcon } from "@mui/icons-material";
 
 // Palette de couleurs très simplifiée - principalement des teintes de bleu et gris
 const colorPalette = {
@@ -76,6 +78,12 @@ const menuItems = [
     text: "Health Dashboard",
     icon: <HealthAndSafetyRoundedIcon />,
     path: "/health",
+    color: colorPalette.primary,
+  },
+  {
+    text: "Safes & Platforms",
+    icon: <DatabaseIcon />,
+    path: "/safes-platforms",
     color: colorPalette.primary,
   },
   {
@@ -262,19 +270,20 @@ const PriorityLabel = styled(Chip)(({ theme, color, isdarkmode }) => ({
 }));
 
 function MainLayout({ children }) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
   const location = useLocation();
+  const muiTheme = useMuiTheme();
+  const { isDarkMode, toggleDarkMode } = useTheme();
+  const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"));
 
   // États
-  const [menuAnchor, setMenuAnchor] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [favorites, setFavorites] = useState([
     "/capacity",
     "/health",
-    "/security",
+    "/performance",
   ]);
+  const [hasMainPadding, setHasMainPadding] = useState(true);
 
   // Déterminer le type de dashboard actuel pour le guide et le tutoriel
   const getCurrentDashboardType = () => {
@@ -306,11 +315,11 @@ function MainLayout({ children }) {
 
   // Gérer l'ouverture et la fermeture du menu
   const handleMenuOpen = (event) => {
-    setMenuAnchor(event.currentTarget);
+    setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
-    setMenuAnchor(null);
+    setAnchorEl(null);
   };
 
   // Naviguer et fermer le menu
@@ -341,61 +350,25 @@ function MainLayout({ children }) {
     );
   };
 
-  // Basculer le mode sombre/clair
-  const toggleDarkMode = () => {
-    setIsDarkMode((prev) => !prev);
-  };
-
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
-        position: "relative",
+        bgcolor: (theme) => theme.palette.background.default,
         background: isDarkMode
           ? `linear-gradient(to bottom right, ${colorPalette.grey900}, ${colorPalette.grey800})`
           : `linear-gradient(to bottom right, ${colorPalette.grey50}, ${colorPalette.grey100})`,
         transition: "background 0.5s ease",
       }}
     >
-      {/* Contenu principal avec transition */}
-      <Fade in={true} timeout={500}>
-        <MainContent haspadding="true">
-          <Box
-            sx={{
-              minHeight: "calc(100vh - 80px)",
-              transition: "all 0.3s ease",
-              filter: Boolean(menuAnchor) ? "blur(3px)" : "none",
-              transform: Boolean(menuAnchor) ? "scale(0.98)" : "scale(1)",
-            }}
-          >
-            {children}
-          </Box>
-        </MainContent>
-      </Fade>
-
-      {/* Bouton de mode sombre/clair */}
-      <ThemeToggleButton
-        size="small"
-        onClick={toggleDarkMode}
-        aria-label={
-          isDarkMode ? "passer en mode clair" : "passer en mode sombre"
-        }
-        isdarkmode={isDarkMode.toString()}
-      >
-        {isDarkMode ? (
-          <LightModeRoundedIcon fontSize="small" />
-        ) : (
-          <DarkModeRoundedIcon fontSize="small" />
-        )}
-      </ThemeToggleButton>
-
-      {/* Menu complet */}
+      {/* Menu */}
       <MenuContainer
-        anchorEl={menuAnchor}
-        open={Boolean(menuAnchor)}
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        isdarkmode={isDarkMode ? "true" : "false"}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "right",
@@ -404,7 +377,6 @@ function MainLayout({ children }) {
           vertical: "bottom",
           horizontal: "right",
         }}
-        isdarkmode={isDarkMode.toString()}
         TransitionComponent={Fade}
         transitionDuration={300}
       >
@@ -423,8 +395,8 @@ function MainLayout({ children }) {
             sx={{
               fontWeight: isPathActive("/") ? 600 : 400,
               color: isDarkMode
-                ? theme.palette.common.white
-                : theme.palette.text.primary,
+                ? muiTheme.palette.common.white
+                : muiTheme.palette.text.primary,
             }}
           >
             Accueil
@@ -479,8 +451,8 @@ function MainLayout({ children }) {
                   sx={{
                     fontWeight: isPathActive(item.path) ? 600 : 400,
                     color: isDarkMode
-                      ? theme.palette.common.white
-                      : theme.palette.text.primary,
+                      ? muiTheme.palette.common.white
+                      : muiTheme.palette.text.primary,
                     flexGrow: 1,
                   }}
                 >
@@ -557,8 +529,8 @@ function MainLayout({ children }) {
                 sx={{
                   fontWeight: isPathActive(item.path) ? 600 : 400,
                   color: isDarkMode
-                    ? theme.palette.common.white
-                    : theme.palette.text.primary,
+                    ? muiTheme.palette.common.white
+                    : muiTheme.palette.text.primary,
                   flexGrow: 1,
                 }}
               >
@@ -603,6 +575,22 @@ function MainLayout({ children }) {
           </Tooltip>
         </Box>
       </MenuContainer>
+
+      {/* Main Content */}
+      <Fade in={true} timeout={500}>
+        <MainContent haspadding={hasMainPadding ? "true" : "false"}>
+          <Box
+            sx={{
+              minHeight: "calc(100vh - 80px)",
+              transition: "all 0.3s ease",
+              filter: Boolean(anchorEl) ? "blur(3px)" : "none",
+              transform: Boolean(anchorEl) ? "scale(0.98)" : "scale(1)",
+            }}
+          >
+            {children}
+          </Box>
+        </MainContent>
+      </Fade>
     </Box>
   );
 }

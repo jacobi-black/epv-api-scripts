@@ -26,6 +26,7 @@ import {
   GppGood as ComplianceIcon,
   DashboardOutlined,
   RocketOutlined,
+  Storage as DatabaseIcon,
 } from "@mui/icons-material";
 
 // Nouvelle palette avec couleurs uniques pour chaque dashboard
@@ -107,6 +108,19 @@ const dashboardCategories = {
         "/System Health/System-Health.ps1",
         "/PSM Sessions Management/PSM-SessionsManagement.ps1",
         "/HTML5 Gateway/Test-HTML5Gateway.ps1",
+      ],
+    },
+    {
+      id: "safes-platforms",
+      title: "Safes & Platforms Dashboard",
+      description:
+        "View comprehensive analytics of safes, platforms and their associated accounts and security metrics.",
+      icon: <DatabaseIcon sx={{ fontSize: 40 }} />,
+      colorIndex: 9,
+      scripts: [
+        "/Safe Management/Get-Safes.ps1",
+        "/Get Accounts/Get-Account.ps1",
+        "/Platforms/Get-Platforms.ps1",
       ],
     },
   ],

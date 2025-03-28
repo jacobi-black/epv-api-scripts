@@ -1,42 +1,60 @@
 import { getCache, setCache } from "./cache";
+import Papa from "papaparse";
 
 /**
  * Parse a CSV file and return the data
  * @param {String|File} csvData - The CSV data or file to parse
- * @returns {Array} - The parsed data
+ * @returns {Promise<Array>} - The parsed data
  */
-export const parseCSV = (csvData) => {
+export const parseCSV = async (csvData) => {
   try {
-    // Si csvData est déjà une chaîne, on l'utilise directement
-    // Sinon, on suppose que c'est le résultat de FileReader.readAsText
-    const text = typeof csvData === "string" ? csvData : null;
-
-    if (!text) {
-      throw new Error("Format de données invalide");
+    // Si csvData est un objet File, lire son contenu
+    if (csvData instanceof File) {
+      return new Promise((resolve, reject) => {
+        Papa.parse(csvData, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => {
+            if (results.errors && results.errors.length > 0) {
+              console.error("Erreurs papaparse:", results.errors);
+              // On continue malgré les erreurs si on a des données
+              if (results.data.length === 0) {
+                reject(
+                  new Error(`Erreur de parsing: ${results.errors[0].message}`)
+                );
+                return;
+              }
+            }
+            resolve(results.data);
+          },
+          error: (error) => {
+            reject(new Error(`Erreur de parsing: ${error.message}`));
+          },
+        });
+      });
     }
 
-    const lines = text.split("\n");
-
-    if (lines.length < 2) {
-      throw new Error("Le fichier CSV est vide ou mal formaté");
-    }
-
-    // Parser les en-têtes
-    const headers = lines[0].split(",").map((h) => h.trim());
-
-    // Parser les données en une seule passe
-    const data = lines
-      .slice(1)
-      .filter((line) => line.trim()) // Ignorer les lignes vides
-      .map((line) => {
-        const values = line.split(",").map((v) => v.trim());
-        return headers.reduce((obj, header, index) => {
-          obj[header] = values[index];
-          return obj;
-        }, {});
+    // Si csvData est une chaîne de texte
+    if (typeof csvData === "string") {
+      const results = Papa.parse(csvData, {
+        header: true,
+        skipEmptyLines: true,
       });
 
-    return data;
+      if (results.errors && results.errors.length > 0) {
+        console.error("Erreurs papaparse:", results.errors);
+        // On continue malgré les erreurs si on a des données
+        if (results.data.length === 0) {
+          throw new Error(`Erreur de parsing: ${results.errors[0].message}`);
+        }
+      }
+
+      return results.data;
+    }
+
+    throw new Error(
+      "Format de données invalide: le paramètre n'est ni un fichier ni une chaîne de texte"
+    );
   } catch (error) {
     console.error("Erreur lors du parsing du CSV:", error);
     throw error;
@@ -60,7 +78,8 @@ export const identifyDataType = (data) => {
     headers.includes("AccountID") ||
     headers.includes("Username") ||
     headers.includes("Safe") ||
-    headers.includes("Platform")
+    headers.includes("Platform") ||
+    headers.includes("SafeName")
   ) {
     return "accounts";
   }
@@ -69,7 +88,9 @@ export const identifyDataType = (data) => {
   if (
     headers.includes("SafeName") ||
     headers.includes("MemberName") ||
-    headers.includes("Permissions")
+    headers.includes("Permissions") ||
+    headers.includes("Description") ||
+    headers.includes("CPM")
   ) {
     return "safes";
   }
@@ -78,9 +99,21 @@ export const identifyDataType = (data) => {
   if (
     headers.includes("ComponentID") ||
     headers.includes("Status") ||
-    headers.includes("Version")
+    headers.includes("Version") ||
+    headers.includes("Component")
   ) {
     return "systemHealth";
+  }
+
+  // Check for platform data
+  if (
+    headers.includes("PlatformID") ||
+    headers.includes("PlatformType") ||
+    (headers.includes("ID") &&
+      headers.includes("Name") &&
+      headers.includes("Active"))
+  ) {
+    return "platforms";
   }
 
   return "unknown";

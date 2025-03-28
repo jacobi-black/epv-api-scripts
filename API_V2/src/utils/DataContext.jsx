@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { parseCSV, getAccountStats } from "./csvParser";
 import { getSafesStats, getAccountsStats } from "./statsCalculator";
+import Papa from "papaparse";
 
 // Create the context
 const DataContext = createContext();
@@ -556,118 +557,189 @@ export const DataProvider = ({ children }) => {
     return result;
   };
 
-  // Fonction pour importer des données CSV
-  const importCSV = (file, dataType) => {
-    console.log(`Début d'importation CSV - type: ${dataType}`, file);
-    return new Promise((resolve, reject) => {
-      try {
-        const reader = new FileReader();
+  // Fonction pour importer un fichier CSV
+  const importCSV = async (file, type) => {
+    try {
+      const parsedData = await parseCSV(file);
 
-        reader.onload = (event) => {
-          try {
-            const csvData = event.target.result;
-            console.log(`Contenu CSV chargé, longueur: ${csvData.length}`);
-            const parsedData = parseCSV(csvData);
-            console.log(`Données parsées, ${parsedData?.length || 0} entrées`);
-
-            if (!parsedData || parsedData.length === 0) {
-              throw new Error("Le fichier CSV est vide ou invalide");
-            }
-
-            // Assigner les données au type approprié
-            switch (dataType) {
-              case "users":
-                setUsersData(parsedData);
-                break;
-              case "accounts":
-                loadAccountsData(parsedData);
-                break;
-              case "usage":
-                setUsageData(parsedData);
-                // Calculer les statistiques sur les utilisations
-                break;
-              case "access":
-                setAccessData(parsedData);
-                break;
-              case "applications":
-                setApplicationsData(parsedData);
-                break;
-              case "performance":
-                setPerformanceData(parsedData);
-                break;
-              case "sessions":
-                setSessionsData(parsedData);
-                break;
-              case "certificates":
-                loadCertificatesData(parsedData);
-                break;
-              case "platforms":
-                loadPlatformsData(parsedData);
-                break;
-              case "safes":
-                loadSafesData(parsedData);
-                break;
-              case "systemHealth":
-              case "system": // Ajouter l'alias 'system' pour systemHealth
-                loadSystemHealthData(parsedData);
-                break;
-              case "capacity":
-                setCapacityData(parsedData);
-                break;
-              case "risk":
-                setRiskData(parsedData);
-                break;
-              case "compliance":
-                setComplianceData(parsedData);
-                break;
-              case "safeMembers":
-                loadSafeMembersData(parsedData);
-                break;
-              case "cpm":
-                loadCpmData(parsedData);
-                break;
-              case "components":
-                loadComponentsData(parsedData);
-                break;
-              case "pending":
-                setPendingAccountsData(parsedData);
-                break;
-              default:
-                throw new Error(`Type de données non reconnu: ${dataType}`);
-            }
-
-            console.log(`Importation réussie pour ${dataType}`);
-            resolve({
-              success: true,
-              message: `Données ${dataType} importées avec succès (${parsedData.length} lignes)`,
-              count: parsedData.length,
-              type: dataType,
-            });
-          } catch (error) {
-            console.error("Erreur lors du parsing CSV:", error);
-            reject({
-              success: false,
-              message: `Erreur de traitement du fichier: ${error.message}`,
-            });
-          }
-        };
-
-        reader.onerror = () => {
-          reject({
-            success: false,
-            message: "Erreur lors de la lecture du fichier",
-          });
-        };
-
-        reader.readAsText(file);
-      } catch (error) {
-        console.error("Erreur d'importation:", error);
-        reject({
+      if (
+        !parsedData ||
+        !Array.isArray(parsedData) ||
+        parsedData.length === 0
+      ) {
+        return {
           success: false,
-          message: `Erreur d'importation: ${error.message}`,
-        });
+          message: `Erreur: Le fichier ${file.name} ne contient pas de données valides.`,
+        };
       }
-    });
+
+      console.log(`Données importées pour ${type}:`, parsedData.slice(0, 2));
+
+      // Traiter les données en fonction du type
+      switch (type) {
+        case "system":
+          setSystemHealthData(parsedData);
+          break;
+        case "safes":
+          setSafesData(parsedData);
+          break;
+        case "accounts":
+          setAccountsData(parsedData);
+          break;
+        case "users":
+          setUsersData(parsedData);
+          break;
+        case "platforms":
+          setPlatformsData(parsedData);
+          break;
+        case "certificates":
+          setCertificatesData(parsedData);
+          break;
+        case "sessions":
+          setSessionsData(parsedData);
+          break;
+        case "risk":
+          setRiskData(parsedData);
+          break;
+        case "access":
+          setAccessData(parsedData);
+          break;
+        case "usage":
+          setUsageData(parsedData);
+          break;
+        case "applications":
+          setApplicationsData(parsedData);
+          break;
+        case "performance":
+          setPerformanceData(parsedData);
+          break;
+        case "capacity":
+          setCapacityData(parsedData);
+          break;
+        case "compliance":
+          setComplianceData(parsedData);
+          break;
+        case "safeMembers":
+          loadSafeMembersData(parsedData);
+          break;
+        case "cpm":
+          loadCpmData(parsedData);
+          break;
+        case "components":
+          loadComponentsData(parsedData);
+          break;
+        case "pending":
+          setPendingAccountsData(parsedData);
+          break;
+        default:
+          return {
+            success: false,
+            message: `Type de données non reconnu: ${type}`,
+          };
+      }
+
+      return {
+        success: true,
+        message: `Données importées avec succès: ${parsedData.length} enregistrements.`,
+      };
+    } catch (error) {
+      console.error("Erreur lors de l'importation du CSV:", error);
+      return {
+        success: false,
+        message: `Erreur: ${error.message}`,
+      };
+    }
+  };
+
+  // Fonction pour charger les données de démo
+  const loadDemoData = async (dataType) => {
+    try {
+      const response = await fetch(`/src/mockData/demo/${dataType}.csv`);
+      if (!response.ok) {
+        throw new Error(
+          `Erreur lors du chargement des données de démo: ${response.statusText}`
+        );
+      }
+
+      const csvText = await response.text();
+      console.log(
+        `Contenu CSV chargé pour ${dataType}:`,
+        csvText.substring(0, 200) + "..."
+      );
+
+      // Utiliser la fonction parseCSV au lieu de Papa.parse directement
+      const parsedData = await parseCSV(csvText);
+
+      if (!parsedData || parsedData.length === 0) {
+        return {
+          success: false,
+          message: `Erreur: Aucune donnée valide trouvée pour ${dataType}.`,
+        };
+      }
+
+      console.log(
+        `Données de démo parsées pour ${dataType}:`,
+        parsedData.slice(0, 2)
+      );
+
+      // Traiter les données en fonction du type
+      switch (dataType) {
+        case "system":
+          setSystemHealthData(parsedData);
+          break;
+        case "safes":
+          setSafesData(parsedData);
+          break;
+        case "accounts":
+          setAccountsData(parsedData);
+          break;
+        case "users":
+          setUsersData(parsedData);
+          break;
+        case "platforms":
+          setPlatformsData(parsedData);
+          break;
+        case "certificates":
+          setCertificatesData(parsedData);
+          break;
+        case "sessions":
+          setSessionsData(parsedData);
+          break;
+        case "risk":
+          setRiskData(parsedData);
+          break;
+        case "access":
+          setAccessData(parsedData);
+          break;
+        case "usage":
+          setUsageData(parsedData);
+          break;
+        case "applications":
+          setApplicationsData(parsedData);
+          break;
+        case "performance":
+          setPerformanceData(parsedData);
+          break;
+        default:
+          return {
+            success: false,
+            message: `Type de données non reconnu: ${dataType}`,
+          };
+      }
+
+      setIsDemoMode(true);
+
+      return {
+        success: true,
+        message: `Données de démo chargées: ${parsedData.length} enregistrements.`,
+      };
+    } catch (error) {
+      console.error("Erreur lors du chargement des données de démo:", error);
+      return {
+        success: false,
+        message: `Erreur: ${error.message}`,
+      };
+    }
   };
 
   // Données et fonctions exportées vers les composants
@@ -737,6 +809,9 @@ export const DataProvider = ({ children }) => {
     // Paramètres globaux de l'application
     isDemoMode,
     setIsDemoMode,
+
+    // Nouvelle fonction pour charger les données de démo
+    loadDemoData,
   };
 
   return (
