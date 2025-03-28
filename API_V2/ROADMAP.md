@@ -251,14 +251,71 @@
 
 ### 6.1 Documentation Technique
 
-- [ ] Documentation du code et de l'architecture
-  - [ ] Structure des composants
-  - [ ] Flux de données
-  - [ ] Guide d'extension pour nouveaux dashboards
-- [ ] Guide d'installation et de déploiement
-  - [ ] Prérequis système
-  - [ ] Étapes d'installation
-  - [ ] Configuration et personnalisation
+- [x] Documentation du code et de l'architecture
+  - [x] Structure des composants
+  - [x] Flux de données
+  - [x] Guide d'extension pour nouveaux dashboards
+- [x] Guide d'installation et de déploiement
+  - [x] Prérequis système
+  - [x] Étapes d'installation
+  - [x] Configuration et personnalisation
+
+## Phase 7 : Améliorations et Optimisations
+
+### 7.1 Optimisation des KPI par Niveau
+
+- [ ] Réorganisation des KPI existants
+  - [ ] Segmentation par niveau (Stratégique/Tactique/Opérationnel)
+  - [ ] Ajout d'indicateurs visuels de tendance
+  - [ ] Amélioration des seuils d'alerte visuelle
+- [ ] Visualisations avancées
+  - [ ] Optimisation des graphiques existants pour la lisibilité
+  - [ ] Ajout de lignes/zones de référence sur les graphiques
+  - [ ] Amélioration du contraste des données importantes
+
+### 7.2 Gestion Améliorée des Données Partielles
+
+- [ ] Affichage adaptatif des dashboards
+  - [ ] Gestion intelligente des données manquantes
+  - [ ] Indicateurs visuels pour les sections partielles
+  - [ ] Navigation contextuelle entre dashboards liés
+- [ ] Amélioration du système d'upload
+  - [ ] Clarification des fichiers attendus par dashboard
+  - [ ] Validation partielle des données importées
+  - [ ] Prévisualisation des données avant intégration
+
+### 7.3 Optimisation des Performances
+
+- [ ] Traitement amélioré des données
+  - [ ] Optimisation des parsers pour tous les formats de scripts
+  - [ ] Traitement asynchrone des calculs complexes
+  - [ ] Gestion optimisée de la mémoire pour grands volumes
+- [ ] Interface utilisateur réactive
+  - [ ] Chargement progressif des visualisations
+  - [ ] Optimisation des temps de réponse
+  - [ ] Amélioration du rendu sur différents appareils
+
+### 7.4 Fonctionnalités d'Export et Partage
+
+- [ ] Options d'export intégrées
+  - [ ] Export en PDF des dashboards
+  - [ ] Export des données brutes en CSV/Excel
+  - [ ] Génération de rapports par niveau hiérarchique
+- [ ] Filtrage et personnalisation
+  - [ ] Filtres avancés sur les données affichées
+  - [ ] Tri multi-colonnes dans les tableaux
+  - [ ] Options de personnalisation de l'affichage par session
+
+### 7.5 Intégration avec les Sources de Données
+
+- [ ] Catalogue de scripts compatibles
+  - [ ] Documentation des scripts requis par dashboard
+  - [ ] Paramètres recommandés pour chaque script
+  - [ ] Exemples de commandes pour génération optimale
+- [ ] Enrichissement des métadonnées
+  - [ ] Indication de la source des données (script d'origine)
+  - [ ] Horodatage des imports de données
+  - [ ] Information sur la complétude des données
 
 ## Remarques Importantes pour le Développement
 
