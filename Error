@@ -1,15 +1,4 @@
---- Rapport des sessions PSM ---
-ExÃ©cution de: .\PSM Sessions Management\PSM-SessionsManagement.ps1
-Starting script (v1.0)
-Retrieving sessions for PSM Server PSMServer...
-Exporting the output to C:\tmp\PSMSessions.csv
-Finished retrieving sessions for PSM Server PSMServer
-Logoff Session...
-Logoff Session...
-Script ended
-TerminÃ© avec succÃ¨s
-
---- Rapport des applications AAM ---
+-- Rapport des applications AAM ---
 ExÃ©cution de: .\AAM Applications\Export-Import-Applications.ps1
 Starting script (v1.0)
 No Credentials were entered
@@ -17,11 +6,52 @@ TerminÃ© avec succÃ¨s
 
 --- Rapport d'optimisation des adresses ---
 ExÃ©cution de: .\Optimize Address\Optimize-Addresses.ps1
-ERREUR: [401] Transaction failed because logon was not called with this Session Instance.
+LogoffUrl
+---------
+         
+No valid session found, will attempt authentication
+Authentication successful
+PowerShell version is 5 or less. Parallel processing disabled
+130 out of 155 addresses found in DNS
+0 out of 155 addresses Updated
+TerminÃ© avec succÃ¨s
 
 --- Rapport de tous les comptes ---
 ExÃ©cution de: .\Get Accounts\Get-Accounts.ps1
 No Credentials were entered
 TerminÃ© avec succÃ¨s
 
+--- Rapport de santÃ© du systÃ¨me ---
+ExÃ©cution de: .\System Health\System-Health.ps1
+ERREUR: At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:26 char:1
++ [CmdletBinding()]
++ ~~~~~~~~~~~~~~~~~
+Unexpected attribute 'CmdletBinding'.
+
+At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:27 char:1
++ param(
++ ~~~~~
+Unexpected token 'param' in expression or statement.
+
+At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:35 char:25
++     [String]$AuthType = "cyberark",
++                         ~~~~~~~~~~
+The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments, such as a variable or a property.
+
 Session CyberArk fermÃ©e
+===============================================
+RÃ©sumÃ© des rapports gÃ©nÃ©rÃ©s:
+- AccountReport.csv
+- AccountRiskReport.csv
+- AddressOptimization.csv
+- DiscoveredAccounts.csv
+- InactiveUsers.csv
+- PlatformReport.csv
+- PSMSessions.csv
+- SafeMemberReport.csv
+
+Attention: Des erreurs ont Ã©tÃ© dÃ©tectÃ©es. Consultez le fichier C:\tmp\erreurs.log
+
+
+
+PS C:\Cyberark Dashboard\epv-api-scripts> 
