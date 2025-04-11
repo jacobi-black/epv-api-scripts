@@ -180,7 +180,7 @@ $reports = @(
             PVWAURL = $PVWA_URL
             Export = $true
             CSVPath = "$EXPORT_DIR\AAMApplications.csv"
-            AuthType = $AuthType
+            PVWACredentials = $creds
         }
     },
     # 9. Rapport d'optimisation des adresses
@@ -207,7 +207,7 @@ $reports = @(
             CSVPath = "$EXPORT_DIR\AllAccounts.csv"
             SortBy = "UserName"
             AutoNextPage = $true
-            logonToken = $logonToken
+            PVWACredentials = $creds
             DisableLogoff = $true
         }
     },
@@ -220,9 +220,37 @@ $reports = @(
             PVWACredentials = $creds
             AllComponentTypes = $true
             AllServers = $true
-            CSVPath = "$EXPORT_DIR\SystemHealth.csv"
             OutputObject = $true
-            CyberArkCommon = ".\System Health\CyberArk-Common.psm1"
+        }
+        # Pour ce script, on utilise une logique personnalisée d'exécution
+        CustomExecution = {
+            param($Description, $ScriptPath, $Parameters)
+            
+            Write-Host "--- $Description ---" -ForegroundColor Cyan
+            Write-Host "Exécution de: $ScriptPath" -ForegroundColor Yellow
+            
+            # S'assurer que le module CyberArk-Common est présent
+            $CyberArkCommonPath = Join-Path (Split-Path -Parent $ScriptPath) "CyberArk-Common.psm1"
+            if (Test-Path $CyberArkCommonPath) {
+                try {
+                    # Importer le module avant d'exécuter le script
+                    Import-Module $CyberArkCommonPath -Force -ErrorAction Stop
+                    
+                    # Exécuter le script en utilisant & pour assurer l'évaluation correcte des paramètres
+                    & $ScriptPath @Parameters | Export-Csv -Path "$EXPORT_DIR\SystemHealth.csv" -NoTypeInformation
+                    
+                    Write-Host "Terminé avec succès" -ForegroundColor Green
+                } 
+                catch {
+                    Write-Host "ERREUR: $_" -ForegroundColor Red
+                    $_.Exception.Message | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
+                }
+            } else {
+                Write-Host "ERREUR: Le module CyberArk-Common.psm1 n'a pas été trouvé à côté du script System-Health.ps1" -ForegroundColor Red
+                "Le module CyberArk-Common.psm1 n'a pas été trouvé à côté du script System-Health.ps1" | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
+            }
+            
+            Write-Host ""
         }
     }
 )
@@ -236,7 +264,13 @@ foreach ($report in $reports) {
     $progress = [math]::Round(($currentReport / $totalReports) * 100)
     Write-Progress -Activity "Génération des rapports CyberArk" -Status "Rapport $currentReport sur $totalReports" -PercentComplete $progress
     
-    Run-Report -Description $report.Description -ScriptPath $report.ScriptPath -Parameters $report.Parameters
+    if ($report.ContainsKey('CustomExecution')) {
+        # Utiliser l'exécution personnalisée définie dans le rapport
+        & $report.CustomExecution $report.Description $report.ScriptPath $report.Parameters
+    } else {
+        # Utiliser la fonction standard Run-Report
+        Run-Report -Description $report.Description -ScriptPath $report.ScriptPath -Parameters $report.Parameters
+    }
 }
 
 # Compléter la barre de progression
