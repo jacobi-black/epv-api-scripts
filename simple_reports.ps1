@@ -33,13 +33,17 @@ Write-Host ""
 
 # Fonction pour exécuter les commandes avec gestion d'erreurs simple
 function Run-Command {
-    param ($Description, $Command)
+    param (
+        [string]$Description,
+        [string]$ScriptPath,
+        [hashtable]$Parameters
+    )
     
     Write-Host "--- $Description ---" -ForegroundColor Cyan
-    Write-Host "Exécution de: $Command" -ForegroundColor Yellow
+    Write-Host "Exécution de: $ScriptPath" -ForegroundColor Yellow
     
     try {
-        Invoke-Expression $Command
+        & $ScriptPath @Parameters
         Write-Host "Terminé avec succès" -ForegroundColor Green
     } catch {
         Write-Host "ERREUR: $_" -ForegroundColor Red
@@ -52,31 +56,62 @@ function Run-Command {
 # 1. Rapport des comptes
 $accountReportPath = ".\Reports\Accounts\Get-AccountReport.ps1"
 if (Test-ScriptExists $accountReportPath) {
-    Run-Command "Rapport des comptes" "& `"$accountReportPath`" -ReportPath `"$EXPORT_DIR\AccountReport.csv`" -PVWAAddress `"$PVWA_URL`" -allProps"
+    $params = @{
+        ReportPath = "$EXPORT_DIR\AccountReport.csv"
+        PVWAAddress = $PVWA_URL
+        allProps = $true
+    }
+    Run-Command -Description "Rapport des comptes" -ScriptPath $accountReportPath -Parameters $params
 }
 
 # 2. Rapport des membres de coffres
 $safeMemberReportPath = ".\Reports\Safes\Get-SafeMemberReport.ps1"
 if (Test-ScriptExists $safeMemberReportPath) {
-    Run-Command "Rapport des membres de coffres" "& `"$safeMemberReportPath`" -ReportPath `"$EXPORT_DIR\SafeMemberReport.csv`" -PVWAAddress `"$PVWA_URL`" -IncludeGroups -IncludeApps"
+    $params = @{
+        ReportPath = "$EXPORT_DIR\SafeMemberReport.csv"
+        PVWAAddress = $PVWA_URL
+        IncludeGroups = $true
+        IncludeApps = $true
+    }
+    Run-Command -Description "Rapport des membres de coffres" -ScriptPath $safeMemberReportPath -Parameters $params
 }
 
 # 3. Rapport des comptes découverts
 $discoveredAccountsPath = ".\Discovered Accounts\Get-DiscoveredAccountsReport.ps1"
 if (Test-ScriptExists $discoveredAccountsPath) {
-    Run-Command "Rapport des comptes découverts" "& `"$discoveredAccountsPath`" -PVWAURL `"$PVWA_URL`" -List -CSVPath `"$EXPORT_DIR\DiscoveredAccounts.csv`" -AuthType $AuthType -AutoNextPage"
+    $params = @{
+        PVWAURL = $PVWA_URL
+        List = $true
+        CSVPath = "$EXPORT_DIR\DiscoveredAccounts.csv"
+        AuthType = $AuthType
+        AutoNextPage = $true
+    }
+    Run-Command -Description "Rapport des comptes découverts" -ScriptPath $discoveredAccountsPath -Parameters $params
 }
 
 # 4. Rapport des utilisateurs inactifs
 $inactiveUsersPath = ".\User Management\Get-InactiveUsersReport.ps1"
 if (Test-ScriptExists $inactiveUsersPath) {
-    Run-Command "Rapport des utilisateurs inactifs" "& `"$inactiveUsersPath`" -PVWAURL `"$PVWA_URL`" -CSVPath `"$EXPORT_DIR\InactiveUsers.csv`" -AuthType $AuthType -InactiveDays 30"
+    $params = @{
+        PVWAURL = $PVWA_URL
+        CSVPath = "$EXPORT_DIR\InactiveUsers.csv"
+        AuthType = $AuthType
+        InactiveDays = 30
+    }
+    Run-Command -Description "Rapport des utilisateurs inactifs" -ScriptPath $inactiveUsersPath -Parameters $params
 }
 
 # 5. Rapport des plateformes
 $platformReportPath = ".\Platforms\Get-PlatformReport.ps1"
 if (Test-ScriptExists $platformReportPath) {
-    Run-Command "Rapport des plateformes" "& `"$platformReportPath`" -PVWAURL `"$PVWA_URL`" -CSVPath `"$EXPORT_DIR\PlatformReport.csv`" -AuthType $AuthType -ExtendedReport -IncludeInactive"
+    $params = @{
+        PVWAURL = $PVWA_URL
+        CSVPath = "$EXPORT_DIR\PlatformReport.csv"
+        AuthType = $AuthType
+        ExtendedReport = $true
+        IncludeInactive = $true
+    }
+    Run-Command -Description "Rapport des plateformes" -ScriptPath $platformReportPath -Parameters $params
 }
 
 # 6. Rapport des risques de comptes - Vérifier plusieurs noms possibles
@@ -94,7 +129,13 @@ foreach ($path in $riskReportPaths) {
 }
 
 if ($riskReportPath) {
-    Run-Command "Rapport des risques de comptes" "& `"$riskReportPath`" -PVWAURL `"$PVWA_URL`" -CSVPath `"$EXPORT_DIR\AccountRiskReport.csv`" -AuthType $AuthType -EventsDaysFilter 30"
+    $params = @{
+        PVWAURL = $PVWA_URL
+        CSVPath = "$EXPORT_DIR\AccountRiskReport.csv"
+        AuthType = $AuthType
+        EventsDaysFilter = 30
+    }
+    Run-Command -Description "Rapport des risques de comptes" -ScriptPath $riskReportPath -Parameters $params
 } else {
     Write-Host "ERREUR: Aucun script de rapport de risque trouvé" -ForegroundColor Red
     "Script de rapport de risque non trouvé" | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
@@ -103,26 +144,52 @@ if ($riskReportPath) {
 # 7. Rapport des sessions PSM
 $psmSessionsPath = ".\PSM Sessions Management\PSM-SessionsManagement.ps1"
 if (Test-ScriptExists $psmSessionsPath) {
-    # Remplacez "PSMServer" par votre serveur PSM réel
-    Run-Command "Rapport des sessions PSM" "& `"$psmSessionsPath`" -PVWAURL `"$PVWA_URL`" -List -CSVPath `"$EXPORT_DIR\PSMSessions.csv`" -AuthType $AuthType -PSMServerName `"PSMServer`""
+    $params = @{
+        PVWAURL = $PVWA_URL
+        List = $true
+        CSVPath = "$EXPORT_DIR\PSMSessions.csv"
+        AuthType = $AuthType
+        PSMServerName = "PSMServer"  # Remplacez par votre serveur PSM réel
+    }
+    Run-Command -Description "Rapport des sessions PSM" -ScriptPath $psmSessionsPath -Parameters $params
 }
 
 # 8. Rapport des applications AAM
 $aamAppsPath = ".\AAM Applications\Export-Import-Applications.ps1"
 if (Test-ScriptExists $aamAppsPath) {
-    Run-Command "Rapport des applications AAM" "& `"$aamAppsPath`" -PVWAURL `"$PVWA_URL`" -Export -CSVPath `"$EXPORT_DIR\AAMApplications.csv`" -AuthType $AuthType"
+    $params = @{
+        PVWAURL = $PVWA_URL
+        Export = $true
+        CSVPath = "$EXPORT_DIR\AAMApplications.csv"
+        AuthType = $AuthType
+    }
+    Run-Command -Description "Rapport des applications AAM" -ScriptPath $aamAppsPath -Parameters $params
 }
 
 # 9. Rapport d'optimisation des adresses
 $optimizeAddressPath = ".\Optimize Address\Optimize-Addresses.ps1"
 if (Test-ScriptExists $optimizeAddressPath) {
-    Run-Command "Rapport d'optimisation des adresses" "& `"$optimizeAddressPath`" -PVWAAddress `"$PVWA_URL`" -ExportToCSV -CSVPath `"$EXPORT_DIR\AddressOptimization.csv`" -ShowAllResults"
+    $params = @{
+        PVWAAddress = $PVWA_URL
+        ExportToCSV = $true
+        CSVPath = "$EXPORT_DIR\AddressOptimization.csv"
+        ShowAllResults = $true
+    }
+    Run-Command -Description "Rapport d'optimisation des adresses" -ScriptPath $optimizeAddressPath -Parameters $params
 }
 
 # 10. Rapport de tous les comptes
 $getAccountsPath = ".\Get Accounts\Get-Accounts.ps1"
 if (Test-ScriptExists $getAccountsPath) {
-    Run-Command "Rapport de tous les comptes" "& `"$getAccountsPath`" -PVWAURL `"$PVWA_URL`" -List -Report -CSVPath `"$EXPORT_DIR\AllAccounts.csv`" -SortBy `"UserName`" -AutoNextPage"
+    $params = @{
+        PVWAURL = $PVWA_URL
+        List = $true
+        Report = $true
+        CSVPath = "$EXPORT_DIR\AllAccounts.csv"
+        SortBy = "UserName"
+        AutoNextPage = $true
+    }
+    Run-Command -Description "Rapport de tous les comptes" -ScriptPath $getAccountsPath -Parameters $params
 }
 
 # Afficher un résumé des rapports générés
