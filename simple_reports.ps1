@@ -228,66 +228,80 @@ $reports = @(
             Write-Host "--- $Description ---" -ForegroundColor Cyan
             Write-Host "Execution de: $ScriptPath" -ForegroundColor Yellow
             
-            $scriptDirectory = Split-Path -Parent $ScriptPath
-            $cyberArkCommonPath = Join-Path $scriptDirectory "CyberArk-Common.psm1"
+            $moduleDir = Split-Path -Parent $ScriptPath
+            $modulePath = Join-Path $moduleDir "CyberArk-Common.psm1"
             
-            if (!(Test-Path $cyberArkCommonPath)) {
-                Write-Host "ERREUR: Le module CyberArk-Common.psm1 n'a pas ete trouve a cote du script" -ForegroundColor Red
-                "Le module CyberArk-Common.psm1 n'a pas ete trouve a $cyberArkCommonPath" | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append -Encoding ASCII
+            if (!(Test-Path $modulePath)) {
+                Write-Host "ERREUR: Module CyberArk-Common.psm1 non trouve ($modulePath)" -ForegroundColor Red
                 return
             }
             
+            # Preparer les arguments
+            $argList = "-NoProfile -ExecutionPolicy Bypass"
+            
+            # 1. Preparer l'importation du module
+            $importCmd = "Import-Module '$modulePath' -Force -DisableNameChecking;"
+            
+            # 2. Preparer les parametres - en les passant un par un pour eviter les problemes
+            $paramString = "-PVWAURL '$($Parameters.PVWAURL)'"
+            if ($Parameters.DisableSSLVerify) { $paramString += " -DisableSSLVerify" }
+            if ($Parameters.AllComponentTypes) { $paramString += " -AllComponentTypes" }
+            if ($Parameters.AllServers) { $paramString += " -AllServers" }
+            
+            # 3. Preparer la commande d'execution avec capture de sortie
+            $scriptCmd = "&'$ScriptPath' $paramString | Out-File '$EXPORT_DIR\SystemHealth.txt' -Encoding default;"
+            
+            # 4. Ajouter la commande pour capturer l'objet et l'exporter en CSV
+            $exportCmd = "if (`$output = Get-ComponentStatus) { `$output | Export-Csv -Path '$EXPORT_DIR\SystemHealth.csv' -NoTypeInformation -Encoding ASCII }"
+            
+            # 5. Combiner le tout
+            $fullCommand = "$importCmd $scriptCmd $exportCmd"
+            
+            Write-Host "Execution du script avec parametres directs:" -ForegroundColor Yellow
+            Write-Host $paramString -ForegroundColor Gray
+            
             try {
-                # Import du module CyberArk-Common si necessaire
-                if (-not (Get-Module -Name CyberArk-Common -ErrorAction SilentlyContinue)) {
-                    Import-Module $cyberArkCommonPath -Force -DisableNameChecking
-                }
+                # Execution directe en specifiant l'encodage et en utilisant -Command au lieu de -File
+                $process = Start-Process -FilePath "powershell.exe" -ArgumentList "$argList -Command `"$fullCommand`"" -Wait -PassThru -NoNewWindow
                 
-                # Construction de la commande avec tous les parametres en tableaux pour eviter les problemes d'encodage
-                $scriptArgs = @(
-                    "-PVWAURL", $Parameters.PVWAURL,
-                    "-DisableSSLVerify"
-                )
-                
-                if ($Parameters.AllComponentTypes) {
-                    $scriptArgs += "-AllComponentTypes"
-                }
-                
-                if ($Parameters.AllServers) {
-                    $scriptArgs += "-AllServers"
-                }
-                
-                # Execution directe du script avec & (call operator) et arguments explicites
-                Write-Host "Execution du rapport de sante du systeme..." -ForegroundColor Yellow
-                $results = & $ScriptPath @scriptArgs -OutputObject
-                
-                if ($null -ne $results) {
-                    Write-Host "Export des resultats vers CSV..." -ForegroundColor Yellow
-                    # Export avec encodage ASCII pour eviter les problemes de caracteres speciaux
-                    $results | Export-Csv -Path "$EXPORT_DIR\SystemHealth.csv" -NoTypeInformation -Encoding ASCII
-                    Write-Host "Rapport exporte avec succes: $EXPORT_DIR\SystemHealth.csv" -ForegroundColor Green
-                } else {
-                    Write-Host "AVERTISSEMENT: Aucun resultat obtenu du script System-Health" -ForegroundColor Yellow
-                }
-                
-                Write-Host "Termine avec succes" -ForegroundColor Green
-            } catch {
-                Write-Host "ERREUR lors de l'execution du script System-Health: $_" -ForegroundColor Red
-                "Erreur System-Health: $_" | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append -Encoding ASCII
-                
-                # En cas d'erreur, on peut tenter une autre approche
-                try {
-                    Write-Host "Tentative alternative d'execution..." -ForegroundColor Yellow
-                    $process = Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`" -PVWAURL `"$($Parameters.PVWAURL)`" -DisableSSLVerify -AllComponentTypes -AllServers -OutputDir `"$EXPORT_DIR`"" -Wait -PassThru -NoNewWindow
+                if ($process.ExitCode -eq 0) {
+                    Write-Host "Script execute avec succes (Code: $($process.ExitCode))" -ForegroundColor Green
                     
-                    if ($process.ExitCode -eq 0) {
-                        Write-Host "Execution alternative reussie" -ForegroundColor Green
+                    # Verifier si le rapport CSV ou TXT a ete genere
+                    if (Test-Path "$EXPORT_DIR\SystemHealth.csv") {
+                        Write-Host "Rapport exporte avec succes: $EXPORT_DIR\SystemHealth.csv" -ForegroundColor Green
+                    } elseif (Test-Path "$EXPORT_DIR\SystemHealth.txt") {
+                        Write-Host "Rapport texte genere: $EXPORT_DIR\SystemHealth.txt" -ForegroundColor Yellow
+                        
+                        # Tenter de convertir le texte en CSV si necessaire
+                        $content = Get-Content "$EXPORT_DIR\SystemHealth.txt" -Raw
+                        if ($content -match "ComponentID") {
+                            Write-Host "Tentative de conversion du texte en CSV..." -ForegroundColor Yellow
+                            # Tentative de parsing et conversion - code simplifie
+                            $content | Out-File "$EXPORT_DIR\SystemHealth.csv" -Encoding ASCII
+                        }
                     } else {
-                        Write-Host "L'execution alternative a echoue avec le code $($process.ExitCode)" -ForegroundColor Red
+                        Write-Host "Aucun fichier de rapport n'a ete genere." -ForegroundColor Red
                     }
-                } catch {
-                    Write-Host "L'execution alternative a echoue: $_" -ForegroundColor Red
+                } else {
+                    Write-Host "Le script a retourne le code d'erreur: $($process.ExitCode)" -ForegroundColor Red
+                    
+                    # Essai avec approche alternative
+                    Write-Host "Tentative avec chemin absolu..." -ForegroundColor Yellow
+                    $absolutePath = Resolve-Path $ScriptPath
+                    $altCmd = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$absolutePath`" -PVWAURL `"$($Parameters.PVWAURL)`" -DisableSSLVerify -AllComponentTypes -AllServers -OutputDir `"$EXPORT_DIR`""
+                    Write-Host "Commande: $altCmd" -ForegroundColor Gray
+                    
+                    # Execution de la commande alternative
+                    cmd /c $altCmd > "$EXPORT_DIR\SystemHealth_alt.txt" 2>&1
+                    
+                    if (Test-Path "$EXPORT_DIR\SystemHealth_alt.txt") {
+                        Write-Host "Sortie alternative capturee dans: $EXPORT_DIR\SystemHealth_alt.txt" -ForegroundColor Yellow
+                    }
                 }
+            } catch {
+                Write-Host "ERREUR lors de l'execution: $_" -ForegroundColor Red
+                $_.Exception.Message | Out-File "$EXPORT_DIR\erreurs.log" -Append -Encoding ASCII
             }
             
             Write-Host ""
