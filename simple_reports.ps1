@@ -1,8 +1,15 @@
 # Script simplifié pour générer les rapports CyberArk
 # Cette version partage l'authentification entre les scripts pour éviter de saisir les identifiants à chaque fois
 
-# Assurer l'encodage UTF-8 pour éviter les problèmes d'affichage des caractères accentués
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+# Gestion de l'encodage UTF-8 avec vérification de la disponibilité de la console
+try {
+    # Vérifie si la console est disponible avant de modifier l'encodage
+    if ([Environment]::UserInteractive -and (Test-Path env:\TERM)) {
+        [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+    }
+} catch {
+    Write-Host "Note: Impossible de définir l'encodage de la console. Les caractères accentués peuvent ne pas s'afficher correctement." -ForegroundColor Yellow
+}
 
 # Configuration
 $PVWA_URL = "https://accessqa.st.com/PasswordVault"  # Suppression du slash final
