@@ -1,14 +1,18 @@
 # Script simplifié pour générer les rapports CyberArk
 # Cette version partage l'authentification entre les scripts pour éviter de saisir les identifiants à chaque fois
 
+# Assurer l'encodage UTF-8 pour éviter les problèmes d'affichage des caractères accentués
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
 # Configuration
-$PVWA_URL = "https://accessqa.st.com/PasswordVault/"
+$PVWA_URL = "https://accessqa.st.com/PasswordVault"  # Suppression du slash final
 $EXPORT_DIR = "C:\tmp"
 $AuthType = "CyberArk"  # Peut être CyberArk, LDAP ou RADIUS
 
 # Variables globales pour le jeton d'authentification
 $Global:AuthToken = $null
 $Global:AuthCreds = $null
+$Global:PVWASession = $null  # Pour stocker la session complète
 
 # Variables pour la barre de progression
 $Global:TotalScripts = 10  # Nombre total de scripts à exécuter
@@ -58,6 +62,9 @@ function Get-CyberArkAuth {
         }
     }
 
+    # Import du module PSPAS
+    Import-Module PSPAS -Force
+
     # Si nous avons déjà un jeton d'authentification, l'utiliser
     if ($Global:AuthToken) {
         return $Global:AuthToken
@@ -82,8 +89,9 @@ function Get-CyberArkAuth {
         }
 
         # Créer une nouvelle session et stocker le jeton
-        $session = New-PASSession -Credential $Global:AuthCreds -concurrentSession $true -BaseURI $PVWA_URL -type $AuthType
-        $Global:AuthToken = $session | Select-Object -ExpandProperty sessionToken
+        # On supprime le paramètre concurrentSession qui cause des problèmes
+        $Global:PVWASession = New-PASSession -Credential $Global:AuthCreds -BaseURI $PVWA_URL -type $AuthType
+        $Global:AuthToken = $Global:PVWASession | Select-Object -ExpandProperty sessionToken
         
         Write-Host "Authentification réussie!" -ForegroundColor Green
         return $Global:AuthToken
@@ -92,6 +100,7 @@ function Get-CyberArkAuth {
         Write-Host "ERREUR d'authentification: $_" -ForegroundColor Red
         $Global:AuthToken = $null
         $Global:AuthCreds = $null
+        $Global:PVWASession = $null
         return $null
     }
 }
@@ -119,14 +128,32 @@ function Run-Command {
                 if ($scriptContent -match "logonToken") {
                     $Parameters["logonToken"] = $token
                 }
-                # Ajout d'autres possibilités selon les scripts
-                elseif ($scriptContent -match "token") {
+                elseif ($scriptContent -match "\$token") {
                     $Parameters["token"] = $token
                 }
             }
         }
         
+        # Corrections spécifiques pour certains scripts
+        if ($ScriptPath -match "Optimize-Addresses.ps1|Get-AccountReport.ps1|Get-SafeMemberReport.ps1") {
+            # Ces scripts ont un problème d'URI, on s'assure que l'URL est correcte
+            if ($Parameters.ContainsKey("PVWAAddress")) {
+                $Parameters["PVWAAddress"] = $PVWA_URL
+            }
+        }
+        
+        # Vérifier les scripts avec problèmes d'authentification connus
+        if ($ScriptPath -match "Get-Accounts.ps1") {
+            # Pour ce script, on force la création d'une nouvelle session
+            if (-not $Parameters.ContainsKey("UseSessionVariable")) {
+                $Parameters["UseSessionVariable"] = $true
+            }
+        }
+        
         # Exécuter le script avec les paramètres
+        Write-Host "Paramètres: " -ForegroundColor Yellow
+        $Parameters.GetEnumerator() | ForEach-Object { Write-Host "  $($_.Key): $($_.Value)" -ForegroundColor Gray }
+        
         & $ScriptPath @Parameters
         Write-Host "Terminé avec succès" -ForegroundColor Green
         
@@ -134,6 +161,7 @@ function Run-Command {
         Update-Progress -Activity $Description -Status "En cours"
     } catch {
         Write-Host "ERREUR: $_" -ForegroundColor Red
+        Write-Host "StackTrace: $($_.ScriptStackTrace)" -ForegroundColor Red
         $_.Exception.Message | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
         
         # Mettre quand même à jour la barre de progression en cas d'erreur
@@ -141,6 +169,37 @@ function Run-Command {
     }
     
     Write-Host ""
+}
+
+# Fonction pour tester les scripts avant de les exécuter
+function Test-ScriptParameters {
+    param(
+        [string]$ScriptPath
+    )
+    
+    if (!(Test-Path $ScriptPath)) { return $false }
+    
+    try {
+        $scriptContent = Get-Content -Path $ScriptPath -Raw
+        $scriptBlock = [ScriptBlock]::Create($scriptContent)
+        $commandInfo = Get-Command -CommandType Function -Name ($scriptPath | Split-Path -Leaf) -ErrorAction SilentlyContinue
+        
+        if ($null -eq $commandInfo) {
+            # Analyse alternative des paramètres
+            if ($scriptContent -match "logonToken") {
+                return @{ SupportsLogonToken = $true }
+            }
+            if ($scriptContent -match "\$token") {
+                return @{ SupportsToken = $true }
+            }
+            return @{ SupportsGenericParams = $true }
+        }
+        
+        return $commandInfo.Parameters
+    } catch {
+        Write-Host "Erreur lors de l'analyse des paramètres du script: $_" -ForegroundColor Yellow
+        return $false
+    }
 }
 
 # Authentification initiale
@@ -193,7 +252,6 @@ if (Test-ScriptExists $discoveredAccountsPath) {
         CSVPath = "$EXPORT_DIR\DiscoveredAccounts.csv"
         AuthType = $AuthType
         AutoNextPage = $true
-        token = $token
     }
     Run-Command -Description "Rapport des comptes découverts" -ScriptPath $discoveredAccountsPath -Parameters $params
 }
@@ -209,7 +267,6 @@ if (Test-ScriptExists $inactiveUsersPath) {
         CSVPath = "$EXPORT_DIR\InactiveUsers.csv"
         AuthType = $AuthType
         InactiveDays = 30
-        token = $token
     }
     Run-Command -Description "Rapport des utilisateurs inactifs" -ScriptPath $inactiveUsersPath -Parameters $params
 }
@@ -226,7 +283,6 @@ if (Test-ScriptExists $platformReportPath) {
         AuthType = $AuthType
         ExtendedReport = $true
         IncludeInactive = $true
-        token = $token
     }
     Run-Command -Description "Rapport des plateformes" -ScriptPath $platformReportPath -Parameters $params
 }
@@ -254,7 +310,6 @@ if ($riskReportPath) {
         CSVPath = "$EXPORT_DIR\AccountRiskReport.csv"
         AuthType = $AuthType
         EventsDaysFilter = 30
-        token = $token
     }
     Run-Command -Description "Rapport des risques de comptes" -ScriptPath $riskReportPath -Parameters $params
 } else {
@@ -272,7 +327,6 @@ if (Test-ScriptExists $psmSessionsPath) {
         CSVPath = "$EXPORT_DIR\PSMSessions.csv"
         AuthType = $AuthType
         PSMServerName = "PSMServer"  # Remplacez par votre serveur PSM réel
-        token = $token
     }
     Run-Command -Description "Rapport des sessions PSM" -ScriptPath $psmSessionsPath -Parameters $params
 }
@@ -288,7 +342,6 @@ if (Test-ScriptExists $aamAppsPath) {
         Export = $true
         CSVPath = "$EXPORT_DIR\AAMApplications.csv"
         AuthType = $AuthType
-        token = $token
     }
     Run-Command -Description "Rapport des applications AAM" -ScriptPath $aamAppsPath -Parameters $params
 }
@@ -315,6 +368,11 @@ else {
 # 10. Rapport de tous les comptes
 $getAccountsPath = ".\Get Accounts\Get-Accounts.ps1"
 if (Test-ScriptExists $getAccountsPath) {
+    # Ce script a des problèmes d'authentification, on crée une session fraîche
+    Close-PASSession -ErrorAction SilentlyContinue
+    $freshCreds = Get-Credential -Message "Authentification pour le rapport de tous les comptes"
+    $session = New-PASSession -Credential $freshCreds -BaseURI $PVWA_URL -type $AuthType
+    
     $params = @{
         PVWAURL = $PVWA_URL
         List = $true
@@ -322,9 +380,12 @@ if (Test-ScriptExists $getAccountsPath) {
         CSVPath = "$EXPORT_DIR\AllAccounts.csv"
         SortBy = "UserName"
         AutoNextPage = $true
-        token = $token
     }
     Run-Command -Description "Rapport de tous les comptes" -ScriptPath $getAccountsPath -Parameters $params
+    
+    # Restaurer la session globale
+    Close-PASSession -ErrorAction SilentlyContinue
+    Use-PASSession -Session $Global:AuthToken
 }
 else {
     Update-Progress -Activity "Rapport de tous les comptes (SAUTÉ)" -Status "En cours"

@@ -1,5 +1,5 @@
-PS C:\Cyberark Dashboard\epv-api-scripts> C:\Cyberark Dashboard\epv-api-scripts\simple_reports.ps1
-===============================================
+# PS C:\Cyberark Dashboard\epv-api-scripts> C:\Cyberark Dashboard\epv-api-scripts\simple_reports.ps1
+
 Vous aurez besoin de vos identifiants CyberArk pour chaque script.
 Type d'authentification: CyberArk
 ===============================================
@@ -32,7 +32,7 @@ Starting script (v1.0)
 Retrieving active Platform...
 Found 241 active Platforms
 Generating report...
-Logoff Session...
+Logoff Session...æ
 
 TerminÃ© avec succÃ¨s
 
@@ -65,19 +65,20 @@ ExÃ©cution de: & ".\AAM Applications\Export-Import-Applications.ps1" -PVWAURL 
 hType CyberArk
 Starting script (v1.0)
 LogoffUrl
----------
-         
+
+---
+
 Header = System.Collections.Hashtable
 Found 20 applications
 Exporting applications to CSV file...
 Logoff Session...
-         
+
 Script Ended
 TerminÃ© avec succÃ¨s
 
 --- Rapport d'optimisation des adresses ---
 ExÃ©cution de: & ".\Optimize Address\Optimize-Addresses.ps1" -PVWAAddress https://accessqa.st.com/PasswordVault/ -ExportToCSV -CSVPath "C:\tmp\AddressOptimization.csv"
- -ShowAllResults
+-ShowAllResults
 ERREUR: Invalid URI: The hostname could not be parsed. Run New-PASSession
 
 --- Rapport de tous les comptes ---
@@ -86,16 +87,19 @@ AutoNextPage
 Retrieving accounts...
 C:\Cyberark Dashboard\epv-api-scripts\Get Accounts\Get-Accounts.ps1 : Unauthorized
 At line:1 char:1
-+ & ".\Get Accounts\Get-Accounts.ps1" -PVWAURL https://accessqa.st.com/ ...
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- & ".\Get Accounts\Get-Accounts.ps1" -PVWAURL https://accessqa.st.com/ ...
+- ```
     + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
     + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,Get-Accounts.ps1
- 
+  ```
+
 Showing 2 accounts
 ERREUR: {"ErrorCode":"CASTM006E","ErrorMessage":"Transaction failed because logon was not called with this Session Instance."}
 
 ===============================================
 RÃ©sumÃ© des rapports gÃ©nÃ©rÃ©s:
+
 - AAMApplications.csv
 - AccountRiskReport.csv
 - InactiveUsers.csv
