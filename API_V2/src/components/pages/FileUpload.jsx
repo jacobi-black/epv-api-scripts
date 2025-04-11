@@ -86,7 +86,6 @@ const dashboardConfig = {
     color: "#ff9800",
     scripts: [
       { name: "PSM-SessionsManagement.ps1", type: "sessions", required: true },
-      { name: "Get-AdHocAccess.ps1", type: "access", required: false },
       { name: "Get-AccountReport.ps1", type: "risk", required: false },
     ],
   },
@@ -114,7 +113,6 @@ const dashboardConfig = {
     scripts: [
       { name: "Get-AccountReport.ps1", type: "risk", required: true },
       { name: "System-Health.ps1", type: "system", required: true },
-      { name: "Get-AdHocAccess.ps1", type: "access", required: false },
     ],
   },
   "adoption-efficiency": {
@@ -209,7 +207,7 @@ const powershellCommands = {
   },
   "Test-HTML5Gateway.ps1": {
     command:
-      "./Test-HTML5Gateway.ps1 -Gateway $Gateway -ExportPath $OutputFolder -OutputCSV HTML5_Gateway_Test.csv",
+      "./Test-HTML5Certificate.ps1 -Gateway $Gateway -ExportPath $OutputFolder -OutputCSV HTML5_Gateway_Test.csv",
     args: [
       {
         name: "Gateway",
@@ -225,7 +223,7 @@ const powershellCommands = {
   },
   "Get-AccountReport.ps1": {
     command:
-      "./Get-AccountReport.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Accounts_Risk.csv",
+      "./Get-AccountReport.ps1 -PVWAAddress $PVWA -PVWAAuthType $AuthType -ReportPath $OutputFolder/Accounts_Risk.csv -allProps",
     args: [
       {
         name: "PVWA",
@@ -288,7 +286,7 @@ const powershellCommands = {
   },
   "Get-Accounts.ps1": {
     command:
-      "./Get-Accounts.ps1 -PVWAURL $PVWA -List -Report -CSVPath $OutputFolder/Accounts.csv",
+      "./Get-Accounts.ps1 -PVWAURL $PVWA -List -Report -AutoNextPage -CSVPath $OutputFolder/Accounts.csv",
     args: [
       {
         name: "PVWA",
@@ -330,33 +328,7 @@ const powershellCommands = {
   },
   "PSM-SessionsManagement.ps1": {
     command:
-      "./PSM-SessionsManagement.ps1 -PVWA $PVWA -AuthType $AuthType -Days $Days -ExportPath $OutputFolder -OutputCSV PSM_Sessions.csv",
-    args: [
-      {
-        name: "PVWA",
-        defaultValue: "https://pvwa.cyberark.local",
-        description: "URL du PVWA",
-      },
-      {
-        name: "AuthType",
-        defaultValue: "CyberArk",
-        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
-      },
-      {
-        name: "Days",
-        defaultValue: "30",
-        description: "Nombre de jours d'historique à extraire",
-      },
-      {
-        name: "OutputFolder",
-        defaultValue: "C:/Temp",
-        description: "Dossier de sortie pour les fichiers CSV",
-      },
-    ],
-  },
-  "Get-AdHocAccess.ps1": {
-    command:
-      "./Get-AdHocAccess.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV AdHoc_Access.csv",
+      "./PSM-SessionsManagement.ps1 -PVWA $PVWA -AuthType $AuthType -List -ExportPath $OutputFolder -OutputCSV PSM_Sessions.csv",
     args: [
       {
         name: "PVWA",
@@ -466,12 +438,17 @@ const powershellCommands = {
   },
   "Safe-Management.ps1": {
     command:
-      "./Safe-Management.ps1 -PVWAURL $PVWA -Report -OutputPath $OutputFolder/Safes.csv",
+      "./Safe-Management.ps1 -PVWAURL $PVWA -AuthType $AuthType -Report -OutputPath $OutputFolder/Safes.csv",
     args: [
       {
         name: "PVWA",
         defaultValue: "https://pvwa.cyberark.local",
         description: "URL du PVWA",
+      },
+      {
+        name: "AuthType",
+        defaultValue: "CyberArk",
+        description: "Type d'authentification (CyberArk, LDAP, RADIUS)",
       },
       {
         name: "OutputFolder",
@@ -482,7 +459,7 @@ const powershellCommands = {
   },
   "Invoke-BulkAccountActions.ps1": {
     command:
-      "./Invoke-BulkAccountActions.ps1 -PVWAURL $PVWA -AuthType $AuthType -AccountsAction 'Verify' -ExportPath $OutputFolder -OutputCSV Accounts_Usage.csv",
+      "./Invoke-BulkAccountActions.ps1 -PVWAURL $PVWA -AuthType $AuthType -AccountsAction 'Verify' -OutputCSV $OutputFolder/Accounts_Usage.csv",
     args: [
       {
         name: "PVWA",
