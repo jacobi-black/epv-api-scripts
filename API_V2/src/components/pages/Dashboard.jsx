@@ -30,11 +30,6 @@ const dashboardTabs = {
     { label: "Performance Système", path: "/system" },
     { label: "Stockage & Coffres", path: "/safes" },
   ],
-  health: [
-    { label: "Vue d'ensemble", path: "" },
-    { label: "Statut Services", path: "/connectivity" },
-    { label: "Certificats", path: "/certificates" },
-  ],
   security: [
     { label: "Vue d'ensemble", path: "" },
     { label: "Conformité Comptes", path: "/accounts" },
@@ -82,7 +77,6 @@ const dashboardTabs = {
 // Noms des dashboards
 const dashboardNames = {
   capacity: "Capacity Dashboard",
-  health: "Health Dashboard",
   security: "Security & Compliance Dashboard",
   "privileged-accounts": "Privileged Accounts Usage Dashboard",
   sessions: "Session Monitoring Dashboard",

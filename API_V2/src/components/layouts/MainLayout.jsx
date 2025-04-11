@@ -75,12 +75,6 @@ const menuItems = [
     color: colorPalette.primaryDark,
   },
   {
-    text: "Health Dashboard",
-    icon: <HealthAndSafetyRoundedIcon />,
-    path: "/health",
-    color: colorPalette.primary,
-  },
-  {
     text: "Safes & Platforms",
     icon: <DatabaseIcon />,
     path: "/safes-platforms",
@@ -285,22 +279,28 @@ function MainLayout({ children }) {
   ]);
   const [hasMainPadding, setHasMainPadding] = useState(true);
 
-  // Déterminer le type de dashboard actuel pour le guide et le tutoriel
+  // Fonction pour obtenir le type de dashboard actuel
   const getCurrentDashboardType = () => {
     const path = location.pathname.split("/")[1];
-    if (!path) return "home";
 
+    // Mapping des types de dashboard
     if (path === "capacity") return "capacity";
-    if (path === "health") return "health";
     if (path === "security") return "security";
-    if (path === "privileged-accounts") return "privileged";
+    if (path === "privileged-accounts") return "privileged-accounts";
     if (path === "sessions") return "sessions";
-    if (path === "password-rotation") return "password";
-    if (path === "application-usage") return "application";
-    if (path === "incident-response") return "incident";
-    if (path === "adoption-efficiency") return "adoption";
-
-    return "home";
+    if (path === "password-rotation") return "password-rotation";
+    if (path === "application-usage") return "application-usage";
+    if (path === "incident-response") return "incident-response";
+    if (path === "adoption-efficiency") return "adoption-efficiency";
+    if (path === "safes-platforms") return "safes-platforms";
+    if (path === "performance") return "performance";
+    if (path === "executive") return "executive";
+    if (path === "compliance") return "compliance";
+    if (path === "upload") {
+      const dashboardType = location.pathname.split("/")[2];
+      return dashboardType || "upload";
+    }
+    return "";
   };
 
   const currentDashboardType = getCurrentDashboardType();

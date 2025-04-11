@@ -73,33 +73,6 @@ const DataImportGuide = () => {
         Scripts disponibles
       </Typography>
 
-      <Accordion sx={{ mb: 2 }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography
-            variant="h6"
-            sx={{ display: "flex", alignItems: "center" }}
-          >
-            <TerminalIcon sx={{ mr: 1 }} /> System-Health.ps1
-            <Chip
-              label="Health Dashboard"
-              color="primary"
-              size="small"
-              sx={{ ml: 2 }}
-            />
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography variant="body2" paragraph>
-            Ce script collecte des informations sur l'état de santé de vos
-            composants CyberArk (CPM, PVWA, Vault, etc.) incluant utilisation
-            CPU, mémoire, espace disque, état des services et bien plus.
-          </Typography>
-          <Typography variant="body2">
-            Plus de détails sur ce script seront ajoutés prochainement.
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-
       {/* Autres scripts peuvent être ajoutés ici */}
     </Box>
   );

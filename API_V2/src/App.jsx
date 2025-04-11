@@ -14,8 +14,7 @@ import FileUpload from "./components/pages/FileUpload";
 
 // Dashboard views
 import AccountsAnalysis from "./components/pages/AccountsAnalysis";
-import SafesAnalysis from "./components/pages/SafesAnalysis";
-import SystemHealth from "./components/pages/SystemHealth";
+import SafesAnalysis from "./components/dashboard/SafesAnalysis";
 import CapacityPlanning from "./components/pages/CapacityPlanning";
 import SecurityCompliance from "./components/pages/SecurityCompliance";
 import PrivilegedAccounts from "./components/pages/PrivilegedAccounts";
@@ -49,28 +48,8 @@ function App() {
             >
               <Route index element={<CapacityPlanning />} />
               <Route
-                path="system"
-                element={<SystemHealth dashboardType="capacity" />}
-              />
-              <Route
                 path="safes"
                 element={<SafesAnalysis dashboardType="capacity" />}
-              />
-            </Route>
-
-            {/* Dashboard Santé */}
-            <Route
-              path="/health"
-              element={<Dashboard title="Health Dashboard" />}
-            >
-              <Route index element={<SystemHealth dashboardType="health" />} />
-              <Route
-                path="certificates"
-                element={<SystemHealth dashboardType="certificates" />}
-              />
-              <Route
-                path="connectivity"
-                element={<SystemHealth dashboardType="connectivity" />}
               />
             </Route>
 

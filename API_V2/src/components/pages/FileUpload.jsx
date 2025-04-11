@@ -54,14 +54,9 @@ const dashboardConfig = {
     title: "Capacity Dashboard",
     color: "#1976d2",
     scripts: [
-      { name: "System-Health.ps1", type: "system", required: true },
-      { name: "Get-Safes.ps1", type: "safes", required: true },
+      { name: "Get-Safes.ps1", type: "safe", required: true },
+      { name: "Get-AccountReport.ps1", type: "account", required: false },
     ],
-  },
-  health: {
-    title: "Health Dashboard",
-    color: "#2196f3",
-    scripts: [{ name: "System-Health.ps1", type: "system", required: true }],
   },
   security: {
     title: "Security & Compliance Dashboard",
@@ -110,10 +105,7 @@ const dashboardConfig = {
   "incident-response": {
     title: "Incident Response Dashboard",
     color: "#e91e63",
-    scripts: [
-      { name: "Get-AccountReport.ps1", type: "risk", required: true },
-      { name: "System-Health.ps1", type: "system", required: true },
-    ],
+    scripts: [{ name: "Get-AccountReport.ps1", type: "risk", required: true }],
   },
   "adoption-efficiency": {
     title: "Adoption & Efficiency Dashboard",
@@ -128,16 +120,14 @@ const dashboardConfig = {
     title: "Performance Dashboard",
     color: "#3f51b5",
     scripts: [
-      { name: "System-Health.ps1", type: "system", required: true },
+      { name: "Test-HTML5Gateway.ps1", type: "performance", required: false },
       { name: "PSM-SessionsManagement.ps1", type: "sessions", required: true },
-      { name: "Test-HTML5Gateway.ps1", type: "certificates", required: false },
     ],
   },
   executive: {
     title: "Executive Dashboard",
     color: "#607d8b",
     scripts: [
-      { name: "System-Health.ps1", type: "system", required: true },
       { name: "Get-AccountReport.ps1", type: "risk", required: true },
       { name: "Get-Accounts.ps1", type: "accounts", required: true },
       { name: "Get-UsersActivityReport.ps1", type: "users", required: false },
@@ -173,17 +163,6 @@ const dashboardConfig = {
 
 // Configuration des commandes PowerShell pour chaque script
 const powershellCommands = {
-  "System-Health.ps1": {
-    command:
-      "./System-Health.ps1 -ExportPath $OutputFolder -OutputCSV System_Health.csv",
-    args: [
-      {
-        name: "OutputFolder",
-        defaultValue: "C:/Temp",
-        description: "Dossier de sortie pour les fichiers CSV",
-      },
-    ],
-  },
   "Get-Safes.ps1": {
     command:
       "./Get-Safes.ps1 -PVWA $PVWA -AuthType $AuthType -ExportPath $OutputFolder -OutputCSV Safes.csv",
@@ -885,9 +864,6 @@ const PowerShellCommandHelper = ({
       AuthType: "LDAP",
       OutputFolder: "./output",
     },
-    "System-Health.ps1": {
-      OutputFolder: "./output",
-    },
     "Test-HTML5Gateway.ps1": {
       Gateway: "https://gateway.example.com",
       OutputFolder: "./output",
@@ -975,8 +951,6 @@ const PowerShellCommandHelper = ({
         return `$env:COLUMNS="$((Get-Host).UI.RawUI.BufferSize.Width)"; ./Safe-Management.ps1 ${argString}`;
       case "Invoke-BulkAccountActions.ps1":
         return `$env:COLUMNS="$((Get-Host).UI.RawUI.BufferSize.Width)"; ./Invoke-BulkAccountActions.ps1 ${argString}`;
-      case "System-Health.ps1":
-        return `$env:COLUMNS="$((Get-Host).UI.RawUI.BufferSize.Width)"; ./System-Health.ps1 ${argString}`;
       case "Test-HTML5Gateway.ps1":
         return `$env:COLUMNS="$((Get-Host).UI.RawUI.BufferSize.Width)"; ./Test-HTML5Gateway.ps1 ${argString}`;
       default:

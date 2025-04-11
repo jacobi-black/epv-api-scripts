@@ -83,19 +83,7 @@ const dashboardCategories = {
         "Visualize system capacity metrics including CPU, memory, disk usage, and session capacity.",
       icon: <SpeedIcon sx={{ fontSize: 40 }} />,
       colorIndex: 0,
-      scripts: [
-        "/System Health/System-Health.ps1",
-        "/Safe Management/Get-Safes.ps1",
-      ],
-    },
-    {
-      id: "health",
-      title: "Health Dashboard",
-      description:
-        "Monitor the health status of CyberArk services, components and certificates.",
-      icon: <HealthIcon sx={{ fontSize: 40 }} />,
-      colorIndex: 1,
-      scripts: ["/System Health/System-Health.ps1"],
+      scripts: ["/Safe Management/Get-Safes.ps1"],
     },
     {
       id: "performance",
@@ -105,7 +93,6 @@ const dashboardCategories = {
       icon: <RocketOutlined sx={{ fontSize: 40 }} />,
       colorIndex: 2,
       scripts: [
-        "/System Health/System-Health.ps1",
         "/PSM Sessions Management/PSM-SessionsManagement.ps1",
         "/HTML5 Gateway/Test-HTML5Gateway.ps1",
       ],
@@ -156,10 +143,7 @@ const dashboardCategories = {
         "Track security incidents, resolution times and criticality levels of alerts.",
       icon: <ReportIcon sx={{ fontSize: 40 }} />,
       colorIndex: 7,
-      scripts: [
-        "/Security Events/Get-AccoutnsRiskReport.ps1",
-        "/System Health/System-Health.ps1",
-      ],
+      scripts: ["/Security Events/Get-AccoutnsRiskReport.ps1"],
     },
   ],
   monitoring: [
@@ -221,7 +205,6 @@ const dashboardCategories = {
       icon: <DashboardOutlined sx={{ fontSize: 40 }} />,
       colorIndex: 3,
       scripts: [
-        "/System Health/System-Health.ps1",
         "/Security Events/Get-AccoutnsRiskReport.ps1",
         "/Reports/Accounts/Accounts_Inventory.ps1",
         "/User Management/Get-UsersActivityReport.ps1",

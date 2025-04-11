@@ -379,7 +379,7 @@ const PerformanceDashboard = ({ subview }) => {
     return (
       <Alert
         message="Données requises manquantes"
-        description="Veuillez importer les fichiers de données nécessaires pour visualiser le dashboard de performance. Rendez-vous dans la section 'Import Data' pour charger les fichiers de santé système."
+        description="Veuillez importer les fichiers de données nécessaires pour visualiser le dashboard de performance. Rendez-vous dans la section 'Import Data' pour charger les fichiers de performance."
         type="info"
         showIcon
         action={
