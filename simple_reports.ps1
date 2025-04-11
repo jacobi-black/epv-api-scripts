@@ -1,5 +1,5 @@
 # Script simplifié pour générer des rapports CyberArk
-# Version avec paramètres d'authentification adaptés à chaque script
+# Version avec paramètres exacts selon les README de chaque script
 
 # Configuration 
 $PVWA_URL = "https://accessqa.st.com/PasswordVault" # Sans slash final
@@ -46,6 +46,17 @@ if ($null -eq $creds) {
     exit
 }
 
+# Créer une session pour générer un jeton logon à partager entre scripts
+try {
+    $session = New-PASSession -Credential $creds -BaseURI $PVWA_URL -type $AuthType
+    $logonToken = $session.sessionToken
+    Write-Host "Session d'authentification créée avec succès" -ForegroundColor Green
+}
+catch {
+    Write-Host "ERREUR d'authentification: $_" -ForegroundColor Red
+    exit
+}
+
 # Fonction simplifiée pour exécuter les scripts
 function Run-Report {
     param (
@@ -74,9 +85,9 @@ function Run-Report {
     Write-Host ""
 }
 
-# Liste complète des rapports à exécuter avec les paramètres adaptés
+# Liste complète des rapports à exécuter avec les paramètres corrects selon les README
 $reports = @(
-    # 1. Rapport des comptes
+    # 1. Rapport des comptes - D'après README: logonToken est supporté
     @{
         Description = "Rapport des comptes"
         ScriptPath = ".\Reports\Accounts\Get-AccountReport.ps1"
@@ -84,10 +95,10 @@ $reports = @(
             ReportPath = "$EXPORT_DIR\AccountReport.csv"
             PVWAAddress = $PVWA_URL
             allProps = $true
-            # Note: Ce script gère directement la demande d'identifiants
+            logonToken = $logonToken
         }
     },
-    # 2. Rapport des membres de coffres
+    # 2. Rapport des membres de coffres - D'après README: logonToken est supporté
     @{
         Description = "Rapport des membres de coffres"
         ScriptPath = ".\Reports\Safes\Get-SafeMemberReport.ps1"
@@ -96,20 +107,20 @@ $reports = @(
             PVWAAddress = $PVWA_URL
             IncludeGroups = $true
             IncludeApps = $true
-            # Note: Ce script gère directement la demande d'identifiants
+            logonToken = $logonToken
         }
     },
-    # 3. Rapport des comptes découverts
+    # 3. Rapport des comptes découverts - D'après README: LogonToken est supporté
     @{
         Description = "Rapport des comptes découverts"
         ScriptPath = ".\Discovered Accounts\Get-DiscoveredAccountsReport.ps1"
         Parameters = @{
             PVWAURL = $PVWA_URL
+            LogonToken = $logonToken
             List = $true
             CSVPath = "$EXPORT_DIR\DiscoveredAccounts.csv"
             AuthType = $AuthType
             AutoNextPage = $true
-            # Note: Ce script gère directement la demande d'identifiants
         }
     },
     # 4. Rapport des utilisateurs inactifs
@@ -121,7 +132,6 @@ $reports = @(
             CSVPath = "$EXPORT_DIR\InactiveUsers.csv"
             AuthType = $AuthType
             InactiveDays = 30
-            # Note: Ce script gère directement la demande d'identifiants
         }
     },
     # 5. Rapport des plateformes
@@ -134,7 +144,6 @@ $reports = @(
             AuthType = $AuthType
             ExtendedReport = $true
             IncludeInactive = $true
-            # Note: Ce script gère directement la demande d'identifiants
         }
     },
     # 6. Rapport des risques de comptes
@@ -146,7 +155,6 @@ $reports = @(
             CSVPath = "$EXPORT_DIR\AccountRiskReport.csv"
             AuthType = $AuthType
             EventsDaysFilter = 30
-            # Note: Ce script gère directement la demande d'identifiants
         }
     },
     # 7. Rapport des sessions PSM
@@ -159,10 +167,9 @@ $reports = @(
             CSVPath = "$EXPORT_DIR\PSMSessions.csv"
             AuthType = $AuthType
             PSMServerName = "PSMServer"
-            # Note: Ce script gère directement la demande d'identifiants
         }
     },
-    # 8. Rapport des applications AAM
+    # 8. Rapport des applications AAM - D'après README: paramètres Export et CSVPath
     @{
         Description = "Rapport des applications AAM"
         ScriptPath = ".\AAM Applications\Export-Import-Applications.ps1"
@@ -171,7 +178,6 @@ $reports = @(
             Export = $true
             CSVPath = "$EXPORT_DIR\AAMApplications.csv"
             AuthType = $AuthType
-            # Note: Ce script gère directement la demande d'identifiants
         }
     },
     # 9. Rapport d'optimisation des adresses
@@ -183,10 +189,10 @@ $reports = @(
             ExportToCSV = $true
             CSVPath = "$EXPORT_DIR\AddressOptimization.csv"
             ShowAllResults = $true
-            # Note: Ce script gère directement la demande d'identifiants
+            logonToken = $logonToken
         }
     },
-    # 10. Rapport de tous les comptes
+    # 10. Rapport de tous les comptes - D'après README: paramètres List, Report, CSVPath, et SortBy
     @{
         Description = "Rapport de tous les comptes"
         ScriptPath = ".\Get Accounts\Get-Accounts.ps1"
@@ -197,7 +203,6 @@ $reports = @(
             CSVPath = "$EXPORT_DIR\AllAccounts.csv"
             SortBy = "UserName"
             AutoNextPage = $true
-            # Note: Ce script gère directement la demande d'identifiants
         }
     }
 )
@@ -216,6 +221,14 @@ foreach ($report in $reports) {
 
 # Compléter la barre de progression
 Write-Progress -Activity "Génération des rapports CyberArk" -Status "Terminé" -PercentComplete 100 -Completed
+
+# Fermer la session à la fin
+try {
+    Close-PASSession
+    Write-Host "Session CyberArk fermée" -ForegroundColor Green
+} catch {
+    Write-Host "Note: Impossible de fermer la session CyberArk: $_" -ForegroundColor Yellow
+}
 
 # Afficher un résumé des rapports générés
 Write-Host "===============================================" -ForegroundColor Cyan
