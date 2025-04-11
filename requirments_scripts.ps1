@@ -214,7 +214,8 @@ Write-Host "======================================================" -ForegroundC
 # Get common parameters
 $outputFolder = Get-FolderPath
 $pvwaURL = Get-PVWAURL
-$authType = Get-AuthType.ToLower()  # Convertir en minuscules
+$authType = Get-AuthType
+$authType = $authType.ToLower()  # Convertir en minuscules
 
 # Obtenir les identifiants une seule fois
 $credentials = Get-CyberArkCredentials
