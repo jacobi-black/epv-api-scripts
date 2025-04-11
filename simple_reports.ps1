@@ -1,4 +1,4 @@
-$PVWA_URL = "https://votre-pvwa.domaine.com/PasswordVault"
+$PVWA_URL = "https://accessqa.st.com/PasswordVault/"
 $EXPORT_DIR = "C:\tmp"
 
 # Variables pour l'authentification centralisée
