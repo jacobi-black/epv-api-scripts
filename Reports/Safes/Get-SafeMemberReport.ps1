@@ -157,8 +157,33 @@ IF (!$HidePerms) {
     [array]$outputProps = $ReportProps
 }
 
-$SafeMembersList | `
-Select-Object -Property $ReportProps -ExpandProperty permissions |`
-Select-Object -Property $outputProps | `
-Sort-Object -Property username, safename |`
-Export-Csv $ReportPath -NoTypeInformation
+# Création d'une liste pour stocker les résultats
+$results = @()
+
+# Traitement de chaque membre de coffre pour extraire les propriétés et les permissions
+foreach ($member in $SafeMembersList) {
+    # Création d'un objet personnalisé avec les propriétés de base
+    $obj = [PSCustomObject]@{}
+    
+    # Ajout des propriétés principales
+    foreach ($prop in $ReportProps) {
+        $obj | Add-Member -MemberType NoteProperty -Name $prop -Value $member.$prop -Force
+    }
+    
+    # Ajout des permissions si demandé
+    if (!$HidePerms) {
+        foreach ($permProp in $outputProps | Where-Object {$_ -notin $ReportProps}) {
+            if ($null -ne $member.permissions -and $member.permissions.PSObject.Properties.Name -contains $permProp) {
+                $obj | Add-Member -MemberType NoteProperty -Name $permProp -Value $member.permissions.$permProp -Force
+            } else {
+                $obj | Add-Member -MemberType NoteProperty -Name $permProp -Value $null -Force
+            }
+        }
+    }
+    
+    # Ajout de l'objet à la liste des résultats
+    $results += $obj
+}
+
+# Export du rapport
+$results | Sort-Object -Property username, safename | Export-Csv $ReportPath -NoTypeInformation

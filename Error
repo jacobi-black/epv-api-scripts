@@ -7,886 +7,1138 @@ TerminÃ© avec succÃ¨s
 ExÃ©cution de: .\Reports\Safes\Get-SafeMemberReport.ps1
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PAC...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=IOG...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=IOG...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=IOG...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=IOG...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=IOG...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=IOG...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=IOG...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=IOG...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=IOG...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PSM...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RnD...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=PVW...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Source" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "memberType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "UserType" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "safeName" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "Description" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "managingCPM" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfDaysRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 Select-Object : The property cannot be processed because the property "numberOfVersionsRetention" already exists.
 At C:\Cyberark Dashboard\epv-api-scripts\Reports\Safes\Get-SafeMemberReport.ps1:161 char:1
-+ Select-Object -Property $ReportProps -ExpandProperty permissions |`
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Select-Object -Property $ReportProps -ExpandProperty permissions |`
+- ```
     + CategoryInfo          : InvalidOperation: (@{safeUrlId=RND...ionsRetention=}:PSObject) [Select-Object], PSArgumentException
     + FullyQualifiedErrorId : AlreadyExistingUserSpecifiedPropertyExpand,Microsoft.PowerShell.Commands.SelectObjectCommand
- 
+  ```
+
 TerminÃ© avec succÃ¨s
 
 --- Rapport des comptes dÃ©couverts ---
@@ -950,9 +1202,10 @@ ExÃ©cution de: .\Get Accounts\Get-Accounts.ps1
 No Credentials were entered
 TerminÃ© avec succÃ¨s
 
-Session CyberArk fermÃ©e
-===============================================
+# Session CyberArk fermÃ©e
+
 RÃ©sumÃ© des rapports gÃ©nÃ©rÃ©s:
+
 - AccountReport.csv
 - AccountRiskReport.csv
 - InactiveUsers.csv

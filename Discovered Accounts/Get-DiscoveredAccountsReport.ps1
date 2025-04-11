@@ -672,10 +672,13 @@ If (![string]::IsNullOrEmpty($logonToken)) {
 		$msg = "Enter your $AuthType User name and Password" 
 		$creds = $Host.UI.PromptForCredential($caption, $msg, "", "")
 	}
-	if ($AuthType -eq "radius" -and ![string]::IsNullOrEmpty($OTP)) {
-		Set-Variable -Scope Global -Name g_LogonHeader -Value $(Get-LogonHeader -Credentials $creds -concurrentSession $concurrentSession -RadiusOTP $OTP )
-	} else {
-		Set-Variable -Scope Global -Name g_LogonHeader -Value $(Get-LogonHeader -Credentials $creds -concurrentSession $concurrentSession)
+	if ($AuthType -eq "radius" -and ![string]::IsNullOrEmpty($OTP))
+	{
+		Set-Variable -Scope Global -Name g_LogonHeader -Value $(Get-LogonHeader -Credentials $creds -RadiusOTP $OTP )
+	}
+	else
+	{
+		Set-Variable -Scope Global -Name g_LogonHeader -Value $(Get-LogonHeader -Credentials $creds)
 	}
 	# Verify that we successfully logged on
 	If ($null -eq $g_LogonHeader) { 

@@ -139,6 +139,8 @@ If ($null -eq (Get-PASSession).User) {
                 return
             }
         } elseif (![string]::IsNullOrEmpty($PVWACredentials)) {
+            New-PASSession -Credential $PVWACredentials -concurrentSession $true -BaseURI $PVWAAddress
+        } else {
             $PVWACredentials = Get-Credential
             New-PASSession -Credential $PVWACredentials -concurrentSession $true -BaseURI $PVWAAddress
         }
