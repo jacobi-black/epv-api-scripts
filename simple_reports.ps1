@@ -74,26 +74,62 @@ function Run-Report {
     Write-Host ""
 }
 
-# Liste des rapports à exécuter avec les paramètres adaptés
+# Liste complète des rapports à exécuter avec les paramètres adaptés
 $reports = @(
-    # Le script Get-InactiveUsersReport.ps1 accepte les paramètres suivants
+    # 1. Rapport des comptes
+    @{
+        Description = "Rapport des comptes"
+        ScriptPath = ".\Reports\Accounts\Get-AccountReport.ps1"
+        Parameters = @{
+            ReportPath = "$EXPORT_DIR\AccountReport.csv"
+            PVWAAddress = $PVWA_URL
+            allProps = $true
+            # Note: Ce script gère directement la demande d'identifiants
+        }
+    },
+    # 2. Rapport des membres de coffres
+    @{
+        Description = "Rapport des membres de coffres"
+        ScriptPath = ".\Reports\Safes\Get-SafeMemberReport.ps1"
+        Parameters = @{
+            ReportPath = "$EXPORT_DIR\SafeMemberReport.csv"
+            PVWAAddress = $PVWA_URL
+            IncludeGroups = $true
+            IncludeApps = $true
+            # Note: Ce script gère directement la demande d'identifiants
+        }
+    },
+    # 3. Rapport des comptes découverts
+    @{
+        Description = "Rapport des comptes découverts"
+        ScriptPath = ".\Discovered Accounts\Get-DiscoveredAccountsReport.ps1"
+        Parameters = @{
+            PVWAURL = $PVWA_URL
+            List = $true
+            CSVPath = "$EXPORT_DIR\DiscoveredAccounts.csv"
+            AuthType = $AuthType
+            AutoNextPage = $true
+            # Note: Ce script gère directement la demande d'identifiants
+        }
+    },
+    # 4. Rapport des utilisateurs inactifs
     @{
         Description = "Rapport des utilisateurs inactifs"
         ScriptPath = ".\User Management\Get-InactiveUsersReport.ps1"
         Parameters = @{
-            PVWAURL = $PVWA_URL  # Paramètre d'URL correct
+            PVWAURL = $PVWA_URL
             CSVPath = "$EXPORT_DIR\InactiveUsers.csv"
             AuthType = $AuthType
             InactiveDays = 30
             # Note: Ce script gère directement la demande d'identifiants
         }
     },
-    # Le script Get-PlatformReport.ps1 accepte les paramètres suivants
+    # 5. Rapport des plateformes
     @{
         Description = "Rapport des plateformes"
         ScriptPath = ".\Platforms\Get-PlatformReport.ps1"
         Parameters = @{
-            PVWAURL = $PVWA_URL  # Paramètre d'URL correct
+            PVWAURL = $PVWA_URL
             CSVPath = "$EXPORT_DIR\PlatformReport.csv"
             AuthType = $AuthType
             ExtendedReport = $true
@@ -101,24 +137,24 @@ $reports = @(
             # Note: Ce script gère directement la demande d'identifiants
         }
     },
-    # Le script Get-AccoutnsRiskReport.ps1 accepte les paramètres suivants
+    # 6. Rapport des risques de comptes
     @{
         Description = "Rapport des risques de comptes"
         ScriptPath = ".\Security Events\Get-AccoutnsRiskReport.ps1"
         Parameters = @{
-            PVWAURL = $PVWA_URL  # Paramètre d'URL correct
+            PVWAURL = $PVWA_URL
             CSVPath = "$EXPORT_DIR\AccountRiskReport.csv"
             AuthType = $AuthType
             EventsDaysFilter = 30
             # Note: Ce script gère directement la demande d'identifiants
         }
     },
-    # Le script PSM-SessionsManagement.ps1 - à vérifier
+    # 7. Rapport des sessions PSM
     @{
         Description = "Rapport des sessions PSM"
         ScriptPath = ".\PSM Sessions Management\PSM-SessionsManagement.ps1"
         Parameters = @{
-            PVWAURL = $PVWA_URL  # Paramètre d'URL correct
+            PVWAURL = $PVWA_URL
             List = $true
             CSVPath = "$EXPORT_DIR\PSMSessions.csv"
             AuthType = $AuthType
@@ -126,15 +162,41 @@ $reports = @(
             # Note: Ce script gère directement la demande d'identifiants
         }
     },
-    # Le script Export-Import-Applications.ps1 - à vérifier
+    # 8. Rapport des applications AAM
     @{
         Description = "Rapport des applications AAM"
         ScriptPath = ".\AAM Applications\Export-Import-Applications.ps1"
         Parameters = @{
-            PVWAURL = $PVWA_URL  # Paramètre d'URL correct
+            PVWAURL = $PVWA_URL
             Export = $true
             CSVPath = "$EXPORT_DIR\AAMApplications.csv"
             AuthType = $AuthType
+            # Note: Ce script gère directement la demande d'identifiants
+        }
+    },
+    # 9. Rapport d'optimisation des adresses
+    @{
+        Description = "Rapport d'optimisation des adresses"
+        ScriptPath = ".\Optimize Address\Optimize-Addresses.ps1"
+        Parameters = @{
+            PVWAAddress = $PVWA_URL
+            ExportToCSV = $true
+            CSVPath = "$EXPORT_DIR\AddressOptimization.csv"
+            ShowAllResults = $true
+            # Note: Ce script gère directement la demande d'identifiants
+        }
+    },
+    # 10. Rapport de tous les comptes
+    @{
+        Description = "Rapport de tous les comptes"
+        ScriptPath = ".\Get Accounts\Get-Accounts.ps1"
+        Parameters = @{
+            PVWAURL = $PVWA_URL
+            List = $true
+            Report = $true
+            CSVPath = "$EXPORT_DIR\AllAccounts.csv"
+            SortBy = "UserName"
+            AutoNextPage = $true
             # Note: Ce script gère directement la demande d'identifiants
         }
     }
