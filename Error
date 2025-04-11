@@ -1,29 +1,27 @@
-A parameter cannot be found that matches parameter name 'PVWACredentials'.
-Erreur lors de l'exÃ©cution du script System-Health: At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:26 char:1
-+ [CmdletBinding()]
-+ ~~~~~~~~~~~~~~~~~
-Unexpected attribute 'CmdletBinding'.
+# Script wrapper pour System-Health.ps1
+$ErrorActionPreference = "Stop"
 
-At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:27 char:1
-+ param(
-+ ~~~~~
-Unexpected token 'param' in expression or statement.
-
-At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:35 char:25
-+     [String]$AuthType = "cyberark",
-+                         ~~~~~~~~~~
-The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments, such as a variable or a property.
-Erreur lors de l'exÃ©cution du script System-Health: At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:26 char:1
-+ [CmdletBinding()]
-+ ~~~~~~~~~~~~~~~~~
-Unexpected attribute 'CmdletBinding'.
-
-At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:27 char:1
-+ param(
-+ ~~~~~
-Unexpected token 'param' in expression or statement.
-
-At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:35 char:25
-+     [String]$AuthType = "cyberark",
-+                         ~~~~~~~~~~
-The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments, such as a variable or a property.
+try {
+    # VÃ©rifier si le module est dÃ©jÃ  chargÃ©
+    if (-not (Get-Module -Name CyberArk-Common)) {
+        # Importer le module
+        Import-Module ".\System Health\CyberArk-Common.psm1" -Force -DisableNameChecking
+    }
+    
+    # Chemin absolu du script Ã  exÃ©cuter
+    $scriptPath = ".\System Health\System-Health.ps1"
+    
+    # PrÃ©parer la commande avec les paramÃ¨tres dans le format correct
+    $command = "$scriptPath -PVWAURL 'https://accessqa.st.com/PasswordVault' -DisableSSLVerify -AllComponentTypes -AllServers -OutputObject"
+    
+    # ExÃ©cuter le script en utilisant Invoke-Expression
+    $output = Invoke-Expression $command
+    
+    # Exporter les rÃ©sultats en CSV
+    $output | Export-Csv -Path "C:\tmp\SystemHealth.csv" -NoTypeInformation
+    
+    Write-Output "Rapport SystemHealth exportÃ© avec succÃ¨s"
+} catch {
+    Write-Error "Erreur lors de l'exÃ©cution du script System-Health: $_"
+    throw
+}
