@@ -189,11 +189,11 @@ $reports = @(
         ScriptPath = ".\Optimize Address\Optimize-Addresses.ps1"
         Parameters = @{
             PVWAAddress = $PVWA_URL
+            PVWACredentials = $creds
             ExportToCSV = $true
             CSVPath = "$EXPORT_DIR\AddressOptimization.csv"
             ShowAllResults = $false
             SuppressErrorResults = $true
-            logonToken = $logonToken
         }
     },
     # 10. Rapport de tous les comptes - D'après README: paramètres List, Report, CSVPath, et SortBy
