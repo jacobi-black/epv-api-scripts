@@ -217,10 +217,9 @@ $reports = @(
         ScriptPath = ".\System Health\System-Health.ps1"
         Parameters = @{
             PVWAURL = $PVWA_URL
-            PVWACredentials = $creds
             AllComponentTypes = $true
             AllServers = $true
-            OutputObject = $true
+            DisableSSLVerify = $true
         }
         # Pour ce script, on utilise une logique personnalisee d'execution
         CustomExecution = {
@@ -234,61 +233,60 @@ $reports = @(
             
             if (!(Test-Path $cyberArkCommonPath)) {
                 Write-Host "ERREUR: Le module CyberArk-Common.psm1 n'a pas ete trouve a cote du script" -ForegroundColor Red
-                "Le module CyberArk-Common.psm1 n'a pas ete trouve a $cyberArkCommonPath" | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
+                "Le module CyberArk-Common.psm1 n'a pas ete trouve a $cyberArkCommonPath" | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append -Encoding ASCII
                 return
             }
             
-            # Creer un script wrapper temporaire
-            $wrapperScript = @"
-# Script wrapper pour System-Health.ps1
-`$ErrorActionPreference = "Stop"
-
-try {
-    # Verifier si le module est deja charge
-    if (-not (Get-Module -Name CyberArk-Common)) {
-        # Importer le module
-        Import-Module "$cyberArkCommonPath" -Force -DisableNameChecking
-    }
-    
-    # Chemin absolu du script a executer
-    `$scriptPath = "$ScriptPath"
-    
-    # Preparer la commande avec les parametres dans le format correct
-    `$command = "`$scriptPath -PVWAURL '$($Parameters.PVWAURL)' -DisableSSLVerify -AllComponentTypes -AllServers -OutputObject"
-    
-    # Executer le script en utilisant Invoke-Expression
-    `$output = Invoke-Expression `$command
-    
-    # Exporter les resultats en CSV
-    `$output | Export-Csv -Path "$EXPORT_DIR\SystemHealth.csv" -NoTypeInformation -Encoding UTF8
-    
-    Write-Output "Rapport SystemHealth exporte avec succes"
-} catch {
-    Write-Error "Erreur lors de l'execution du script System-Health: `$_"
-    throw
-}
-"@
-            
-            $wrapperPath = Join-Path $env:TEMP "SystemHealthWrapper.ps1"
-            $wrapperScript | Out-File -FilePath $wrapperPath -Encoding utf8 -Force
-            
             try {
-                # Executer le script wrapper dans une nouvelle session PowerShell avec les privileges admin
-                $process = Start-Process -FilePath powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"& { . '$wrapperPath' }`"" -Wait -PassThru -WindowStyle Hidden
-                
-                if ($process.ExitCode -eq 0 -and (Test-Path "$EXPORT_DIR\SystemHealth.csv")) {
-                    Write-Host "Termine avec succes" -ForegroundColor Green
-                } else {
-                    Write-Host "ERREUR: Le script a retourne un code d'erreur $($process.ExitCode)" -ForegroundColor Red
-                    Get-Content $wrapperPath | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
+                # Import du module CyberArk-Common si necessaire
+                if (-not (Get-Module -Name CyberArk-Common -ErrorAction SilentlyContinue)) {
+                    Import-Module $cyberArkCommonPath -Force -DisableNameChecking
                 }
+                
+                # Construction de la commande avec tous les parametres en tableaux pour eviter les problemes d'encodage
+                $scriptArgs = @(
+                    "-PVWAURL", $Parameters.PVWAURL,
+                    "-DisableSSLVerify"
+                )
+                
+                if ($Parameters.AllComponentTypes) {
+                    $scriptArgs += "-AllComponentTypes"
+                }
+                
+                if ($Parameters.AllServers) {
+                    $scriptArgs += "-AllServers"
+                }
+                
+                # Execution directe du script avec & (call operator) et arguments explicites
+                Write-Host "Execution du rapport de sante du systeme..." -ForegroundColor Yellow
+                $results = & $ScriptPath @scriptArgs -OutputObject
+                
+                if ($null -ne $results) {
+                    Write-Host "Export des resultats vers CSV..." -ForegroundColor Yellow
+                    # Export avec encodage ASCII pour eviter les problemes de caracteres speciaux
+                    $results | Export-Csv -Path "$EXPORT_DIR\SystemHealth.csv" -NoTypeInformation -Encoding ASCII
+                    Write-Host "Rapport exporte avec succes: $EXPORT_DIR\SystemHealth.csv" -ForegroundColor Green
+                } else {
+                    Write-Host "AVERTISSEMENT: Aucun resultat obtenu du script System-Health" -ForegroundColor Yellow
+                }
+                
+                Write-Host "Termine avec succes" -ForegroundColor Green
             } catch {
-                Write-Host "ERREUR: $_" -ForegroundColor Red
-                $_.Exception.Message | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
-            } finally {
-                # Nettoyer le script temporaire
-                if (Test-Path $wrapperPath) {
-                    Remove-Item $wrapperPath -Force
+                Write-Host "ERREUR lors de l'execution du script System-Health: $_" -ForegroundColor Red
+                "Erreur System-Health: $_" | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append -Encoding ASCII
+                
+                # En cas d'erreur, on peut tenter une autre approche
+                try {
+                    Write-Host "Tentative alternative d'execution..." -ForegroundColor Yellow
+                    $process = Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`" -PVWAURL `"$($Parameters.PVWAURL)`" -DisableSSLVerify -AllComponentTypes -AllServers -OutputDir `"$EXPORT_DIR`"" -Wait -PassThru -NoNewWindow
+                    
+                    if ($process.ExitCode -eq 0) {
+                        Write-Host "Execution alternative reussie" -ForegroundColor Green
+                    } else {
+                        Write-Host "L'execution alternative a echoue avec le code $($process.ExitCode)" -ForegroundColor Red
+                    }
+                } catch {
+                    Write-Host "L'execution alternative a echoue: $_" -ForegroundColor Red
                 }
             }
             
