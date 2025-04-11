@@ -1,30 +1,39 @@
 [401] Transaction failed because logon was not called with this Session Instance.
 At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:26 char:1
-+ [CmdletBinding()]
-+ ~~~~~~~~~~~~~~~~~
-Unexpected attribute 'CmdletBinding'.
+
+- [CmdletBinding()]
+- ```
+  Unexpected attribute 'CmdletBinding'.
+  ```
 
 At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:27 char:1
-+ param(
-+ ~~~~~
-Unexpected token 'param' in expression or statement.
+
+- param(
+- ```
+  Unexpected token 'param' in expression or statement.
+  ```
 
 At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:35 char:25
-+     [String]$AuthType = "cyberark",
-+                         ~~~~~~~~~~
-The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments, such as a variable or a property.
-A parameter cannot be found that matches parameter name 'PVWACredentials'.
-At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:26 char:1
-+ [CmdletBinding()]
-+ ~~~~~~~~~~~~~~~~~
-Unexpected attribute 'CmdletBinding'.
+
+-     [String]$AuthType = "cyberark",
+-                         ~~~~~~~~~~
+  The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments, such as a variable or a property.
+  A parameter cannot be found that matches parameter name 'PVWACredentials'.
+  At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:26 char:1
+- [CmdletBinding()]
+- ```
+  Unexpected attribute 'CmdletBinding'.
+  ```
 
 At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:27 char:1
-+ param(
-+ ~~~~~
-Unexpected token 'param' in expression or statement.
+
+- param(
+- ```
+  Unexpected token 'param' in expression or statement.
+  ```
 
 At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:35 char:25
-+     [String]$AuthType = "cyberark",
-+                         ~~~~~~~~~~
-The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments, such as a variable or a property.
+
+-     [String]$AuthType = "cyberark",
+-                         ~~~~~~~~~~
+  The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments, such as a variable or a property.

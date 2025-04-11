@@ -229,25 +229,54 @@ $reports = @(
             Write-Host "--- $Description ---" -ForegroundColor Cyan
             Write-Host "Exécution de: $ScriptPath" -ForegroundColor Yellow
             
-            # S'assurer que le module CyberArk-Common est présent
-            $CyberArkCommonPath = Join-Path (Split-Path -Parent $ScriptPath) "CyberArk-Common.psm1"
-            if (Test-Path $CyberArkCommonPath) {
-                try {
-                    # Importer le module avant d'exécuter le script
-                    Import-Module $CyberArkCommonPath -Force -ErrorAction Stop
-                    
-                    # Exécuter le script en utilisant & pour assurer l'évaluation correcte des paramètres
-                    & $ScriptPath @Parameters | Export-Csv -Path "$EXPORT_DIR\SystemHealth.csv" -NoTypeInformation
-                    
+            $scriptDirectory = Split-Path -Parent $ScriptPath
+            $cyberArkCommonPath = Join-Path $scriptDirectory "CyberArk-Common.psm1"
+            
+            if (!(Test-Path $cyberArkCommonPath)) {
+                Write-Host "ERREUR: Le module CyberArk-Common.psm1 n'a pas été trouvé à côté du script" -ForegroundColor Red
+                "Le module CyberArk-Common.psm1 n'a pas été trouvé à $cyberArkCommonPath" | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
+                return
+            }
+            
+            # Créer un script wrapper temporaire
+            $wrapperScript = @"
+# Script wrapper pour System-Health.ps1
+`$ErrorActionPreference = "Stop"
+try {
+    Import-Module "$cyberArkCommonPath" -Force
+    
+    # Exécuter le script
+    & "$ScriptPath" -PVWAURL "$($Parameters.PVWAURL)" -AllComponentTypes -AllServers -OutputObject
+    
+    # Si le script s'exécute correctement, exporter les résultats
+    `$results = Get-ComponentStatus | Sort-Object Status
+    `$results | Export-Csv -Path "$EXPORT_DIR\SystemHealth.csv" -NoTypeInformation
+} catch {
+    Write-Host "Erreur lors de l'exécution du script System-Health: `$_" -ForegroundColor Red
+    "Erreur lors de l'exécution du script System-Health: `$_" | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
+}
+"@
+            
+            $wrapperPath = Join-Path $env:TEMP "SystemHealthWrapper.ps1"
+            $wrapperScript | Out-File -FilePath $wrapperPath -Encoding UTF8 -Force
+            
+            try {
+                # Exécuter le script wrapper
+                & powershell -NoProfile -ExecutionPolicy Bypass -File $wrapperPath
+                
+                if (Test-Path "$EXPORT_DIR\SystemHealth.csv") {
                     Write-Host "Terminé avec succès" -ForegroundColor Green
-                } 
-                catch {
-                    Write-Host "ERREUR: $_" -ForegroundColor Red
-                    $_.Exception.Message | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
+                } else {
+                    Write-Host "ERREUR: Le fichier CSV n'a pas été généré" -ForegroundColor Red
                 }
-            } else {
-                Write-Host "ERREUR: Le module CyberArk-Common.psm1 n'a pas été trouvé à côté du script System-Health.ps1" -ForegroundColor Red
-                "Le module CyberArk-Common.psm1 n'a pas été trouvé à côté du script System-Health.ps1" | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
+            } catch {
+                Write-Host "ERREUR: $_" -ForegroundColor Red
+                $_.Exception.Message | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
+            } finally {
+                # Nettoyer le script temporaire
+                if (Test-Path $wrapperPath) {
+                    Remove-Item $wrapperPath -Force
+                }
             }
             
             Write-Host ""
