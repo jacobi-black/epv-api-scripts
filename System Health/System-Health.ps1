@@ -21,6 +21,8 @@ Updated to allow vault address reset
 ########################################################################### 
 #>
 
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, HelpMessage = "Please enter your PVWA address (For example: https://pvwa.mydomain.com/PasswordVault)")]
