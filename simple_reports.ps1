@@ -121,6 +121,9 @@ $reports = @(
             CSVPath = "$EXPORT_DIR\DiscoveredAccounts.csv"
             AuthType = $AuthType
             AutoNextPage = $true
+            Report = $true
+            Limit = 500
+            DisableSSLVerify = $true
         }
     },
     # 4. Rapport des utilisateurs inactifs

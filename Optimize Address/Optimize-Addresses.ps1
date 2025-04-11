@@ -105,15 +105,28 @@ $funcDefOA = ${function:Optimize-Account}.ToString()
 
 #region PAS Connection
 if (!(Get-Module -ListAvailable -Name PSPAS)) {
-    Install-Module PSPAS -Scope CurrentUser
-}
+    Try {
+        Install-Module PSPAS -Scope CurrentUser
+    } catch {
+        "PSPas was not found and unable to automatically install the module. Please manually install the module and try again."
+        exit
+    }
+} 
 
-Get-PASComponentSummary -ErrorAction SilentlyContinue -ErrorVariable TestConnect | Out-Null
-if ($TestConnect.count -ne 0) {
+# Vérification de session avec gestion robuste des erreurs
+$sessionValid = $false
+try {
+    Get-PASComponentSummary -ErrorAction Stop | Out-Null
+    $sessionValid = $true
+    "Using existing PAS session"
+} catch {
+    "No valid session found, will attempt authentication"
+    # Fermeture de session au cas où
     Close-PASSession -ErrorAction SilentlyContinue
 }
 
-If ($null -eq (Get-PASSession).User) {
+# Si la session n'est pas valide, on procède à l'authentification
+if (!$sessionValid) {
     If (![string]::IsNullOrEmpty($IdentityUserName)) {
         "Identity username provided"
         IF (!(Test-Path .\IdentityAuth.psm1)) {
@@ -142,6 +155,10 @@ If ($null -eq (Get-PASSession).User) {
             New-PASSession -Credential $PVWACredentials -concurrentSession $true -BaseURI $PVWAAddress
         } else {
             $PVWACredentials = Get-Credential
+            if ($null -eq $PVWACredentials) {
+                Write-Host -ForegroundColor Red "No credentials provided. Exiting script."
+                exit
+            }
             New-PASSession -Credential $PVWACredentials -concurrentSession $true -BaseURI $PVWAAddress
         }
     } elseif (![string]::IsNullOrEmpty($logonToken)) {
@@ -155,10 +172,18 @@ If ($null -eq (Get-PASSession).User) {
             Write-Host -ForegroundColor Red '$logonToken = Get-IDentityHeader -IdentityTenantURL https://aa12345.id.cyberark.cloud -IdentityUserName brian.bors@cyberark.cloud.xxxx -psPASFormat -PCloudSubdomain testlab'
             return
         }
-
     } else {
         "You must enter either a PVWAAddress or IdentityURL and SubDomain or pass a pre-existing PSPAS Session Token"
-        break
+        exit
+    }
+    
+    # Vérification finale de la connexion
+    try {
+        Get-PASComponentSummary -ErrorAction Stop | Out-Null
+        "Authentication successful"
+    } catch {
+        Write-Host -ForegroundColor Red "Failed to establish a valid session. Exiting script."
+        exit
     }
 }
 
