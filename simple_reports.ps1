@@ -242,18 +242,30 @@ $reports = @(
             $wrapperScript = @"
 # Script wrapper pour System-Health.ps1
 `$ErrorActionPreference = "Stop"
+
 try {
-    Import-Module "$cyberArkCommonPath" -Force
+    # Vérifier si le module est déjà chargé
+    if (-not (Get-Module -Name CyberArk-Common)) {
+        # Importer le module
+        Import-Module "$cyberArkCommonPath" -Force -DisableNameChecking
+    }
     
-    # Exécuter le script
-    & "$ScriptPath" -PVWAURL "$($Parameters.PVWAURL)" -AllComponentTypes -AllServers -OutputObject
+    # Chemin absolu du script à exécuter
+    `$scriptPath = "$ScriptPath"
     
-    # Si le script s'exécute correctement, exporter les résultats
-    `$results = Get-ComponentStatus | Sort-Object Status
-    `$results | Export-Csv -Path "$EXPORT_DIR\SystemHealth.csv" -NoTypeInformation
+    # Préparer la commande avec les paramètres dans le format correct
+    `$command = "`$scriptPath -PVWAURL '$($Parameters.PVWAURL)' -DisableSSLVerify -AllComponentTypes -AllServers -OutputObject"
+    
+    # Exécuter le script en utilisant Invoke-Expression
+    `$output = Invoke-Expression `$command
+    
+    # Exporter les résultats en CSV
+    `$output | Export-Csv -Path "$EXPORT_DIR\SystemHealth.csv" -NoTypeInformation
+    
+    Write-Output "Rapport SystemHealth exporté avec succès"
 } catch {
-    Write-Host "Erreur lors de l'exécution du script System-Health: `$_" -ForegroundColor Red
-    "Erreur lors de l'exécution du script System-Health: `$_" | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
+    Write-Error "Erreur lors de l'exécution du script System-Health: `$_"
+    throw
 }
 "@
             
@@ -261,13 +273,14 @@ try {
             $wrapperScript | Out-File -FilePath $wrapperPath -Encoding UTF8 -Force
             
             try {
-                # Exécuter le script wrapper
-                & powershell -NoProfile -ExecutionPolicy Bypass -File $wrapperPath
+                # Exécuter le script wrapper dans une nouvelle session PowerShell avec les privilèges admin
+                $process = Start-Process -FilePath powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$wrapperPath`"" -Wait -PassThru -WindowStyle Hidden
                 
-                if (Test-Path "$EXPORT_DIR\SystemHealth.csv") {
+                if ($process.ExitCode -eq 0 -and (Test-Path "$EXPORT_DIR\SystemHealth.csv")) {
                     Write-Host "Terminé avec succès" -ForegroundColor Green
                 } else {
-                    Write-Host "ERREUR: Le fichier CSV n'a pas été généré" -ForegroundColor Red
+                    Write-Host "ERREUR: Le script a retourné un code d'erreur $($process.ExitCode)" -ForegroundColor Red
+                    Get-Content $wrapperPath | Out-File -FilePath "$EXPORT_DIR\erreurs.log" -Append
                 }
             } catch {
                 Write-Host "ERREUR: $_" -ForegroundColor Red
