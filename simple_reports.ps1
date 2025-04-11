@@ -23,11 +23,20 @@ $Credential = New-Object System.Management.Automation.PSCredential($Username, $P
 # Importer le module PSPAS pour établir une session réutilisable
 Import-Module PSPAS
 
-# Établir la session une seule fois
+# Établir la session une seule fois et récupérer le jeton
+$LogonToken = $null
 try {
     Write-Host "Établissement de la session CyberArk..." -ForegroundColor Yellow
     New-PASSession -Credential $Credential -BaseURI $PVWA_URL -Type $AuthType
-    Write-Host "Session établie avec succès" -ForegroundColor Green
+    
+    # Récupérer le jeton de session pour le passer aux scripts
+    $LogonToken = (Get-PASSession).SecurityToken
+    
+    if ($LogonToken) {
+        Write-Host "Session établie avec succès et jeton récupéré" -ForegroundColor Green
+    } else {
+        Write-Host "Session établie mais impossible de récupérer le jeton" -ForegroundColor Yellow
+    }
 }
 catch {
     Write-Host "ERREUR d'authentification: $_" -ForegroundColor Red
@@ -50,7 +59,11 @@ function Execute-Script {
         # Remplacer PVWACredentials par logonToken si présent
         if ($Arguments.ContainsKey("PVWACredentials")) {
             $Arguments.Remove("PVWACredentials")
-            # La session est déjà établie, pas besoin d'ajouter logonToken
+        }
+        
+        # Ajouter le jeton d'authentification s'il est disponible
+        if ($LogonToken) {
+            $Arguments["logonToken"] = $LogonToken
         }
         
         # Exécuter le script
@@ -71,7 +84,6 @@ try {
         ReportPath = "$EXPORT_DIR\AccountReport.csv"
         PVWAAddress = $PVWA_URL
         allProps = $true
-        # Session déjà établie, pas besoin de PVWACredentials
     }
 
     # 2. Rapport des membres de coffres
@@ -80,7 +92,6 @@ try {
         PVWAAddress = $PVWA_URL
         IncludeGroups = $true
         IncludeApps = $true
-        # Session déjà établie, pas besoin de PVWACredentials
     }
 
     # 3. Rapport des comptes découverts
@@ -88,25 +99,25 @@ try {
         PVWAURL = $PVWA_URL
         List = $true
         CSVPath = "$EXPORT_DIR\DiscoveredAccounts.csv"
+        AuthType = $AuthType  # Garder AuthType car certains scripts l'exigent même avec un jeton
         AutoNextPage = $true
-        # Session déjà établie, pas besoin de AuthType
     }
 
     # 4. Rapport des utilisateurs inactifs
     Execute-Script -Path ".\User Management\Get-InactiveUsersReport.ps1" -Arguments @{
         PVWAURL = $PVWA_URL
         CSVPath = "$EXPORT_DIR\InactiveUsers.csv"
+        AuthType = $AuthType  # Garder AuthType car certains scripts l'exigent même avec un jeton
         InactiveDays = 30
-        # Session déjà établie, pas besoin de AuthType
     }
 
     # 5. Rapport des plateformes
     Execute-Script -Path ".\Platforms\Get-PlatformReport.ps1" -Arguments @{
         PVWAURL = $PVWA_URL
         CSVPath = "$EXPORT_DIR\PlatformReport.csv"
+        AuthType = $AuthType  # Garder AuthType car certains scripts l'exigent même avec un jeton
         ExtendedReport = $true
         IncludeInactive = $true
-        # Session déjà établie, pas besoin de AuthType
     }
 
     # 6. Rapport des risques de comptes - Vérifier le bon nom de fichier
@@ -123,8 +134,8 @@ try {
         Execute-Script -Path $riskReportPath -Arguments @{
             PVWAURL = $PVWA_URL
             CSVPath = "$EXPORT_DIR\AccountRiskReport.csv"
+            AuthType = $AuthType  # Garder AuthType car certains scripts l'exigent même avec un jeton
             EventsDaysFilter = 30
-            # Session déjà établie, pas besoin de AuthType
         }
     } else {
         Write-Host "ERREUR: Script de rapport de risque non trouvé" -ForegroundColor Red
@@ -136,9 +147,8 @@ try {
         PVWAURL = $PVWA_URL
         List = $true
         CSVPath = "$EXPORT_DIR\PSMSessions.csv"
-        # Modifier selon votre environnement
-        PSMServerName = "PSMServer"
-        # Session déjà établie, pas besoin de AuthType
+        AuthType = $AuthType  # Garder AuthType car certains scripts l'exigent même avec un jeton
+        PSMServerName = "PSMServer"  # Remplacer par votre serveur PSM réel
     }
 
     # 8. Rapport des applications AAM
@@ -146,7 +156,7 @@ try {
         PVWAURL = $PVWA_URL
         Export = $true
         CSVPath = "$EXPORT_DIR\AAMApplications.csv"
-        # Session déjà établie, pas besoin de AuthType
+        AuthType = $AuthType  # Garder AuthType car certains scripts l'exigent même avec un jeton
     }
 
     # 9. Rapport d'optimisation des adresses
@@ -155,7 +165,6 @@ try {
         ExportToCSV = $true
         CSVPath = "$EXPORT_DIR\AddressOptimization.csv"
         ShowAllResults = $true
-        # Session déjà établie, pas besoin de PVWACredentials
     }
 
     # 10. Rapport de tous les comptes
