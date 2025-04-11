@@ -85,7 +85,7 @@ function Run-Report {
     Write-Host ""
 }
 
-# Liste complète des rapports à exécuter avec les paramètres corrects selon les README
+# Liste complète des rapports disponibles
 $reports = @(
     # 1. Rapport des comptes - D'après README: logonToken est supporté
     @{
@@ -284,11 +284,79 @@ try {
     }
 )
 
-# Exécuter tous les rapports
-$totalReports = $reports.Count
+# Fonction pour afficher le menu et obtenir les sélections
+function Show-ReportMenu {
+    Clear-Host
+    Write-Host "============= SÉLECTION DES RAPPORTS À EXÉCUTER =============" -ForegroundColor Cyan
+    Write-Host "0. Exécuter TOUS les rapports" -ForegroundColor Yellow
+    
+    for ($i = 0; $i -lt $reports.Count; $i++) {
+        Write-Host "$($i+1). $($reports[$i].Description)" -ForegroundColor White
+    }
+    
+    Write-Host "Q. Quitter sans exécuter de rapports" -ForegroundColor Red
+    Write-Host "=========================================================" -ForegroundColor Cyan
+    
+    $validChoices = @("0", "Q")
+    for ($i = 1; $i -le $reports.Count; $i++) {
+        $validChoices += $i.ToString()
+    }
+    
+    $choices = @()
+    while ($true) {
+        $choice = Read-Host "Entrez les numéros des rapports à exécuter (séparés par des virgules), 0 pour tous, ou Q pour quitter"
+        
+        if ($choice -eq "Q") {
+            return @()
+        }
+        
+        if ($choice -eq "0") {
+            return (0..($reports.Count-1))
+        }
+        
+        $selectedReports = $choice -split "," | ForEach-Object { $_.Trim() }
+        $allValid = $true
+        
+        foreach ($selectedReport in $selectedReports) {
+            if (-not ($validChoices -contains $selectedReport)) {
+                Write-Host "Choix invalide: $selectedReport" -ForegroundColor Red
+                $allValid = $false
+                break
+            }
+            
+            if ($selectedReport -ne "Q" -and $selectedReport -ne "0") {
+                $choices += [int]$selectedReport - 1
+            }
+        }
+        
+        if ($allValid) {
+            return $choices
+        }
+    }
+}
+
+# Obtenir les rapports à exécuter
+$selectedIndices = Show-ReportMenu
+if ($selectedIndices.Count -eq 0) {
+    Write-Host "Aucun rapport sélectionné. Fin du script." -ForegroundColor Yellow
+    
+    # Fermer la session avant de quitter
+    try {
+        Close-PASSession
+        Write-Host "Session CyberArk fermée" -ForegroundColor Green
+    } catch {
+        Write-Host "Note: Impossible de fermer la session CyberArk: $_" -ForegroundColor Yellow
+    }
+    
+    exit
+}
+
+# Exécuter les rapports sélectionnés
+$selectedReports = $selectedIndices | ForEach-Object { $reports[$_] }
+$totalReports = $selectedReports.Count
 $currentReport = 0
 
-foreach ($report in $reports) {
+foreach ($report in $selectedReports) {
     $currentReport++
     $progress = [math]::Round(($currentReport / $totalReports) * 100)
     Write-Progress -Activity "Génération des rapports CyberArk" -Status "Rapport $currentReport sur $totalReports" -PercentComplete $progress
