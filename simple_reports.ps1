@@ -191,7 +191,8 @@ $reports = @(
             PVWAAddress = $PVWA_URL
             ExportToCSV = $true
             CSVPath = "$EXPORT_DIR\AddressOptimization.csv"
-            ShowAllResults = $true
+            ShowAllResults = $false
+            SuppressErrorResults = $true
             logonToken = $logonToken
         }
     },
@@ -206,6 +207,22 @@ $reports = @(
             CSVPath = "$EXPORT_DIR\AllAccounts.csv"
             SortBy = "UserName"
             AutoNextPage = $true
+            logonToken = $logonToken
+            DisableLogoff = $true
+        }
+    },
+    # 11. Rapport de santé du système - Nécessite le module CyberArk-Common
+    @{
+        Description = "Rapport de santé du système"
+        ScriptPath = ".\System Health\System-Health.ps1"
+        Parameters = @{
+            PVWAURL = $PVWA_URL
+            PVWACredentials = $creds
+            AllComponentTypes = $true
+            AllServers = $true
+            CSVPath = "$EXPORT_DIR\SystemHealth.csv"
+            OutputObject = $true
+            CyberArkCommon = ".\System Health\CyberArk-Common.psm1"
         }
     }
 )
