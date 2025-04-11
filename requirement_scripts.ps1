@@ -4,6 +4,24 @@
 # Auteur: CyberArk API Explorer
 #
 
+[CmdletBinding()]
+param (
+    [switch]$SkipModuleCheck,      # Ignorer la vérification des modules
+    [switch]$WhatIf,               # Simuler l'exécution sans lancer les scripts
+    [string]$SingleScript,         # Exécuter un seul script spécifié par son nom
+    [switch]$NoInteractive         # Mode non interactif (pour les tâches planifiées)
+)
+
+# Configuration de TLS 1.2 (requis pour les API modernes)
+try {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    Write-Host "TLS 1.2 activé" -ForegroundColor Green
+}
+catch {
+    Write-Host "ATTENTION: Impossible d'activer TLS 1.2. Certaines connexions API peuvent échouer." -ForegroundColor Red
+    Write-Host "Erreur: $_" -ForegroundColor Red
+}
+
 # Fonction pour la journalisation
 function Write-Log {
     param(
@@ -63,14 +81,92 @@ function Install-RequiredModules {
         [string[]]$Modules
     )
     
+    # Vérifier si PowerShellGet est disponible
+    if (-not (Get-Module -ListAvailable -Name PowerShellGet)) {
+        Write-Log "Le module PowerShellGet n'est pas disponible. Tentative d'installation de base..." -Color Yellow
+        try {
+            # Installation de PowerShellGet via méthode alternative
+            Invoke-Expression "Install-Module -Name PowerShellGet -Force -Scope CurrentUser -AllowClobber" -ErrorAction Stop
+        }
+        catch {
+            Write-Log "Erreur lors de l'installation de PowerShellGet. Installation manuelle requise." -Color Red
+            Write-Log "Pour installer manuellement, exécutez: Install-Module -Name PowerShellGet -Force -Scope CurrentUser" -Color Yellow
+            return $false
+        }
+    }
+    
+    # Vérifier les droits d'administrateur
+    $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    $scopeParam = if ($isAdmin) { "" } else { "-Scope CurrentUser" }
+    
     foreach ($module in $Modules) {
         try {
             Write-Log "Installation du module requis: $module..." -Color Yellow
-            Install-Module -Name $module -Force -Scope CurrentUser
-            Write-Log "Module $module installé avec succès" -Color Green
+            
+            # Essayer d'abord avec Scope CurrentUser si non admin
+            if (-not $isAdmin) {
+                Write-Log "Installation en tant qu'utilisateur (non administrateur)" -Color Gray
+                $installCmd = "Install-Module -Name '$module' -Force -Scope CurrentUser -AllowClobber -SkipPublisherCheck -ErrorAction Stop"
+            } else {
+                $installCmd = "Install-Module -Name '$module' -Force -AllowClobber -SkipPublisherCheck -ErrorAction Stop"
+            }
+            
+            try {
+                # Configurer TLS 1.2 explicitement pour éviter les erreurs de connexion
+                [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+                
+                # Exécuter la commande d'installation
+                Invoke-Expression $installCmd
+                
+                # Vérifier si l'installation a réussi
+                if (Get-Module -ListAvailable -Name $module) {
+                    Write-Log "Module $module installé avec succès" -Color Green
+                } else {
+                    throw "Le module n'a pas été installé correctement"
+                }
+            }
+            catch {
+                # Si l'installation échoue, afficher un message plus détaillé
+                Write-Log "Erreur lors de l'installation via PowerShellGet: $_" -Color Red
+                
+                # Proposer une méthode alternative pour les modules essentiels
+                if ($module -eq "PSSolutions.CyberArk.Common") {
+                    Write-Log "Vous pouvez télécharger manuellement CyberArk-Common depuis:" -Color Yellow
+                    Write-Log "https://github.com/cyberark/epv-api-scripts/blob/main/CyberArk-Common/CyberArk-Common.psm1" -Color Yellow
+                    Write-Log "Et le placer dans le même dossier que les scripts" -Color Yellow
+                }
+                
+                Write-Log "Tentative d'installation alternative..." -Color Yellow
+                try {
+                    # Méthode alternative utilisant Save-Module puis Import-Module
+                    $tempPath = Join-Path $env:TEMP "TempModules\$module"
+                    if (-not (Test-Path $tempPath)) {
+                        New-Item -Path $tempPath -ItemType Directory -Force | Out-Null
+                    }
+                    
+                    Save-Module -Name $module -Path $env:TEMP\TempModules -Force -ErrorAction Stop
+                    Write-Log "Module sauvegardé dans $tempPath" -Color Gray
+                    
+                    # Copier vers le répertoire des modules utilisateur
+                    $userModulePath = "$HOME\Documents\WindowsPowerShell\Modules\$module"
+                    if (-not (Test-Path $userModulePath)) {
+                        New-Item -Path $userModulePath -ItemType Directory -Force | Out-Null
+                    }
+                    
+                    Copy-Item -Path "$tempPath\*" -Destination $userModulePath -Recurse -Force
+                    Write-Log "Module copié vers $userModulePath" -Color Gray
+                    
+                    Import-Module $module -Force -ErrorAction Stop
+                    Write-Log "Module $module installé avec méthode alternative" -Color Green
+                }
+                catch {
+                    Write-Log "Échec également avec la méthode alternative: $_" -Color Red
+                    Write-Log "Certains scripts peuvent échouer sans ce module." -Color Red
+                }
+            }
         }
         catch {
-            Write-Log "Impossible d'installer le module $module: $_" -Color Red
+            Write-Log "Erreur générale lors de l'installation du module $module: $_" -Color Red
             Write-Log "Certains scripts peuvent échouer sans ce module." -Color Red
         }
     }
@@ -93,6 +189,16 @@ function Execute-Script {
         return $false
     }
     
+    # Si WhatIf est spécifié, simuler l'exécution sans lancer le script
+    if ($WhatIf) {
+        Write-Log "[SIMULATION] Exécution de $ScriptName" -Color Magenta
+        Write-Log "[SIMULATION] Commande: $ScriptPath $Parameters" -Color Magenta
+        if ($NeedsCredentials -and $null -ne $Credentials) {
+            Write-Log "[SIMULATION] Utilisation des credentials: $($Credentials.UserName)" -Color Magenta
+        }
+        return $true
+    }
+    
     try {
         Write-Log "`nExécution de $ScriptName" -Color Yellow
         Write-Log "Description: $Description" -Color Gray
@@ -112,16 +218,34 @@ function Execute-Script {
         
         if ($NeedsCredentials -and $null -ne $Credentials) {
             Write-Log "Exécution avec credentials pour $ScriptName" -Color Gray -NoConsole
-            # Utilisation de Invoke-Command pour passer les credentials
-            $scriptBlock = [ScriptBlock]::Create(".\$scriptFile $Parameters")
-            & $scriptBlock -PVWACredentials $Credentials
-            $success = $?
+            
+            # Utiliser splatting au lieu d'injecter directement les credentials
+            $splat = @{
+                PVWACredentials = $Credentials
+            }
+            
+            # Exécuter avec gestion d'erreur
+            try {
+                $scriptBlock = [ScriptBlock]::Create(".\$scriptFile $Parameters")
+                & $scriptBlock @splat
+                $success = $?
+            }
+            catch {
+                Write-Log "Erreur lors de l'exécution avec credentials: $_" -Color Red
+                $success = $false
+            }
         }
         else {
             # Exécution normale sans credentials
-            $command = "& .\$scriptFile $Parameters"
-            Invoke-Expression $command -ErrorAction Stop
-            $success = $true
+            try {
+                $command = "& .\$scriptFile $Parameters"
+                Invoke-Expression $command -ErrorAction Stop
+                $success = $true
+            }
+            catch {
+                Write-Log "Erreur lors de l'exécution de la commande: $_" -Color Red
+                $success = $false
+            }
         }
         
         # Revenir au dossier d'origine
@@ -434,68 +558,74 @@ $systemRequirements = Test-CyberArkSystemRequirements
 # Afficher les résultats des vérifications
 Show-Title "Vérification de l'environnement CyberArk"
 
-# Vérifier les exigences système
-Write-Log "Exigences système:" -Color Cyan
-foreach ($req in $systemRequirements.GetEnumerator()) {
-    $statusColor = if ($req.Value.Status) { "Green" } else { "Yellow" }
-    $statusText = if ($req.Value.Status) { "OK" } else { "Attention" }
-    Write-Log "  $($req.Key): $($req.Value.Current) [Requis: $($req.Value.Required)] - $statusText" -Color $statusColor
+# Sauter les vérifications de modules si demandé
+if ($SkipModuleCheck) {
+    Write-Log "Vérification des modules désactivée par l'utilisateur" -Color Yellow
 }
+else {
+    # Vérifier les exigences système
+    Write-Log "Exigences système:" -Color Cyan
+    foreach ($req in $systemRequirements.GetEnumerator()) {
+        $statusColor = if ($req.Value.Status) { "Green" } else { "Yellow" }
+        $statusText = if ($req.Value.Status) { "OK" } else { "Attention" }
+        Write-Log "  $($req.Key): $($req.Value.Current) [Requis: $($req.Value.Required)] - $statusText" -Color $statusColor
+    }
 
-# Afficher les composants CyberArk détectés
-Write-Log "`nComposants CyberArk détectés:" -Color Cyan
-$componentsDetected = $false
-foreach ($component in $cyberArkComponents.GetEnumerator()) {
-    if ($component.Value.Count -gt 0) {
-        $componentsDetected = $true
-        Write-Log "  $($component.Key) - $($component.Value.Count) instance(s)" -Color Green
-        foreach ($instance in $component.Value) {
-            Write-Log "    - $instance" -Color Gray
+    # Afficher les composants CyberArk détectés
+    Write-Log "`nComposants CyberArk détectés:" -Color Cyan
+    $componentsDetected = $false
+    foreach ($component in $cyberArkComponents.GetEnumerator()) {
+        if ($component.Value.Count -gt 0) {
+            $componentsDetected = $true
+            Write-Log "  $($component.Key) - $($component.Value.Count) instance(s)" -Color Green
+            foreach ($instance in $component.Value) {
+                Write-Log "    - $instance" -Color Gray
+            }
         }
     }
-}
 
-if (-not $componentsDetected) {
-    Write-Log "  Aucun composant CyberArk détecté localement." -Color Yellow
-    Write-Log "  Cela n'affectera pas l'exécution des scripts si vous vous connectez à un serveur distant." -Color Yellow
-}
-
-# Vérifier les modules requis
-if ($missingModules.Count -gt 0) {
-    Write-Log "`nModules requis manquants:" -Color Yellow
-    foreach ($module in $missingModules) {
-        Write-Log "  - $module (REQUIS)" -Color Red
+    if (-not $componentsDetected) {
+        Write-Log "  Aucun composant CyberArk détecté localement." -Color Yellow
+        Write-Log "  Cela n'affectera pas l'exécution des scripts si vous vous connectez à un serveur distant." -Color Yellow
     }
-    
-    $installModules = Read-Host -Prompt "Voulez-vous installer les modules requis manquants? (O/N, défaut: O)"
-    if ([string]::IsNullOrEmpty($installModules) -or $installModules.ToUpper() -eq "O") {
-        Install-RequiredModules -Modules $missingModules
+
+    # Vérifier les modules requis
+    if ($missingModules.Count -gt 0) {
+        Write-Log "`nModules requis manquants:" -Color Yellow
+        foreach ($module in $missingModules) {
+            Write-Log "  - $module (REQUIS)" -Color Red
+        }
+        
+        $installModules = Read-Host -Prompt "Voulez-vous installer les modules requis manquants? (O/N, défaut: O)"
+        if ([string]::IsNullOrEmpty($installModules) -or $installModules.ToUpper() -eq "O") {
+            Install-RequiredModules -Modules $missingModules
+        }
+        else {
+            Write-Log "ATTENTION: Sans ces modules requis, certains scripts échoueront." -Color Red
+        }
     }
     else {
-        Write-Log "ATTENTION: Sans ces modules requis, certains scripts échoueront." -Color Red
+        Write-Log "`nTous les modules requis sont installés." -Color Green
     }
-}
-else {
-    Write-Log "`nTous les modules requis sont installés." -Color Green
-}
 
-# Vérifier les modules recommandés
-if ($recommendedMissingModules.Count -gt 0) {
-    Write-Log "`nModules recommandés manquants:" -Color Yellow
-    foreach ($module in $recommendedMissingModules) {
-        Write-Log "  - $module (Recommandé)" -Color Yellow
-    }
-    
-    $installRecommended = Read-Host -Prompt "Voulez-vous installer les modules recommandés? (O/N, défaut: N)"
-    if ($installRecommended.ToUpper() -eq "O") {
-        Install-RequiredModules -Modules $recommendedMissingModules
+    # Vérifier les modules recommandés
+    if ($recommendedMissingModules.Count -gt 0) {
+        Write-Log "`nModules recommandés manquants:" -Color Yellow
+        foreach ($module in $recommendedMissingModules) {
+            Write-Log "  - $module (Recommandé)" -Color Yellow
+        }
+        
+        $installRecommended = Read-Host -Prompt "Voulez-vous installer les modules recommandés? (O/N, défaut: N)"
+        if ($installRecommended.ToUpper() -eq "O") {
+            Install-RequiredModules -Modules $recommendedMissingModules
+        }
+        else {
+            Write-Log "Les modules recommandés peuvent améliorer certaines fonctionnalités mais ne sont pas obligatoires." -Color Gray
+        }
     }
     else {
-        Write-Log "Les modules recommandés peuvent améliorer certaines fonctionnalités mais ne sont pas obligatoires." -Color Gray
+        Write-Log "`nTous les modules recommandés sont installés." -Color Green
     }
-}
-else {
-    Write-Log "`nTous les modules recommandés sont installés." -Color Green
 }
 
 # Afficher le titre principal
@@ -574,38 +704,89 @@ if ($missingScripts.Count -gt 0) {
     }
 }
 
-# Proposer de choisir les scripts à exécuter
-Show-Title "Sélection des scripts à exécuter"
+# Mettre à jour le code dans la section de sélection des scripts après tous les préparatifs (avant l'exécution des scripts)
 
-Write-Log "Que souhaitez-vous faire?" -Color Yellow
-Write-Log "1. Exécuter tous les scripts disponibles" -Color White
-Write-Log "2. Sélectionner les scripts à exécuter" -Color White
-$choice = Read-Host -Prompt "Votre choix (1/2)"
-
-$selectedScripts = @()
-
-if ($choice -eq "1") {
-    # Filtrer les scripts manquants
-    $selectedScripts = $scripts | Where-Object { Test-Path -Path $_.Path }
-    
-    if ($selectedScripts.Count -lt $scripts.Count) {
-        Write-Log "Certains scripts n'ont pas été sélectionnés car ils sont introuvables." -Color Yellow
-    }
+if ($WhatIf) {
+    Write-Log "Mode SIMULATION activé - Les scripts ne seront pas réellement exécutés" -Color Magenta
 }
-elseif ($choice -eq "2") {
-    for ($i = 0; $i -lt $scripts.Count; $i++) {
-        $script = $scripts[$i]
+
+if (-not [string]::IsNullOrEmpty($SingleScript)) {
+    Write-Log "Mode SCRIPT UNIQUE activé - Seul le script '$SingleScript' sera exécuté" -Color Magenta
+    
+    # Chercher le script demandé par son nom
+    $scriptToRun = $scripts | Where-Object { $_.Name -eq $SingleScript }
+    
+    if ($null -eq $scriptToRun) {
+        # Essayer une recherche moins stricte
+        $scriptToRun = $scripts | Where-Object { $_.Name -like "*$SingleScript*" }
         
-        # Vérifier si le script existe
-        if (-not (Test-Path -Path $script.Path)) {
-            Write-Log "  [Non disponible] $($script.Name) - Fichier introuvable" -Color Red
-            continue
+        if ($null -eq $scriptToRun -or $scriptToRun.Count -eq 0) {
+            Write-Log "Aucun script correspondant à '$SingleScript' n'a été trouvé" -Color Red
+            exit
         }
+        elseif ($scriptToRun.Count -gt 1) {
+            Write-Log "Plusieurs scripts correspondent à '$SingleScript':" -Color Yellow
+            foreach ($s in $scriptToRun) {
+                Write-Log "  - $($s.Name)" -Color Yellow
+            }
+            Write-Log "Veuillez spécifier un nom plus précis" -Color Yellow
+            exit
+        }
+        else {
+            # Un seul script trouvé
+            Write-Log "Script trouvé: $($scriptToRun.Name)" -Color Green
+        }
+    }
+    
+    $selectedScripts = @($scriptToRun)
+}
+elseif ($NoInteractive) {
+    # Mode non interactif, exécuter tous les scripts requis
+    Write-Log "Mode NON INTERACTIF activé - Tous les scripts requis seront exécutés" -Color Yellow
+    $selectedScripts = $scripts | Where-Object { $_.Required -and (Test-Path -Path $_.Path) }
+}
+else {
+    # Mode interactif normal - continuer avec la sélection des scripts comme avant
+    # Proposer de choisir les scripts à exécuter
+    Show-Title "Sélection des scripts à exécuter"
+    
+    Write-Log "Que souhaitez-vous faire?" -Color Yellow
+    Write-Log "1. Exécuter tous les scripts disponibles" -Color White
+    Write-Log "2. Sélectionner les scripts à exécuter" -Color White
+    $choice = Read-Host -Prompt "Votre choix (1/2)"
+    
+    $selectedScripts = @()
+    
+    if ($choice -eq "1") {
+        # Filtrer les scripts manquants
+        $selectedScripts = $scripts | Where-Object { Test-Path -Path $_.Path }
         
-        $response = Read-Host -Prompt "Exécuter '$($script.Name)' ? (O/N, défaut: O si requis, N si optionnel)"
-        
-        if ([string]::IsNullOrEmpty($response)) {
-            if ($script.Required) {
+        if ($selectedScripts.Count -lt $scripts.Count) {
+            Write-Log "Certains scripts n'ont pas été sélectionnés car ils sont introuvables." -Color Yellow
+        }
+    }
+    elseif ($choice -eq "2") {
+        for ($i = 0; $i -lt $scripts.Count; $i++) {
+            $script = $scripts[$i]
+            
+            # Vérifier si le script existe
+            if (-not (Test-Path -Path $script.Path)) {
+                Write-Log "  [Non disponible] $($script.Name) - Fichier introuvable" -Color Red
+                continue
+            }
+            
+            $response = Read-Host -Prompt "Exécuter '$($script.Name)' ? (O/N, défaut: O si requis, N si optionnel)"
+            
+            if ([string]::IsNullOrEmpty($response)) {
+                if ($script.Required) {
+                    $selectedScripts += $script
+                    Write-Log "  [Sélectionné] $($script.Name)" -Color Green
+                }
+                else {
+                    Write-Log "  [Ignoré] $($script.Name)" -Color Gray
+                }
+            }
+            elseif ($response.ToUpper() -eq "O") {
                 $selectedScripts += $script
                 Write-Log "  [Sélectionné] $($script.Name)" -Color Green
             }
@@ -613,18 +794,11 @@ elseif ($choice -eq "2") {
                 Write-Log "  [Ignoré] $($script.Name)" -Color Gray
             }
         }
-        elseif ($response.ToUpper() -eq "O") {
-            $selectedScripts += $script
-            Write-Log "  [Sélectionné] $($script.Name)" -Color Green
-        }
-        else {
-            Write-Log "  [Ignoré] $($script.Name)" -Color Gray
-        }
     }
-}
-else {
-    Write-Log "Choix invalide. Le script va s'arrêter." -Color Red
-    exit
+    else {
+        Write-Log "Choix invalide. Le script va s'arrêter." -Color Red
+        exit
+    }
 }
 
 if ($selectedScripts.Count -eq 0) {
