@@ -1,6 +1,113 @@
-At C:\Cyberark Dashboard\epv-api-scripts\requirments_scripts.ps1:217 char:34
-+ $authType = Get-AuthType.ToLower()  # Convertir en minuscules
-+                                  ~
-An expression was expected after '('.
-    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
-    + FullyQualifiedErrorId : ExpectedExpression
+======================================================
+      CyberArk Dashboard Requirements Installer
+======================================================
+This script will run all necessary scripts to populate the CyberArk dashboards to 100%.
+You will be prompted for the required information for each script.
+======================================================
+
+Specify the output folder for CSV files (Default: C:\Temp): 
+
+Enter PVWA URL (e.g., https://pvwa.cyberark.local/PasswordVault): https://accessqa.st.com/PasswordVault/
+
+Select Authentication Type:
+1. CyberArk (default)
+2. LDAP
+3. RADIUS
+Enter your choice (1-3): 1
+
+Enter CyberArk credentials
+
+[1/11] System Health Script
+Do you want to run System-Health.ps1? (Y/N) [Y]: 
+[System-Health.ps1] Executing: ./System-Health.ps1 -PVWAURL 'https://accessqa.st.com/PasswordVault' -AuthType cyberark -PVWACredentials $credentials -ExportPath 'C:\Te
+mp' -OutputCSV System_Health.csv
+[System-Health.ps1] Error: At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:26 char:1
++ [CmdletBinding()]
++ ~~~~~~~~~~~~~~~~~
+Unexpected attribute 'CmdletBinding'.
+
+At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:27 char:1
++ param(
++ ~~~~~
+Unexpected token 'param' in expression or statement.
+
+At C:\Cyberark Dashboard\epv-api-scripts\System Health\System-Health.ps1:35 char:25
++     [String]$AuthType = "cyberark",
++                         ~~~~~~~~~~
+The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept assignments, such as a variable or a property.
+
+[2/11] Safe Management Script
+Do you want to run Safe-Management.ps1? (Y/N) [Y]: 
+[Safe-Management.ps1] Executing: ./Safe-Management.ps1 -PVWAURL 'https://accessqa.st.com/PasswordVault' -AuthType cyberark -PVWACredentials $credentials -Report -Outpu
+tPath 'C:\Temp/Safes.csv'
+=======================================
+Starting script (v2.2.2)
+Retrieving Safes...
+No safe name passed, retrieving all safes...
+Logoff Session...
+Script ended
+=======================================
+[Safe-Management.ps1] Completed
+
+[3/11] Get Accounts Script
+Do you want to run Get-Accounts.ps1? (Y/N) [Y]: 
+[Get-Accounts.ps1] Executing: ./Get-Accounts.ps1 -PVWAURL 'https://accessqa.st.com/PasswordVault' -AuthType cyberark -PVWACredentials $credentials -Report -AutoNextPag
+e -CSVPath 'C:\Temp/Accounts.csv'
+[Get-Accounts.ps1] Error: A parameter cannot be found that matches parameter name 'PVWACredentials'.
+
+[4/11] Account Risk Report Script
+Do you want to run Get-AccountReport.ps1? (Y/N) [Y]: 
+[Get-AccountReport.ps1] Executing: ./Get-AccountReport.ps1 -PVWAAddress 'https://accessqa.st.com/PasswordVault' -PVWAAuthType cyberark -PVWACredentials $credentials -R
+eportPath 'C:\Temp/Accounts_Risk.csv' -allProps
+[Get-AccountReport.ps1] Error: Invalid URI: The hostname could not be parsed. Run New-PASSession
+
+[5/11] User Activity Report Script
+Do you want to run Get-UsersActivityReport.ps1? (Y/N) [Y]: 
+Enter number of days of history to extract (default: 30): 
+Get-UsersActivityReport.ps1 not found in the directory structure.
+Please locate the script manually and run it with the following parameters:
+-PVWA 'https://accessqa.st.com/PasswordVault' -AuthType cyberark -Days 30 -ExportPath 'C:\Temp' -OutputCSV Users_Activity.csv
+
+[6/11] PSM Sessions Management Script
+Do you want to run PSM-SessionsManagement.ps1? (Y/N) [Y]: 
+[PSM-SessionsManagement.ps1] Executing: ./PSM-SessionsManagement.ps1 -PVWA 'https://accessqa.st.com/PasswordVault' -AuthType cyberark -PVWACredentials $credentials -Li
+st -ExportPath 'C:\Temp' -OutputCSV PSM_Sessions.csv
+[PSM-SessionsManagement.ps1] Error: A parameter cannot be found that matches parameter name 'PVWACredentials'.
+
+[7/11] Test HTML5 Gateway Script
+Do you want to run Test-HTML5Certificate.ps1? (Y/N) [Y]: 
+Enter the HTML5 Gateway URL (e.g., https://gateway.cyberark.local): 
+Gateway URL cannot be empty. Please enter a valid URL: 
+Gateway URL cannot be empty. Please enter a valid URL: 
+Gateway URL cannot be empty. Please enter a valid URL: N
+[Test-HTML5Certificate.ps1] Executing: ./Test-HTML5Certificate.ps1 -Gateway 'N' -ExportPath 'C:\Temp' -OutputCSV HTML5_Gateway_Test.csv
+[Test-HTML5Certificate.ps1] Error: A parameter cannot be found that matches parameter name 'Gateway'.
+
+[8/11] Bulk Account Actions Script
+Do you want to run Invoke-BulkAccountActions.ps1? (Y/N) [Y]: 
+[Invoke-BulkAccountActions.ps1] Executing: ./Invoke-BulkAccountActions.ps1 -PVWAURL 'https://accessqa.st.com/PasswordVault' -AuthType cyberark -PVWACredentials $creden
+tials -AccountsAction 'Verify' -OutputCSV 'C:\Temp/Accounts_Usage.csv'
+[Invoke-BulkAccountActions.ps1] Error: A parameter cannot be found that matches parameter name 'PVWACredentials'.
+
+[9/11] Get Applications Script
+Do you want to run Get-Applications.ps1? (Y/N) [Y]: 
+Get-Applications.ps1 not found in the directory structure.
+Please locate the script manually and run it with the following parameters:
+-PVWA 'https://accessqa.st.com/PasswordVault' -AuthType cyberark -ExportPath 'C:\Temp' -OutputCSV Applications.csv
+
+[10/11] Get CCP Performance Script
+Do you want to run Get-CCPPerformance.ps1? (Y/N) [Y]: n
+
+[11/11] Get Platforms Script
+Do you want to run Get-Platforms.ps1? (Y/N) [Y]: 
+Get-Platforms.ps1 not found in the directory structure.
+Please locate the script manually and run it with the following parameters:
+-PVWA 'https://accessqa.st.com/PasswordVault' -AuthType cyberark -ExportPath 'C:\Temp' -OutputCSV Platforms.csv
+
+======================================================
+                Script Execution Summary               
+======================================================
+All scripts have been executed. CSV files are available in: C:\Temp
+
+These files can now be uploaded to the CyberArk Dashboard to populate all dashboards at 100%.
+======================================================
