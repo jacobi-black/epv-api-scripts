@@ -202,6 +202,162 @@ function Get-LogonToken {
     }
 }
 
+# Fonction adaptative pour exécuter les scripts avec les bons paramètres selon le script
+function Invoke-CyberArkScript {
+    param (
+        [string]$ScriptPath,
+        [string]$ScriptName,
+        [string]$PVWAURL,
+        [string]$AuthType,
+        [System.Management.Automation.PSCredential]$Credentials,
+        [hashtable]$AdditionalParams = @{}
+    )
+    
+    # Extraire les informations d'identification
+    $username = $Credentials.UserName
+    $password = $Credentials.GetNetworkCredential().Password
+    
+    # Construire les paramètres de base en fonction du script
+    $baseParams = @{}
+    
+    switch -Wildcard ($ScriptName) {
+        "System-Health.ps1" {
+            # System-Health.ps1 n'accepte pas PVWACredentials, mais Username et Password
+            $baseParams = @{
+                "PVWAURL" = $PVWAURL
+                "AuthType" = $AuthType
+                "Username" = $username
+                "Password" = $password
+            }
+        }
+        "Safe-Management.ps1" {
+            # Safe-Management.ps1 fonctionne déjà correctement
+            $baseParams = @{
+                "PVWAURL" = $PVWAURL
+                "AuthType" = $AuthType
+            }
+        }
+        "Get-Accounts.ps1" {
+            # Get-Accounts.ps1 n'accepte pas PVWACredentials
+            $baseParams = @{
+                "PVWAURL" = $PVWAURL
+                "AuthType" = $AuthType
+                "Username" = $username
+                "Password" = $password
+            }
+        }
+        "Get-AccountReport.ps1" {
+            # Modifier les paramètres
+            $baseParams = @{
+                "PVWA" = $PVWAURL
+                "AuthType" = $AuthType 
+                "Username" = $username
+                "Password" = $password
+            }
+        }
+        "PSM-SessionsManagement.ps1" {
+            # PSM-SessionsManagement.ps1 n'accepte pas PVWACredentials
+            $baseParams = @{
+                "PVWA" = $PVWAURL
+                "AuthType" = $AuthType
+                "Username" = $username
+                "Password" = $password
+            }
+        }
+        "Test-HTML5Certificate.ps1" {
+            # Test-HTML5Certificate.ps1 - Correction nom du paramètre Gateway
+            $baseParams = @{
+                "URL" = $AdditionalParams["GatewayURL"]
+            }
+            # Retirer le paramètre non nécessaire du hashtable d'additionalParams
+            $AdditionalParams.Remove("GatewayURL")
+        }
+        "Invoke-BulkAccountActions.ps1" {
+            # Invoke-BulkAccountActions.ps1 n'accepte pas PVWACredentials
+            $baseParams = @{
+                "PVWAURL" = $PVWAURL
+                "AuthType" = $AuthType
+                "Username" = $username
+                "Password" = $password
+            }
+        }
+        "Get-UsersActivityReport.ps1" {
+            # Paramètres pour Get-UsersActivityReport
+            $baseParams = @{
+                "PVWA" = $PVWAURL
+                "AuthType" = $AuthType
+                "Username" = $username
+                "Password" = $password
+            }
+        }
+        "Get-Applications.ps1" {
+            # Paramètres pour Get-Applications
+            $baseParams = @{
+                "PVWA" = $PVWAURL
+                "AuthType" = $AuthType
+                "Username" = $username
+                "Password" = $password
+            }
+        }
+        "Get-CCPPerformance.ps1" {
+            # Paramètres spécifiques à Get-CCPPerformance
+            $baseParams = @{
+                "CCP" = $AdditionalParams["CCPURL"]
+            }
+            # Retirer le paramètre non nécessaire
+            $AdditionalParams.Remove("CCPURL")
+        }
+        "Get-Platforms.ps1" {
+            # Paramètres pour Get-Platforms
+            $baseParams = @{
+                "PVWA" = $PVWAURL
+                "AuthType" = $AuthType
+                "Username" = $username
+                "Password" = $password
+            }
+        }
+        default {
+            # Paramètres par défaut
+            $baseParams = @{
+                "PVWAURL" = $PVWAURL
+                "AuthType" = $AuthType
+                "Username" = $username
+                "Password" = $password
+            }
+        }
+    }
+    
+    # Fusionner avec les paramètres additionnels
+    $allParams = $baseParams + $AdditionalParams
+    
+    # Construire la chaîne de commande
+    $commandParts = @("& '$ScriptPath'")
+    foreach ($param in $allParams.GetEnumerator()) {
+        if ($param.Value -is [switch]) {
+            if ($param.Value.IsPresent) {
+                $commandParts += "-$($param.Key)"
+            }
+        } elseif ($null -ne $param.Value) {
+            $commandParts += "-$($param.Key) '$($param.Value)'"
+        }
+    }
+    
+    $command = $commandParts -join " "
+    Show-ScriptStatus -ScriptName $ScriptName -Status "Executing with adapted parameters..." -Color "Green"
+    Show-ScriptStatus -ScriptName $ScriptName -Status "Command: $command" -Color "Gray"
+    
+    # Exécuter la commande
+    try {
+        Invoke-Expression $command
+        Show-ScriptStatus -ScriptName $ScriptName -Status "Completed" -Color "Green"
+        return $true
+    }
+    catch {
+        Show-ScriptStatus -ScriptName $ScriptName -Status "Error: $_" -Color "Red"
+        return $false
+    }
+}
+
 # Main script execution
 Clear-Host
 Write-Host "======================================================" -ForegroundColor Yellow
@@ -219,8 +375,8 @@ $authType = $authType.ToLower()  # Convertir en minuscules
 
 # Obtenir les identifiants une seule fois
 $credentials = Get-CyberArkCredentials
-$securePassword = $credentials.Password
 $username = $credentials.UserName
+$password = $credentials.GetNetworkCredential().Password
 
 # Script 1: System-Health.ps1
 Write-Host "`n[1/11] System Health Script" -ForegroundColor Yellow
@@ -230,13 +386,13 @@ if ($runScript -eq "" -or $runScript -eq "Y" -or $runScript -eq "y") {
     try {
         Set-Location -Path "System Health"
         
-        # Run System-Health.ps1
-        $command = "./System-Health.ps1 -PVWAURL '$pvwaURL' -AuthType $authType -PVWACredentials `$credentials -ExportPath '$outputFolder' -OutputCSV System_Health.csv"
-        Show-ScriptStatus -ScriptName "System-Health.ps1" -Status "Executing: $command" -Color "Green"
-        
-        Invoke-Expression $command
-        
-        Show-ScriptStatus -ScriptName "System-Health.ps1" -Status "Completed" -Color "Green"
+        # Utiliser la fonction adaptative pour exécuter System-Health.ps1
+        Invoke-CyberArkScript -ScriptPath "./System-Health.ps1" -ScriptName "System-Health.ps1" `
+            -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials `
+            -AdditionalParams @{
+                "ExportPath" = $outputFolder
+                "OutputCSV" = "System_Health.csv"
+            }
     }
     catch {
         Show-ScriptStatus -ScriptName "System-Health.ps1" -Status "Error: $_" -Color "Red"
@@ -254,20 +410,13 @@ if ($runScript -eq "" -or $runScript -eq "Y" -or $runScript -eq "y") {
     try {
         Set-Location -Path "Safe Management"
         
-        # Obtenir un token de connexion et le passer au script
-        $token = Get-LogonToken -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials
-        
-        if ($token) {
-            # Run Safe-Management.ps1 avec le token
-            $command = "./Safe-Management.ps1 -PVWAURL '$pvwaURL' -AuthType $authType -PVWACredentials `$credentials -Report -OutputPath '$outputFolder/Safes.csv'"
-            Show-ScriptStatus -ScriptName "Safe-Management.ps1" -Status "Executing: $command" -Color "Green"
-            
-            Invoke-Expression $command
-            
-            Show-ScriptStatus -ScriptName "Safe-Management.ps1" -Status "Completed" -Color "Green"
-        } else {
-            Show-ScriptStatus -ScriptName "Safe-Management.ps1" -Status "Failed to obtain logon token" -Color "Red"
-        }
+        # Utiliser la fonction adaptative pour exécuter Safe-Management.ps1
+        Invoke-CyberArkScript -ScriptPath "./Safe-Management.ps1" -ScriptName "Safe-Management.ps1" `
+            -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials `
+            -AdditionalParams @{
+                "Report" = $true
+                "OutputPath" = "$outputFolder/Safes.csv"
+            }
     }
     catch {
         Show-ScriptStatus -ScriptName "Safe-Management.ps1" -Status "Error: $_" -Color "Red"
@@ -285,20 +434,15 @@ if ($runScript -eq "" -or $runScript -eq "Y" -or $runScript -eq "y") {
     try {
         Set-Location -Path "Get Accounts"
         
-        # Obtenir un token de connexion
-        $token = Get-LogonToken -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials
-        
-        if ($token) {
-            # Attention: on retire le paramètre -List pour éviter l'erreur 405
-            $command = "./Get-Accounts.ps1 -PVWAURL '$pvwaURL' -AuthType $authType -PVWACredentials `$credentials -Report -AutoNextPage -CSVPath '$outputFolder/Accounts.csv'"
-            Show-ScriptStatus -ScriptName "Get-Accounts.ps1" -Status "Executing: $command" -Color "Green"
-            
-            Invoke-Expression $command
-            
-            Show-ScriptStatus -ScriptName "Get-Accounts.ps1" -Status "Completed" -Color "Green"
-        } else {
-            Show-ScriptStatus -ScriptName "Get-Accounts.ps1" -Status "Failed to obtain logon token" -Color "Red"
-        }
+        # Utiliser la fonction adaptative pour exécuter Get-Accounts.ps1
+        # On retire le paramètre -List qui cause l'erreur 405
+        Invoke-CyberArkScript -ScriptPath "./Get-Accounts.ps1" -ScriptName "Get-Accounts.ps1" `
+            -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials `
+            -AdditionalParams @{
+                "Report" = $true
+                "AutoNextPage" = $true
+                "CSVPath" = "$outputFolder/Accounts.csv"
+            }
     }
     catch {
         Show-ScriptStatus -ScriptName "Get-Accounts.ps1" -Status "Error: $_" -Color "Red"
@@ -316,13 +460,13 @@ if ($runScript -eq "" -or $runScript -eq "Y" -or $runScript -eq "y") {
     try {
         Set-Location -Path "Reports/Accounts"
         
-        # Run Get-AccountReport.ps1
-        $command = "./Get-AccountReport.ps1 -PVWAAddress '$pvwaURL' -PVWAAuthType $authType -PVWACredentials `$credentials -ReportPath '$outputFolder/Accounts_Risk.csv' -allProps"
-        Show-ScriptStatus -ScriptName "Get-AccountReport.ps1" -Status "Executing: $command" -Color "Green"
-        
-        Invoke-Expression $command
-        
-        Show-ScriptStatus -ScriptName "Get-AccountReport.ps1" -Status "Completed" -Color "Green"
+        # Utiliser la fonction adaptative pour exécuter Get-AccountReport.ps1
+        Invoke-CyberArkScript -ScriptPath "./Get-AccountReport.ps1" -ScriptName "Get-AccountReport.ps1" `
+            -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials `
+            -AdditionalParams @{
+                "ReportPath" = "$outputFolder/Accounts_Risk.csv"
+                "allProps" = $true
+            }
     }
     catch {
         Show-ScriptStatus -ScriptName "Get-AccountReport.ps1" -Status "Error: $_" -Color "Red"
@@ -349,18 +493,18 @@ if ($runScript -eq "" -or $runScript -eq "Y" -or $runScript -eq "y") {
         $scriptPath = Find-ScriptInPaths -ScriptName "Get-UsersActivityReport.ps1"
         
         if ($scriptPath) {
-            # Run Get-UsersActivityReport.ps1
-            $command = "& '$scriptPath' -PVWA '$pvwaURL' -AuthType $authType -PVWACredentials `$credentials -Days $days -ExportPath '$outputFolder' -OutputCSV Users_Activity.csv"
-            Show-ScriptStatus -ScriptName "Get-UsersActivityReport.ps1" -Status "Found at: $scriptPath" -Color "Green"
-            Show-ScriptStatus -ScriptName "Get-UsersActivityReport.ps1" -Status "Executing command" -Color "Green"
-            
-            Invoke-Expression $command
-            
-            Show-ScriptStatus -ScriptName "Get-UsersActivityReport.ps1" -Status "Completed" -Color "Green"
+            # Utiliser la fonction adaptative pour exécuter Get-UsersActivityReport.ps1
+            Invoke-CyberArkScript -ScriptPath $scriptPath -ScriptName "Get-UsersActivityReport.ps1" `
+                -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials `
+                -AdditionalParams @{
+                    "Days" = $days
+                    "ExportPath" = $outputFolder
+                    "OutputCSV" = "Users_Activity.csv"
+                }
         } else {
             Write-Host "Get-UsersActivityReport.ps1 not found in the directory structure." -ForegroundColor Red
             Write-Host "Please locate the script manually and run it with the following parameters:" -ForegroundColor Yellow
-            Write-Host "-PVWA '$pvwaURL' -AuthType $authType -Days $days -ExportPath '$outputFolder' -OutputCSV Users_Activity.csv" -ForegroundColor Yellow
+            Write-Host "-PVWA '$pvwaURL' -AuthType $authType -Username $username -Password *** -Days $days -ExportPath '$outputFolder' -OutputCSV Users_Activity.csv" -ForegroundColor Yellow
         }
     }
     catch {
@@ -379,13 +523,14 @@ if ($runScript -eq "" -or $runScript -eq "Y" -or $runScript -eq "y") {
     try {
         Set-Location -Path "PSM Sessions Management"
         
-        # Modifié pour utiliser le paramètre -List au lieu de -Days (qui n'est pas reconnu)
-        $command = "./PSM-SessionsManagement.ps1 -PVWA '$pvwaURL' -AuthType $authType -PVWACredentials `$credentials -List -ExportPath '$outputFolder' -OutputCSV PSM_Sessions.csv"
-        Show-ScriptStatus -ScriptName "PSM-SessionsManagement.ps1" -Status "Executing: $command" -Color "Green"
-        
-        Invoke-Expression $command
-        
-        Show-ScriptStatus -ScriptName "PSM-SessionsManagement.ps1" -Status "Completed" -Color "Green"
+        # Utiliser la fonction adaptative pour exécuter PSM-SessionsManagement.ps1
+        Invoke-CyberArkScript -ScriptPath "./PSM-SessionsManagement.ps1" -ScriptName "PSM-SessionsManagement.ps1" `
+            -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials `
+            -AdditionalParams @{
+                "List" = $true
+                "ExportPath" = $outputFolder
+                "OutputCSV" = "PSM_Sessions.csv"
+            }
     }
     catch {
         Show-ScriptStatus -ScriptName "PSM-SessionsManagement.ps1" -Status "Error: $_" -Color "Red"
@@ -412,13 +557,14 @@ if ($runScript -eq "" -or $runScript -eq "Y" -or $runScript -eq "y") {
             $gatewayURL = Read-Host
         }
         
-        # Run Test-HTML5Certificate.ps1
-        $command = "./Test-HTML5Certificate.ps1 -Gateway '$gatewayURL' -ExportPath '$outputFolder' -OutputCSV HTML5_Gateway_Test.csv"
-        Show-ScriptStatus -ScriptName "Test-HTML5Certificate.ps1" -Status "Executing: $command" -Color "Green"
-        
-        Invoke-Expression $command
-        
-        Show-ScriptStatus -ScriptName "Test-HTML5Certificate.ps1" -Status "Completed" -Color "Green"
+        # Utiliser la fonction adaptative pour exécuter Test-HTML5Certificate.ps1
+        Invoke-CyberArkScript -ScriptPath "./Test-HTML5Certificate.ps1" -ScriptName "Test-HTML5Certificate.ps1" `
+            -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials `
+            -AdditionalParams @{
+                "GatewayURL" = $gatewayURL  # Sera converti en -URL dans la fonction
+                "ExportPath" = $outputFolder
+                "OutputCSV" = "HTML5_Gateway_Test.csv"
+            }
     }
     catch {
         Show-ScriptStatus -ScriptName "Test-HTML5Certificate.ps1" -Status "Error: $_" -Color "Red"
@@ -436,13 +582,13 @@ if ($runScript -eq "" -or $runScript -eq "Y" -or $runScript -eq "y") {
     try {
         Set-Location -Path "Get Accounts"
         
-        # Run Invoke-BulkAccountActions.ps1
-        $command = "./Invoke-BulkAccountActions.ps1 -PVWAURL '$pvwaURL' -AuthType $authType -PVWACredentials `$credentials -AccountsAction 'Verify' -OutputCSV '$outputFolder/Accounts_Usage.csv'"
-        Show-ScriptStatus -ScriptName "Invoke-BulkAccountActions.ps1" -Status "Executing: $command" -Color "Green"
-        
-        Invoke-Expression $command
-        
-        Show-ScriptStatus -ScriptName "Invoke-BulkAccountActions.ps1" -Status "Completed" -Color "Green"
+        # Utiliser la fonction adaptative pour exécuter Invoke-BulkAccountActions.ps1
+        Invoke-CyberArkScript -ScriptPath "./Invoke-BulkAccountActions.ps1" -ScriptName "Invoke-BulkAccountActions.ps1" `
+            -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials `
+            -AdditionalParams @{
+                "AccountsAction" = "Verify"
+                "OutputCSV" = "$outputFolder/Accounts_Usage.csv"
+            }
     }
     catch {
         Show-ScriptStatus -ScriptName "Invoke-BulkAccountActions.ps1" -Status "Error: $_" -Color "Red"
@@ -462,18 +608,17 @@ if ($runScript -eq "" -or $runScript -eq "Y" -or $runScript -eq "y") {
         $scriptPath = Find-ScriptInPaths -ScriptName "Get-Applications.ps1"
         
         if ($scriptPath) {
-            # Run Get-Applications.ps1
-            $command = "& '$scriptPath' -PVWA '$pvwaURL' -AuthType $authType -PVWACredentials `$credentials -ExportPath '$outputFolder' -OutputCSV Applications.csv"
-            Show-ScriptStatus -ScriptName "Get-Applications.ps1" -Status "Found at: $scriptPath" -Color "Green"
-            Show-ScriptStatus -ScriptName "Get-Applications.ps1" -Status "Executing command" -Color "Green"
-            
-            Invoke-Expression $command
-            
-            Show-ScriptStatus -ScriptName "Get-Applications.ps1" -Status "Completed" -Color "Green"
+            # Utiliser la fonction adaptative pour exécuter Get-Applications.ps1
+            Invoke-CyberArkScript -ScriptPath $scriptPath -ScriptName "Get-Applications.ps1" `
+                -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials `
+                -AdditionalParams @{
+                    "ExportPath" = $outputFolder
+                    "OutputCSV" = "Applications.csv"
+                }
         } else {
             Write-Host "Get-Applications.ps1 not found in the directory structure." -ForegroundColor Red
             Write-Host "Please locate the script manually and run it with the following parameters:" -ForegroundColor Yellow
-            Write-Host "-PVWA '$pvwaURL' -AuthType $authType -ExportPath '$outputFolder' -OutputCSV Applications.csv" -ForegroundColor Yellow
+            Write-Host "-PVWA '$pvwaURL' -AuthType $authType -Username $username -Password *** -ExportPath '$outputFolder' -OutputCSV Applications.csv" -ForegroundColor Yellow
         }
     }
     catch {
@@ -510,14 +655,15 @@ if ($runScript -eq "" -or $runScript -eq "Y" -or $runScript -eq "y") {
         $scriptPath = Find-ScriptInPaths -ScriptName "Get-CCPPerformance.ps1"
         
         if ($scriptPath) {
-            # Run Get-CCPPerformance.ps1
-            $command = "& '$scriptPath' -CCP '$ccpURL' -Days $days -ExportPath '$outputFolder' -OutputCSV CCP_Performance.csv"
-            Show-ScriptStatus -ScriptName "Get-CCPPerformance.ps1" -Status "Found at: $scriptPath" -Color "Green"
-            Show-ScriptStatus -ScriptName "Get-CCPPerformance.ps1" -Status "Executing command" -Color "Green"
-            
-            Invoke-Expression $command
-            
-            Show-ScriptStatus -ScriptName "Get-CCPPerformance.ps1" -Status "Completed" -Color "Green"
+            # Utiliser la fonction adaptative pour exécuter Get-CCPPerformance.ps1
+            Invoke-CyberArkScript -ScriptPath $scriptPath -ScriptName "Get-CCPPerformance.ps1" `
+                -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials `
+                -AdditionalParams @{
+                    "CCPURL" = $ccpURL
+                    "Days" = $days
+                    "ExportPath" = $outputFolder
+                    "OutputCSV" = "CCP_Performance.csv"
+                }
         } else {
             Write-Host "Get-CCPPerformance.ps1 not found in the directory structure." -ForegroundColor Red
             Write-Host "Please locate the script manually and run it with the following parameters:" -ForegroundColor Yellow
@@ -542,18 +688,17 @@ if ($runScript -eq "" -or $runScript -eq "Y" -or $runScript -eq "y") {
         $scriptPath = Find-ScriptInPaths -ScriptName "Get-Platforms.ps1"
         
         if ($scriptPath) {
-            # Run Get-Platforms.ps1
-            $command = "& '$scriptPath' -PVWA '$pvwaURL' -AuthType $authType -PVWACredentials `$credentials -ExportPath '$outputFolder' -OutputCSV Platforms.csv"
-            Show-ScriptStatus -ScriptName "Get-Platforms.ps1" -Status "Found at: $scriptPath" -Color "Green"
-            Show-ScriptStatus -ScriptName "Get-Platforms.ps1" -Status "Executing command" -Color "Green"
-            
-            Invoke-Expression $command
-            
-            Show-ScriptStatus -ScriptName "Get-Platforms.ps1" -Status "Completed" -Color "Green"
+            # Utiliser la fonction adaptative pour exécuter Get-Platforms.ps1
+            Invoke-CyberArkScript -ScriptPath $scriptPath -ScriptName "Get-Platforms.ps1" `
+                -PVWAURL $pvwaURL -AuthType $authType -Credentials $credentials `
+                -AdditionalParams @{
+                    "ExportPath" = $outputFolder
+                    "OutputCSV" = "Platforms.csv"
+                }
         } else {
             Write-Host "Get-Platforms.ps1 not found in the directory structure." -ForegroundColor Red
             Write-Host "Please locate the script manually and run it with the following parameters:" -ForegroundColor Yellow
-            Write-Host "-PVWA '$pvwaURL' -AuthType $authType -ExportPath '$outputFolder' -OutputCSV Platforms.csv" -ForegroundColor Yellow
+            Write-Host "-PVWA '$pvwaURL' -AuthType $authType -Username $username -Password *** -ExportPath '$outputFolder' -OutputCSV Platforms.csv" -ForegroundColor Yellow
         }
     }
     catch {

@@ -50,7 +50,7 @@ Script ended
 [Safe-Management.ps1] Completed
 
 [3/11] Get Accounts Script
-Do you want to run Get-Accounts.ps1? (Y/N) [Y]: 
+Do you want to run Get-Accounts.ps1? (Y/N) [Y]: æ
 [Get-Accounts.ps1] Executing: ./Get-Accounts.ps1 -PVWAURL 'https://accessqa.st.com/PasswordVault' -AuthType cyberark -PVWACredentials $credentials -Report -AutoNextPag
 e -CSVPath 'C:\Temp/Accounts.csv'
 [Get-Accounts.ps1] Error: A parameter cannot be found that matches parameter name 'PVWACredentials'.
